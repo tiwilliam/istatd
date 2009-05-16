@@ -1,0 +1,49 @@
+.Dd 2009-05-05
+.Dt istat 1
+.Os
+.Sh NAME
+.Nm istat
+.Nd logging and distributing statistics to the istat iphone application
+.Sh SYNOPSIS
+.Nm
+.Op Fl c Ar config
+.Op Fl a Ar address
+.Op Fl p Ar port
+.Op Fl d
+
+.Sh DESCRIPTION
+.Nm
+is a server daemon for serving statistics to your istat iphone application. 
+.Nm
+collects data such as cpu, mem, network and disk usage and keeps the history.
+once connecting from the iphone and entering the lock code this data will be
+sent to the iphone and shown in fancy graphs.
+
+.Sh OPTIONS
+.Bl -tag -width -indent
+.It Fl v
+Print version number
+.It Fl d
+Run in the process in background
+.It Fl c Ar config
+Use a custom config file search path
+.It Fl a Ar address
+Listen for network connections on this address
+.It Fl p Ar port
+Listen for network connections on this port
+.It Fl pid Ar path
+Custom pid file location
+.It Fl socket Ar path
+Custom socket file location
+.El
+
+.Pp
+
+.Sh FILES
+.Bl -tag -width -indent
+.It Pa /etc/istat.conf
+Configure stuff.
+.El
+
+.Sh SEE ALSO
+.Xr istat.conf 5

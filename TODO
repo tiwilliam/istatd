@@ -1,0 +1,13 @@
+
+  TODO FOR ISTAT - Feel free to add more stuff here and submit patches
+ -------------------------------------------------------------------------
+  * Installation process, create rpm spec files and other packaging:
+
+    useradd istat -d /var/run/istat
+    groupadd istat
+    mkdir -p /var/{cache,run}/istat
+    chown istat.istat /var/{cache,run}/istat
+  
+  * Complete man page documentation
+  * Write config validation code in conf.cpp - validate()
+  * Create a flag for clearing stored UUID sessions (--clear-uuid)

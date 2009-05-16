@@ -1,0 +1,96 @@
+CXX				= @CXX@
+CFLAGS			= -c -Wall
+OFLAGS			= -Wall -rdynamic -ldl -lxml2
+CSOURCES		= $(wildcard *.c)
+CXXSOURCES		= $(wildcard *.cpp)
+ALLSOURCES		= $(CSOURCES) $(CXXSOURCES)
+OBJECTS			= $(CSOURCES:.c=.o) $(CXXSOURCES:.cpp=.o)
+
+MODE_PROG		= 755
+MODE_DIRS		= 755
+MODE_FILE		= 644
+MODE_CONF		= 600
+
+RM				= /bin/rm -rf
+RMDIR			= /bin/rmdir
+
+DESTDIR			=
+
+INSTALL			= @INSTALL@
+INSTALL_FILE	= $(INSTALL) -m $(MODE_FILE)
+INSTALL_CONF	= $(INSTALL) -m $(MODE_CONF)
+INSTALL_PROG	= $(INSTALL) -m $(MODE_PROG) -s
+INSTALL_DIRS	= $(INSTALL) -m $(MODE_DIRS) -d
+
+share			= /usr/share
+prefix			= @prefix@
+exec_prefix		= @prefix@
+datarootdir		= @prefix@$(share)
+
+ifeq ($(prefix), /)
+	override prefix		  = ""
+	override exec_prefix  = ""
+	override datarootdir  = $(share)
+endif
+
+ETCDIR			= @sysconfdir@
+
+ifeq ($(prefix), /usr)
+	override datarootdir  = $(share)
+	ETCDIR                = /etc
+endif
+
+BINDIR			= @bindir@
+MANDIR			= @datadir@/man
+INCDIR			= @includedir@
+LIBDIR			= @libdir@
+
+all: $(ALLSOURCES) istat info
+	
+istat: $(OBJECTS)
+	$(CXX) $(OFLAGS) $(OBJECTS) -o $@
+
+.c.o:
+	$(CXX) $(CFLAGS) $< -o $@
+
+.cpp.o:
+	$(CXX) $(CFLAGS) $< -o $@
+
+info:
+	@echo ""
+	@echo "---------------------------------------------------------------------------"
+	@echo ""
+	@echo "      Binary path:         $(DESTDIR)$(BINDIR)"
+	@echo "     Library path:         $(DESTDIR)$(LIBDIR)"
+	@echo "     Include path:         $(DESTDIR)$(INCDIR)"
+	@echo "      Config path:         $(DESTDIR)$(ETCDIR)"
+	@echo "         Man path:         $(DESTDIR)$(MANDIR)"
+	@echo ""
+	@echo "           Binary:         istat"
+	@echo "           Config:         istat.conf"
+	@echo "          Manuals:         istat.1 istat.conf.5"
+	@echo ""
+	@echo "---------------------------------------------------------------------------"
+	@echo ""
+
+install: $(EXECUTABLE)
+	$(INSTALL_DIRS) $(DESTDIR)$(BINDIR)
+	$(INSTALL_DIRS) $(DESTDIR)$(ETCDIR) 
+	$(INSTALL_DIRS) $(DESTDIR)$(MANDIR)/{man1,man5}
+	$(INSTALL_PROG) istat $(DESTDIR)$(BINDIR)
+	$(INSTALL_CONF) resource/istat.conf $(DESTDIR)$(ETCDIR)
+	$(INSTALL_FILE) resource/istat.1 $(DESTDIR)$(MANDIR)/man1
+	$(INSTALL_FILE) resource/istat.conf.5 $(DESTDIR)$(MANDIR)/man5
+
+uninstall:
+	$(RM) $(DESTDIR)$(BINDIR)/istat
+	$(RM) $(DESTDIR)$(ETCDIR)/istat.conf
+	$(RM) $(DESTDIR)$(MANDIR)/man1/istat.1
+	$(RM) $(DESTDIR)$(MANDIR)/man5/istat.conf.5
+
+clean:
+	$(RM) *.o
+	$(RM) istat
+	
+distclean: clean
+	$(RM) config.cache config.log autoscan.log configure.scan config.status config.h autom4te* Makefile
