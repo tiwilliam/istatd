@@ -58,22 +58,6 @@ int main(int argc, char ** argv)
     SocketSet sockets;
     Switchboard switchboard;
     
-    // Load command line arguments and configuration
-    ArgumentSet arguments(argc, argv);
-    Config config(arguments.get("c", "/etc/istat.conf"));
-    
-    config.parse();
-    config.validate();
-    
-    // Load configuration properties from command line and config file
-    bool prop_back        = arguments.isset("d");
-    string prop_host      = arguments.get("a", config.get("server_addr", "0.0.0.0"));
-    string prop_port      = arguments.get("p", config.get("server_port", "5109"));
-    string prop_user      = arguments.get("u", config.get("server_user", "istat"));
-    string prop_pid       = arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
-    string prop_code      = arguments.get("code", config.get("server_code", "00000"));
-    string prop_sock      = arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
-
     cout << PACKAGE_NAME << " version " << PACKAGE_VERSION << endl;
     
     if (arguments.isset("version") || arguments.isset("v")) return 0;
@@ -96,6 +80,22 @@ int main(int argc, char ** argv)
         
         return 0;
     }
+    
+    // Load command line arguments and configuration
+    ArgumentSet arguments(argc, argv);
+    Config config(arguments.get("c", "/etc/istat.conf"));
+    
+    config.parse();
+    config.validate();
+    
+    // Load configuration properties from command line and config file
+    bool prop_back        = arguments.isset("d");
+    string prop_host      = arguments.get("a", config.get("server_addr", "0.0.0.0"));
+    string prop_port      = arguments.get("p", config.get("server_port", "5109"));
+    string prop_user      = arguments.get("u", config.get("server_user", "istat"));
+    string prop_pid       = arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
+    string prop_code      = arguments.get("code", config.get("server_code", "00000"));
+    string prop_sock      = arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
     
     Daemon unixdaemon(prop_pid, prop_sock);
     Socket listener(prop_host, to_int(prop_port));
