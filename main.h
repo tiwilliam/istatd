@@ -35,7 +35,7 @@
 
 #define STANDALONE 1
 #define PACKAGE_NAME "istat"
-#define PACKAGE_VERSION "0.5.0"
+#define PACKAGE_VERSION "0.5.1"
 
 void handler(int _signal);
 
