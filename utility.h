@@ -36,6 +36,7 @@
 #include <iostream>
 
 int get_current_user();
+int get_id_from_name(const std::string & name);
 int get_file_owner(const std::string & file);
 int pid_dead(int pid);
 int check_dir_exist(const std::string & dir);

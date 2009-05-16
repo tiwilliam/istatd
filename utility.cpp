@@ -28,8 +28,11 @@
  *
  */
 
+#include <pwd.h>
 #include <vector>
 #include <sstream>
+#include <errno.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 
@@ -40,6 +43,20 @@ using namespace std;
 int get_current_user()
 {
     return geteuid();
+}
+
+int get_id_from_name(const string & name)
+{
+    struct passwd * ent;
+    
+    if(!(ent = getpwnam(name.c_str())))
+    {
+        cout << "Could not get uid for username " << name << ", will run as current user instead." << endl;
+        if (get_current_user() == 0) cout << "You are now running the daemon as root, this is not recommended." << endl;
+        return -1;
+    }
+    
+    return(ent->pw_uid);
 }
 
 int get_file_owner(const string & file)
