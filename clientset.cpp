@@ -119,18 +119,17 @@ void ClientSet::save_cache()
 {
     stringstream path;
     string cache_file = "clients.dat";
-    string cache_directory = "/var/cache/istat";
     
-    if (!check_dir_exist(cache_directory))
+    if (!check_dir_exist(this->cache_dir))
     {
-        if (mkdir(cache_directory.c_str(), 0755) != 0)
+        if (mkdir(this->cache_dir.c_str(), 0755) != 0)
         {
-            cout << "Could not create cache directory '" << cache_directory << "': " << strerror(errno) << endl;
+            cout << "Could not create cache directory '" << this->cache_dir << "': " << strerror(errno) << endl;
             return;
         }
     }
     
-    path << cache_directory << "/" << cache_file;
+    path << this->cache_dir << "/" << cache_file;
     
     ofstream out(path.str().c_str());
     
@@ -148,16 +147,17 @@ void ClientSet::save_cache()
     out.close();
 }
 
-void ClientSet::read_cache()
+void ClientSet::read_cache(const std::string & _cache_dir)
 {
     string line;
     Client client;
     stringstream path;
     vector<string> array;
     string cache_file = "clients.dat";
-    string cache_directory = "/var/cache/istat";
     
-    path << cache_directory << "/" << cache_file;
+    this->cache_dir = _cache_dir;
+    
+    path << this->cache_dir << "/" << cache_file;
     
     ifstream cache(path.str().c_str());
     

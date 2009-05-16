@@ -55,9 +55,10 @@ class ClientSet
         void update_sessions(const std::string & _duuid, int _socket, SocketSet * _sockets);
         int length();
         void save_cache();
-        void read_cache();
+        void read_cache(const std::string & cachedir);
         
     private:
+        std::string cache_dir;
         std::vector<Client> clients;
 };
 
