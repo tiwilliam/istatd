@@ -69,7 +69,8 @@ int main(int argc, char ** argv)
     bool prop_back        = arguments.isset("d");
     string prop_host      = arguments.get("a", config.get("server_addr", "0.0.0.0"));
     string prop_port      = arguments.get("p", config.get("server_port", "5109"));
-    string prop_pid       = arguments.get("pid", config.get("server_pid", "/var/run/istat.pid"));
+    string prop_user      = arguments.get("u", config.get("server_user", "istat"));
+    string prop_pid       = arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
     string prop_code      = arguments.get("code", config.get("server_code", "00000"));
     string prop_sock      = arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
 
@@ -84,6 +85,7 @@ int main(int argc, char ** argv)
         cout << "    -c          custom config file location" << endl;
         cout << "    -a          listen on this address" << endl;
         cout << "    -p          listen on this port" << endl;
+        cout << "    -u          change running user" << endl;
         cout << "    -h          print this help text" << endl;
         cout << "    -v          print version number" << endl;
         cout << endl;
@@ -105,7 +107,7 @@ int main(int argc, char ** argv)
     clients.read_cache();
 
     // Create socket, pid file and put in background if desired
-    unixdaemon.create(prop_back);
+    unixdaemon.create(prop_back, prop_user);
 
     signal(SIGHUP,  handler);
     signal(SIGUSR1, handler);

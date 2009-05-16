@@ -38,21 +38,24 @@
 
 #include "main.h"
 #include "daemon.h"
+#include "utility.h"
 
 using namespace std;
 
-void Daemon::create(bool _back)
+void Daemon::create(bool _back, const string & user)
 {
-    int pid;
+    int pid, uid;
 
     // Obtain new process group
     setsid();
-
-    // TODO: Get uid from config
-    // Change user
-    if (setuid(77) != 0)
+    
+    // Switch user
+    if ((uid = get_id_from_name(user)) >= 0)
     {
-        cout << "Could not switch user: " << strerror(errno) << endl;
+        if (setuid(uid) != 0)
+        {
+            cout << "Could not switch user: " << strerror(errno) << endl;
+        }
     }
     
     if (_back)
