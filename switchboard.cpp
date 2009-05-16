@@ -60,9 +60,6 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Socket * _ac
     
     if (_data.substr(0, 1) != "<")
     {
-        // TODO: Create config file and parser to validate data like this
-        //       The config will contain secret code and devices to monitor
-        
         if (_data == _prop_code)
         {
             _clients->authenticate(_active_socket->get_id());

@@ -45,9 +45,9 @@ MANDIR			= @datadir@/man
 INCDIR			= @includedir@
 LIBDIR			= @libdir@
 
-all: $(ALLSOURCES) istat info
+all: $(ALLSOURCES) istatd info
 	
-istat: $(OBJECTS)
+istatd: $(OBJECTS)
 	$(CXX) $(OFLAGS) $(OBJECTS) -o $@
 
 .c.o:
@@ -66,7 +66,7 @@ info:
 	@echo "      Config path:         $(DESTDIR)$(ETCDIR)"
 	@echo "         Man path:         $(DESTDIR)$(MANDIR)"
 	@echo ""
-	@echo "           Binary:         istat"
+	@echo "           Binary:         istatd"
 	@echo "           Config:         istat.conf"
 	@echo "          Manuals:         istat.1 istat.conf.5"
 	@echo ""
@@ -77,20 +77,20 @@ install: $(EXECUTABLE)
 	$(INSTALL_DIRS) $(DESTDIR)$(BINDIR)
 	$(INSTALL_DIRS) $(DESTDIR)$(ETCDIR) 
 	$(INSTALL_DIRS) $(DESTDIR)$(MANDIR)/{man1,man5}
-	$(INSTALL_PROG) istat $(DESTDIR)$(BINDIR)
+	$(INSTALL_PROG) istatd $(DESTDIR)$(BINDIR)
 	$(INSTALL_CONF) resource/istat.conf $(DESTDIR)$(ETCDIR)
-	$(INSTALL_FILE) resource/istat.1 $(DESTDIR)$(MANDIR)/man1
+	$(INSTALL_FILE) resource/istatd.1 $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL_FILE) resource/istat.conf.5 $(DESTDIR)$(MANDIR)/man5
 
 uninstall:
-	$(RM) $(DESTDIR)$(BINDIR)/istat
+	$(RM) $(DESTDIR)$(BINDIR)/istatd
 	$(RM) $(DESTDIR)$(ETCDIR)/istat.conf
-	$(RM) $(DESTDIR)$(MANDIR)/man1/istat.1
+	$(RM) $(DESTDIR)$(MANDIR)/man1/istatd.1
 	$(RM) $(DESTDIR)$(MANDIR)/man5/istat.conf.5
 
 clean:
 	$(RM) *.o
-	$(RM) istat
+	$(RM) istatd
 	
 distclean: clean
 	$(RM) config.cache config.log autoscan.log configure.scan config.status config.h autom4te* Makefile
