@@ -3,6 +3,7 @@
  -------------------------------------------------------------------------
   * Version: 0.5.1
   * Fix: Display help and version without read permission to config.
+  * Fix: Forgot to rename propertys for network and port that was changed.
  -------------------------------------------------------------------------
   * Version: 0.5.0
   * New: First release
