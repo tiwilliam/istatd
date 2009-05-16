@@ -67,8 +67,8 @@ int main(int argc, char ** argv)
     
     // Load configuration properties from command line and config file
     bool prop_back        = arguments.isset("d");
-    string prop_host      = arguments.get("a", config.get("server_addr", "0.0.0.0"));
-    string prop_port      = arguments.get("p", config.get("server_port", "5109"));
+    string prop_host      = arguments.get("a", config.get("network_addr", "0.0.0.0"));
+    string prop_port      = arguments.get("p", config.get("network_port", "5109"));
     string prop_user      = arguments.get("u", config.get("server_user", "istat"));
     string prop_pid       = arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
     string prop_code      = arguments.get("code", config.get("server_code", "00000"));
