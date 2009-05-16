@@ -57,7 +57,8 @@ int main(int argc, char ** argv)
     ClientSet clients;
     SocketSet sockets;
     Switchboard switchboard;
-    
+    ArgumentSet arguments(argc, argv);
+
     cout << PACKAGE_NAME << " version " << PACKAGE_VERSION << endl;
     
     if (arguments.isset("version") || arguments.isset("v")) return 0;
@@ -81,8 +82,7 @@ int main(int argc, char ** argv)
         return 0;
     }
     
-    // Load command line arguments and configuration
-    ArgumentSet arguments(argc, argv);
+    // Load and parse configuration
     Config config(arguments.get("c", "/etc/istat.conf"));
     
     config.parse();

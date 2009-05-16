@@ -2,7 +2,7 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
   * Version: 0.5.1
-  * 
+  * Fix: Display help and version without read permission to config.
  -------------------------------------------------------------------------
   * Version: 0.5.0
   * New: First release
