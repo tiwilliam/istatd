@@ -34,6 +34,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #ifdef HAVE_ERRNO_H
 # include <errno.h>
 #endif
@@ -77,6 +78,28 @@ int sys_init(void)
 	return 0;
 }
 
+#ifdef HAVE_LIBKSTAT
+static unsigned long long ksgetull(kstat_named_t *kn)
+{
+	switch(kn->data_type)
+	{
+#ifdef KSTAT_DATA_INT32
+		case KSTAT_DATA_INT32:         return kn->value.i32;
+		case KSTAT_DATA_UINT32:        return kn->value.ui32;
+		case KSTAT_DATA_INT64:         return kn->value.i64;
+		case KSTAT_DATA_UINT64:        return kn->value.ui64;
+#else
+		case KSTAT_DATA_LONG:          return kn->value.l;
+		case KSTAT_DATA_ULONG:         return kn->value.ul;
+		case KSTAT_DATA_LONGLONG:      return kn->value.ll;
+		case KSTAT_DATA_ULONGLONG:     return kn->value.ull;
+#endif
+		default:
+			return (unsigned long long) -1;
+	}
+}	
+#endif
+
 int get_uptime()
 {
 #ifdef HAVE_LIBKSTAT
@@ -89,22 +112,7 @@ int get_uptime()
 		if(NULL == (ksp = kstat_lookup(ksh, "unix", -1, "system_misc"))) return -1;
 		if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
 		if(NULL == (kn = (kstat_named_t *) kstat_data_lookup(ksp, "boot_time"))) return -1;
-		switch(kn->data_type)
-		{
-#ifdef KSTAT_DATA_INT32
-		case KSTAT_DATA_INT32:         boottime = kn->value.i32; break;
-		case KSTAT_DATA_UINT32:        boottime = kn->value.ui32; break;
-		case KSTAT_DATA_INT64:         boottime = kn->value.i64; break;
-		case KSTAT_DATA_UINT64:        boottime = kn->value.ui64; break;
-#else
-		case KSTAT_DATA_LONG:          boottime = kn->value.l; break;
-		case KSTAT_DATA_ULONG:         boottime = kn->value.ul; break;
-		case KSTAT_DATA_LONGLONG:      boottime = kn->value.ll; break;
-		case KSTAT_DATA_ULONGLONG:     boottime = kn->value.ull; break;
-#endif
-		default:
-			return -1;
-		}
+		boottime = (time_t) ksgetull(kn);
 	}
 	return time(NULL) - boottime;
 #else
@@ -146,7 +154,33 @@ int get_cpu_load(struct cpu_load * _cpu)
 
 int get_mem_info(struct mem_info * _mem)
 {
-    char buf[320];
+#ifdef HAVE_LIBKSTAT
+	kstat_t *ksp;
+	kstat_named_t *kn;
+	unsigned long long lv, ps;
+
+	memset(_mem, 0, sizeof(struct mem_info));
+	if(NULL == (ksp = kstat_lookup(ksh, "unix", -1, "system_pages"))) return -1;
+	if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
+	ps = getpagesize();
+	if(NULL != (kn = (kstat_named_t *) kstat_data_lookup(ksp, "pagestotal")))
+	{
+		lv = ksgetull(kn);
+		_mem->t = (lv * ps) / 1024;
+	}
+	if(NULL != (kn = (kstat_named_t *) kstat_data_lookup(ksp, "pageslocked")))
+	{
+		lv = ksgetull(kn);
+		_mem->c = (lv * ps) / 1024;
+	}
+	if(NULL != (kn = (kstat_named_t *) kstat_data_lookup(ksp, "pagesfree")))
+	{
+		lv = ksgetull(kn);
+		_mem->f = (lv * ps) / 1024;
+	}
+	_mem->a = _mem->t - _mem->c - _mem->f;
+#else
+	char buf[320];
     static FILE * fp = NULL;
 
     if (!(fp = fopen("/proc/meminfo", "r"))) return -1;
@@ -173,7 +207,7 @@ int get_mem_info(struct mem_info * _mem)
     fclose(fp);
     
     _mem->t = _mem->f + _mem->a + _mem->i + _mem->c + 1;
-
+#endif
     return 0;
 }
 
