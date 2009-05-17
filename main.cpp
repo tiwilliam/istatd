@@ -76,7 +76,6 @@ int main(int argc, char ** argv)
         cout << endl;
         cout << "    --pid       custom pid file location" << endl;
         cout << "    --code      custom lock code" << endl;
-        cout << "    --socket    custom socket file location" << endl;
         cout << endl;
         
         return 0;

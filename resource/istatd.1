@@ -1,9 +1,9 @@
-.Dd 2009-05-05
-.Dt istat 1
+.Dd 2009-05-17
+.Dt istatd 1
 .Os
 .Sh NAME
-.Nm istat
-.Nd logging and distributing statistics to the istat iphone application
+.Nm istatd
+.Nd serving statistics to your istat iphone application
 .Sh SYNOPSIS
 .Nm
 .Op Fl c Ar config
@@ -20,7 +20,7 @@ once connecting from the iphone and entering the lock code this data will be
 sent to the iphone and shown in fancy graphs.
 
 .Sh OPTIONS
-.Bl -tag -width -indent
+.Bl -tag -width -indent-two
 .It Fl v
 Print version number
 .It Fl d
@@ -31,19 +31,16 @@ Use a custom config file search path
 Listen for network connections on this address
 .It Fl p Ar port
 Listen for network connections on this port
-.It Fl pid Ar path
+.It Fl u Ar username
+User to run daemon as
+.It Fl -pid Ar path
 Custom pid file location
-.It Fl socket Ar path
-Custom socket file location
 .El
-
 .Pp
-
 .Sh FILES
-.Bl -tag -width -indent
-.It Pa /etc/istat.conf
-Configure stuff.
+/etc/istat.conf
+.Pp
+Configuration for network settings, lock code, running user, devices to monitor and more.
 .El
-
 .Sh SEE ALSO
 .Xr istat.conf 5

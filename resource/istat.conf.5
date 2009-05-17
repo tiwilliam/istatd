@@ -1,11 +1,34 @@
-TODO: write this man page, current properties:
+.Dd 2009-05-17
+.Dt istat.conf 5
+.Os
+.Sh NAME
+.Nm istat.conf
+.Nd configuration file for istatd
 
-network_addr            default: 0.0.0.0
-network_port            default: 5109
-server_code             default: 00000
-server_socket           default: /tmp/istat.sock
-server_pid              default: /var/run/istat/istat.pid
-server_user             default: istat
-cache_dir               default: /var/cache/istat
-monitor_net             default: eth0
-monitor_disk            no default
+.Sh OPTIONS
+.Bl -tag -width -indent-three
+.It network_addr
+Address to bind (default: 0.0.0.0)
+.It network_port
+Port to bind (default: 5109)
+.It server_code
+Lock code needed when connecting to the server for the first time. (default: 00000)
+.It server_socket
+Location of the unix socket. (default: /tmp/istat.sock)
+.It server_pid
+Location of the pid. (default: /var/run/istat/istat.pid)
+.It server_user
+User to switch to when entering daemon mode. It's not recommended to use high privilaged users like root due to security reasons. Defaults to root if the user doesn't exist. (default: istat)
+.It cache_dir
+Where to store cache files with information like authorized clients. (default: /var/cache/istat)
+.It monitor_net
+Network interface to monitor. (default: eth0)
+.It monitor_disk
+Full search path to disk or list of disks to monitor. When specifying more than one disk, use paranteses around the list:
+
+monitor_disk        /dev/sda1
+
+monitor_disk        ( /dev/sda1 /dev/sda2 )
+.El
+.Sh SEE ALSO
+.Xr istatd 1

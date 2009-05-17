@@ -8,6 +8,9 @@
     mkdir -p /var/{cache,run}/istat
     chown istat.istat /var/{cache,run}/istat
   
-  * Complete man page documentation
   * Write config validation code in conf.cpp - validate()
   * Create a flag for clearing stored UUID sessions (--clear-uuid)
+  * Clean up stdout messages and create a logger in style of:
+  
+    log.info() << "Log this: " << var;
+    log.warn() << "Ou panic!";
