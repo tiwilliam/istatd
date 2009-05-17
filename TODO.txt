@@ -1,30 +1,15 @@
 
   TODO FOR ISTAT - Feel free to add more stuff here and submit patches :)
  -------------------------------------------------------------------------
-  * Make it optional to display mount name instead of disk name.
-  
   * Installation process, create rpm spec files and other packaging:
 
     useradd istat -d /var/run/istat
     groupadd istat
     mkdir -p /var/{cache,run}/istat
     chown istat.istat /var/{cache,run}/istat
- 
-  * /var/cache/istat/client.dat should have permissions 700.
-  
-  * Write config validation code in conf.cpp - validate()
-  
-  * Clean up stdout messages and create a logger in style of:
-  
-    log.info() << "Log this: " << var;
-    log.warn() << "Ou panic!";
-
-  * Support for fans and temperature messure (lm-sensor?)
   
   * Tests for which libraries networking stuff lives in (on Solaris, these live
     in -lsocket and -lnsl)
     
   * Tests for the specific introspection APIs (so that alternatives can be used
     on platforms other than Linux)
-
-  * Port it to other platforms :)
