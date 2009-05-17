@@ -81,5 +81,5 @@ configpath=`eval echo "$sysconfdir"/istat.conf`
 AC_MSG_RESULT([$configpath])
 AC_DEFINE_UNQUOTED([CONFIG_FILE_PATH],["${configpath}"],[default location of the configuration file])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([GNUmakefile])
 AC_OUTPUT
