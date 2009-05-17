@@ -55,6 +55,12 @@
 #ifdef HAVE_SYS_LOADAVG_H
 # include <sys/loadavg.h>
 #endif
+#ifdef HAVE_SYS_PROCESSOR_H
+# include <sys/processor.h>
+#endif
+#ifdef HAVE_SYS_SYSINFO_H
+# include <sys/sysinfo.h>
+#endif
 #ifdef HAVE_KSTAT_H
 # include <kstat.h>
 #endif
@@ -112,6 +118,7 @@ int get_uptime()
 	
 	if(0 == boottime)
 	{
+		kstat_chain_update(ksh);
 		if(NULL == (ksp = kstat_lookup(ksh, "unix", -1, "system_misc"))) return -1;
 		if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
 		if(NULL == (kn = (kstat_named_t *) kstat_data_lookup(ksp, "boot_time"))) return -1;
@@ -143,6 +150,28 @@ int get_unixtime()
 
 int get_cpu_load(struct cpu_load * _cpu)
 {
+#ifdef HAVE_LIBKSTAT
+	kstat_t *ksp;
+	static int ncpu;
+	int c;
+	cpu_stat_t cs;
+	
+	ncpu = sysconf(_SC_NPROCESSORS_CONF);
+	kstat_chain_update(ksh);
+	_cpu->u = _cpu->n = _cpu->i = _cpu->s = 0;
+	for(c = 0; c < ncpu; c++)
+	{
+		if(p_online(c, P_STATUS) != P_ONLINE)
+		{
+			continue;
+		}
+		if(NULL == (ksp = kstat_lookup(ksh, "cpu_stat", c, NULL))) return -1;
+		if(-1 == kstat_read(ksh, ksp, &cs)) return -1;
+		_cpu->u += cs.cpu_sysinfo.cpu[CPU_USER];
+		_cpu->s += cs.cpu_sysinfo.cpu[CPU_KERNEL];
+		_cpu->i += cs.cpu_sysinfo.cpu[CPU_IDLE];
+	}
+#else
     char buf[320];
     static FILE * fp = NULL;
     
@@ -151,7 +180,7 @@ int get_cpu_load(struct cpu_load * _cpu)
     
     sscanf(buf, "cpu %Lu %Lu %Lu %Lu", &_cpu->u, &_cpu->n, &_cpu->s, &_cpu->i);
     fclose(fp);
-    
+#endif    
     return 0;
 }
 
@@ -244,13 +273,13 @@ int get_net_info(const char * _dev, struct net_data * _data)
 
 int get_load_avg(struct load_avg * _load)
 {
-#ifdef HAVE_GETLOADAVG
+#if defined(HAVE_GETLOADAVG)
 	double loadavg[3];
 	
 	if(-1 == getloadavg(loadavg, 3)) return -1;
-	_load->one = loadavg[0];
-	_load->two = loadavg[1];
-	_load->three = loadavg[2];
+	_load->one = (float) loadavg[0];
+	_load->two = (float) loadavg[1];
+	_load->three = (float) loadavg[2];
 #else
     static FILE * fp = NULL;
     
