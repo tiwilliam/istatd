@@ -33,9 +33,11 @@ MANDIR			= @mandir@
 INCDIR			= @includedir@
 LIBDIR			= @libdir@
 
-all: $(ALLSOURCES) istatd$(EXEEXT) info
+EXECUTABLE		= istatd$(EXEEXT)
+
+all: $(ALLSOURCES) $(EXECUTABLE) info
 	
-istatd$(EXEEXT): $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(OFLAGS) $(OBJECTS) -o $@ $(LIBS)
 
 .c.o:
