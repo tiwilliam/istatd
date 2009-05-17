@@ -71,7 +71,10 @@ AC_CHECK_MEMBER([struct mntent.mnt_fsname],[AC_DEFINE_UNQUOTED([USE_STRUCT_MNTEN
 #include <stdio.h>
 #include <mntent.h>
 ])
-
+AC_CHECK_MEMBER([struct statvfs.f_frsize],[AC_DEFINE_UNQUOTED([HAVE_STATVFS_FRSIZE],[1],[define if statvfs has the f_frsize member])],,[
+#include <sys/types.h>
+#include <sys/statvfs.h>
+])
 AC_MSG_CHECKING([for default location of configuration file])
 test x"$prefix" = x"NONE" && prefix="$ac_default_prefix"
 configpath=`eval echo "$sysconfdir"/istat.conf`
