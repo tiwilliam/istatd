@@ -30,8 +30,4 @@
   * Properly determine and substitute the configuration file path into config.h
     so that the code can default properly
     
-  * Remove the "if prefix is /usr, force sysconfdir to be /etc" kludge from the
-    makefile (it'd need to be moved to configure for the above  change anyway,
-    and it's really what --sysconfdir=/etc is for!)
-    
   * Port it to other platforms :)

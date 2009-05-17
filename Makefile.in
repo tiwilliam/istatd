@@ -34,13 +34,11 @@ ifeq ($(prefix), /)
 	override datarootdir  = $(share)
 endif
 
-ETCDIR			= @sysconfdir@
-
 ifeq ($(prefix), /usr)
 	override datarootdir  = $(share)
-	ETCDIR                = /etc
 endif
 
+ETCDIR			= @sysconfdir@
 BINDIR			= @bindir@
 MANDIR			= @datadir@/man
 INCDIR			= @includedir@
