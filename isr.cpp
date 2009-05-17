@@ -173,7 +173,7 @@ string isr_uptime_data(vector<sys_info> * _history)
     stringstream temp;
     
 	if(0 == _history->size()) return temp.str();
-    temp << "<UPT u=\"" << _history->at(0).upt << "\"></UPT>";
+    temp << "<UPT u=\"" << _history->back().upt << "\"></UPT>";
     
     return temp.str();
 }
@@ -183,7 +183,7 @@ string isr_loadavg_data(vector<sys_info> * _history)
     stringstream temp;
     
 	if(0 == _history->size()) return temp.str();	
-    temp << "<LOAD one=\"" << _history->at(0).avg.one << "\" fv=\"" << _history->at(0).avg.two << "\" ff=\"" << _history->at(0).avg.three << "\"></LOAD>";
+    temp << "<LOAD one=\"" << _history->back().avg.one << "\" fv=\"" << _history->back().avg.two << "\" ff=\"" << _history->back().avg.three << "\"></LOAD>";
     
     return temp.str();
 }
@@ -193,7 +193,7 @@ string isr_memory_data(vector<sys_info> * _history)
     stringstream temp;
     
 	if(0 == _history->size()) return temp.str();	
-    temp << "<MEM w=\"" << _history->at(0).mem.c / 1000 << "\" a=\"" << _history->at(0).mem.a / 1000 << "\" i=\"" << _history->at(0).mem.i / 1000 << "\" f=\"" << _history->at(0).mem.f / 1000 << "\" t=\"" << _history->at(0).mem.t / 1000 << "\" su=\"0\" st=\"" << _history->at(0).mem.swt / 1000 << "\" pi=\"" << _history->at(0).mem.swi << "\" po=\"" << _history->at(0).mem.swo << "\"></MEM>";
+    temp << "<MEM w=\"" << _history->back().mem.c / 1000 << "\" a=\"" << _history->back().mem.a / 1000 << "\" i=\"" << _history->back().mem.i / 1000 << "\" f=\"" << _history->back().mem.f / 1000 << "\" t=\"" << _history->back().mem.t / 1000 << "\" su=\"0\" st=\"" << _history->back().mem.swt / 1000 << "\" pi=\"" << _history->back().mem.swi << "\" po=\"" << _history->back().mem.swo << "\"></MEM>";
     
     return temp.str();
 }
