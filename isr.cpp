@@ -152,9 +152,10 @@ string isr_disk_data(vector<disk_info> * _disks, int _init)
 {
     stringstream temp;
     
+    if(0 == _disks->size()) return temp.str();
+    
     temp << "<DISKS>";
-
-	if(0 == _disks->size()) return temp.str();    
+ 
     for (vector<disk_info>::iterator cur = _disks->begin(); cur != _disks->end(); ++cur)
     {
         if ((*cur).active == false) continue;
