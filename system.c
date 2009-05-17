@@ -45,6 +45,9 @@
 #elif defined(HAVE_SYS_STATFS_H)
 # include <sys/statfs.h>
 #endif
+#ifdef HAVE_SYS_LOADAVG_H
+# include <sys/loadavg.h>
+#endif
 
 #include "system.h"
 
@@ -152,6 +155,14 @@ int get_net_info(const char * _dev, struct net_data * _data)
 
 int get_load_avg(struct load_avg * _load)
 {
+#ifdef HAVE_GETLOADAVG
+	double loadavg[3];
+	
+	if(-1 == getloadavg(loadavg, 3)) return -1;
+	_load->one = loadavg[0];
+	_load->two = loadavg[1];
+	_load->three = loadavg[2];
+#else
     static FILE * fp = NULL;
     
     if (!(fp = fopen("/proc/loadavg", "r"))) return -1;
@@ -159,7 +170,7 @@ int get_load_avg(struct load_avg * _load)
     fscanf(fp, "%f %f %f", &_load->one, &_load->two, &_load->three);
     
     fclose(fp);
-    
+#endif
     return 0;
 }
 
