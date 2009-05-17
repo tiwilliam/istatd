@@ -1,6 +1,8 @@
 
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
+  * Version: 0.5.3
+ -------------------------------------------------------------------------
   * Version: 0.5.2
   * New: Cache directory now configurable by cache_dir in config.
   * New: Created basic man page documentation.
