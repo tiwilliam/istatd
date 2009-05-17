@@ -42,7 +42,7 @@
 
 using namespace std;
 
-void Daemon::create(bool _back, const string & user)
+void Daemon::create(bool _back, const string & _user)
 {
     int pid, uid;
 
@@ -50,7 +50,7 @@ void Daemon::create(bool _back, const string & user)
     setsid();
     
     // Switch user
-    if ((uid = get_id_from_name(user)) >= 0)
+    if ((uid = get_id_from_name(_user)) >= 0)
     {
         if (setuid(uid) != 0)
         {

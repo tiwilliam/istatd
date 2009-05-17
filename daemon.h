@@ -43,7 +43,7 @@ class Daemon
     public:
         Daemon(const std::string & _pidfile, const std::string & _sockfile) : pidfile(_pidfile), sockfile(_sockfile) {}
         
-        void create(bool _back, const std::string & user);
+        void create(bool _back, const std::string & _user);
         void destroy();
         
     private:

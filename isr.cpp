@@ -71,10 +71,10 @@ string isr_conntest()
     return temp.str();
 }
 
-string isr_accept_connection(int ath, int ss, int c, int n)
+string isr_accept_connection(int _ath, int _ss, int _c, int _n)
 {
     stringstream temp;
-    temp << isr_create_header() << "<isr pl=\"2\" ath=\"" << ath << "\" ss=\"" << ss << "\" c=\"" << c << "\" n=\"" << n << "\"></isr>";
+    temp << isr_create_header() << "<isr pl=\"2\" ath=\"" << _ath << "\" ss=\"" << _ss << "\" c=\"" << _c << "\" n=\"" << _n << "\"></isr>";
     return temp.str();
 }
 
@@ -84,7 +84,7 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
     sys_info prev;
     stringstream temp;
     int diff_u, diff_s, diff_n, diff_i;
-    int load_t, load_u, load_s, load_n;
+    float load_t, load_u, load_s, load_n;
     
     temp << "<CPU>";
     
@@ -112,6 +112,8 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
         load_n = ((float) diff_n / load_t) * 100;
         
         temp << "<c id=\"" << uptime << "\" u=\"" << load_u << "\" s=\"" << load_s << "\" n=\"" << load_n << "\"></c>";
+        
+        cout << temp.str() << endl;
     }
     
     temp << "</CPU>";

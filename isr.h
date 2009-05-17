@@ -43,7 +43,7 @@ std::string isr_create_session(int _rid, int _ds, int _ts, int _fs);
 std::string isr_accept_code();
 std::string isr_reject_code();
 std::string isr_conntest();
-std::string isr_accept_connection(int ath, int ss, int c, int n);
+std::string isr_accept_connection(int _ath, int _ss, int _c, int _n);
 
 std::string isr_cpu_data(std::vector<sys_info> * _history, int _init);
 std::string isr_network_data(std::vector<net_info> * _history, int _init);

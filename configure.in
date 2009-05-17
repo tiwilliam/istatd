@@ -1,0 +1,31 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.63])
+AC_INIT("istat", "0.5.2", "http://code.google.com/p/istat/issues/entry")
+AC_CONFIG_HEADERS([config.h])
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_INSTALL
+
+# Checks for libraries.
+# FIXME: Replace `main' with a function in `-ldl':
+AC_CHECK_LIB([dl], [main])
+# FIXME: Replace `main' with a function in `-lxml2':
+AC_CHECK_LIB([xml2], [main])
+
+# Checks for header files.
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h sys/socket.h sys/statfs.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+
+# Checks for library functions.
+AC_FUNC_FORK
+AC_FUNC_GETMNTENT
+AC_CHECK_FUNCS([gethostbyname getmntent inet_ntoa memset mkdir select socket strerror])
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
