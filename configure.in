@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT("istat", "0.5.2", "http://code.google.com/p/istat/issues/entry")
+AC_INIT(istat, 0.5.2, http://code.google.com/p/istat/issues/entry)
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.

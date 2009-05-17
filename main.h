@@ -34,8 +34,6 @@
 #include <iostream>
 
 #define STANDALONE 1
-#define PACKAGE_NAME "istat"
-#define PACKAGE_VERSION "0.5.2"
 
 void handler(int _signal);
 

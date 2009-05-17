@@ -93,4 +93,4 @@ clean:
 	$(RM) istatd
 	
 distclean: clean
-	$(RM) config.cache config.log autoscan.log configure.scan config.status config.h autom4te* Makefile
+	$(RM) config.h Makefile

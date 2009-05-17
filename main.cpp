@@ -35,6 +35,7 @@
 #include "conf.h"
 #include "stats.h"
 #include "system.h"
+#include "config.h"
 #include "daemon.h"
 #include "socket.h"
 #include "utility.h"
