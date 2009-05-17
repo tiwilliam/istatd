@@ -86,6 +86,7 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
     int diff_u, diff_s, diff_n, diff_i;
     float load_t, load_u, load_s, load_n;
     
+	if(0 == _history->size()) return temp.str();
     temp << "<CPU>";
     
     for (vector<sys_info>::iterator cur = _history->begin() + 1; cur != _history->end(); ++cur)
@@ -122,7 +123,8 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
 string isr_network_data(vector<net_info> * _history, int _init)
 {
     stringstream temp;
-    
+
+	if(0 == _history->size()) return temp.str();    
     for (vector<net_info>::iterator cur = _history->begin(); cur != _history->end(); ++cur)
     {
         if ((*cur).active == false) continue;
@@ -151,7 +153,8 @@ string isr_disk_data(vector<disk_info> * _disks, int _init)
     stringstream temp;
     
     temp << "<DISKS>";
-    
+
+	if(0 == _disks->size()) return temp.str();    
     for (vector<disk_info>::iterator cur = _disks->begin(); cur != _disks->end(); ++cur)
     {
         if ((*cur).active == false) continue;
@@ -168,6 +171,7 @@ string isr_uptime_data(vector<sys_info> * _history)
 {
     stringstream temp;
     
+	if(0 == _history->size()) return temp.str();
     temp << "<UPT u=\"" << _history->at(0).upt << "\"></UPT>";
     
     return temp.str();
@@ -177,6 +181,7 @@ string isr_loadavg_data(vector<sys_info> * _history)
 {
     stringstream temp;
     
+	if(0 == _history->size()) return temp.str();	
     temp << "<LOAD one=\"" << _history->at(0).avg.one << "\" fv=\"" << _history->at(0).avg.two << "\" ff=\"" << _history->at(0).avg.three << "\"></LOAD>";
     
     return temp.str();
@@ -186,6 +191,7 @@ string isr_memory_data(vector<sys_info> * _history)
 {
     stringstream temp;
     
+	if(0 == _history->size()) return temp.str();	
     temp << "<MEM w=\"" << _history->at(0).mem.c / 1000 << "\" a=\"" << _history->at(0).mem.a / 1000 << "\" i=\"" << _history->at(0).mem.i / 1000 << "\" f=\"" << _history->at(0).mem.f / 1000 << "\" t=\"" << _history->at(0).mem.t / 1000 << "\" su=\"0\" st=\"" << _history->at(0).mem.swt / 1000 << "\" pi=\"" << _history->at(0).mem.swi << "\" po=\"" << _history->at(0).mem.swo << "\"></MEM>";
     
     return temp.str();

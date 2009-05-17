@@ -28,13 +28,29 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
 #include <string.h>
-#include <mntent.h>
+#ifdef HAVE_SYS_MNTTAB_H
+# include <sys/mnttab.h>
+#elif defined(HAVE_MNTENT_H)
+# include <mntent.h>
+#endif
 #include <sys/types.h>
-#include <sys/statfs.h>
+#ifdef HAVE_SYS_STATVFS_H
+# include <sys/statvfs.h>
+#elif defined(HAVE_SYS_STATFS_H)
+# include <sys/statfs.h>
+#endif
 
 #include "system.h"
+
+#ifndef MNTTAB
+# define MNTTAB                        "/etc/mtab"
+#endif
 
 int get_uptime()
 {
@@ -150,13 +166,33 @@ int get_load_avg(struct load_avg * _load)
 int get_disk_info(const char * _dev, struct disk_info * _disk)
 {
     FILE * table;
+#ifdef HAVE_STATVFS
+	struct statvfs space;
+#else
     struct statfs space;
+#endif
     bool get_size = false;
+#ifdef USE_STRUCT_MNTENT
     struct mntent * entry;
-    
-    if (!(table = setmntent("/etc/mtab", "r"))) return -1;
-    
+#elif defined(USE_STRUCT_MNTTAB)
+	struct mnttab *entry, ebuf;
+#endif
+	
+#ifdef HAVE_SETMNTENT
+    if (!(table = setmntent(MNTTAB, "r"))) return -1;
+#else
+	if (!(table = fopen(MNTTAB, "r"))) return -1;
+	resetmnttab(table);
+#endif
+	
+#ifdef USE_STRUCT_MNTENT
     while ((entry = getmntent(table)) != 0)
+#elif defined(USE_STRUCT_MNTTAB)
+	entry = &ebuf;
+	while (!getmntent(table, entry))
+# define mnt_fsname mnt_special
+# define mnt_dir mnt_mountp 
+#endif
     {
         if (strcmp(entry->mnt_fsname, _dev) == 0)
         {
@@ -169,11 +205,18 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
         }
     }
     
+#ifdef HAVE_SETMNTENT
     endmntent(table);
-    
+#else
+	fclose(table);
+#endif
     if (get_size)
     {
+#ifdef HAVE_STATVFS
+		if (statvfs(_disk->name, &space) == 0)
+#else
         if (statfs(_disk->name, &space) == 0)
+#endif
         {
             _disk->t = (space.f_blocks * (unsigned long long) space.f_bsize + 1024 / 2) / 1024;
             _disk->u = ((space.f_blocks - space.f_bfree) * (unsigned long long) space.f_bsize + 1024 / 2) / 1024;
