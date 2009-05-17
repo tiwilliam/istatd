@@ -112,8 +112,6 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
         load_n = ((float) diff_n / load_t) * 100;
         
         temp << "<c id=\"" << uptime << "\" u=\"" << load_u << "\" s=\"" << load_s << "\" n=\"" << load_n << "\"></c>";
-        
-        cout << temp.str() << endl;
     }
     
     temp << "</CPU>";
