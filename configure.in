@@ -60,7 +60,7 @@ AC_HEADER_STDBOOL
 # Checks for library functions.
 AC_FUNC_FORK
 AC_FUNC_GETMNTENT
-AC_CHECK_FUNCS([gethostbyname getmntent inet_ntoa memset mkdir select socket strerror statvfs])
+AC_CHECK_FUNCS([gethostbyname getmntent inet_ntoa memset mkdir select socket strerror statvfs setmntent])
 
 # Try to figure out which type of mntent structure we're dealing with
 AC_CHECK_MEMBER([struct mnttab.mnt_special],[AC_DEFINE_UNQUOTED([USE_STRUCT_MNTTAB],[1],[define to use 'struct mnttab'])],,[
