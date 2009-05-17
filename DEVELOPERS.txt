@@ -1,0 +1,9 @@
+
+  DEVELOPER INFO FOR ISTAT
+ -------------------------------------------------------------------------
+  How to get going: (WIP)
+
+  autoheader
+  autoconf
+  ./configure
+  make

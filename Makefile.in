@@ -1,6 +1,7 @@
-CXX				= @CXX@
-CFLAGS			= -c -Wall
-OFLAGS			= -Wall -rdynamic -ldl -lxml2
+CXX			= @CXX@
+CFLAGS			= -c @CPPFLAGS@
+OFLAGS			= @CPPFLAGS@ @LDFLAGS@
+LIBS			= @LIBS@
 CSOURCES		= $(wildcard *.c)
 CXXSOURCES		= $(wildcard *.cpp)
 ALLSOURCES		= $(CSOURCES) $(CXXSOURCES)
@@ -48,7 +49,7 @@ LIBDIR			= @libdir@
 all: $(ALLSOURCES) istatd info
 	
 istatd: $(OBJECTS)
-	$(CXX) $(OFLAGS) $(OBJECTS) -o $@
+	$(CXX) $(OFLAGS) $(OBJECTS) -o $@ $(LIBS)
 
 .c.o:
 	$(CXX) $(CFLAGS) $< -o $@
