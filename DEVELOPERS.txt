@@ -1,9 +1,84 @@
 
   DEVELOPER INFO FOR ISTAT
  -------------------------------------------------------------------------
-  How to get going: (WIP)
+ 
+ 1. Prerequisites
+ 
+ You will need GNU autoconf installed. Most Linux distributions include
+ this in a package named "autoconf" or "autoconf-26" or similar. You will
+ need at least version 2.61 of autoconf.
+ 
+ You will also need libxml2. If your operating system has separate 'user'
+ and 'developer' packages, you will need to install the 'developer' package.
+ For example, on Ubuntu, you need to install 'libxml2-dev'. This package
+ contains the header files and libraries used at compile-time.
+ 
+ At present, iStat Server only builds and runs on Linux. Ports to other
+ operating systems are planned!
+ 
+ 2. Preparing the source tree (Subversion check-outs only)
+ 
+ If you've checked out the sources from the Subversion repository or have
+ downloaded a snapshot, your source directory won't contain a 'configure'
+ script and you will need to run autoconf to generate one.
+ 
+ You might find that even though you have autoconf installed, the actual
+ autoconf program is installed as 'autoconf26' or 'autoconf-2.6' or similar.
+ If so, the same will apply to 'autoheader', too. Substitute the appropriate
+ names when running the below commands:
+ 
+ Check out the source tree if you haven't already:
+ 
+ $ svn co http://istat.googlecode.com/svn/trunk/ istat
+ 
+ Change to the source directory, if you're not in it already:
+ 
+ $ cd istat
+ 
+ Generate config.h.in and configure from the configure.in template:
+ 
+ $ autoheader
+ $ autoconf
 
-  autoheader
-  autoconf
-  ./configure
-  make
+ If you (or somebody else) makes changes to configure.in, you will need
+ to re-run the above two commands.
+
+ 3. Run the configure script
+ 
+ For a default configuration, simply run the configure script in the
+ source directory. This will perform tests on your build environment and
+ generate a Makefile:
+ 
+ $ ./configure
+ 
+ By default, the configure script will generate a Makefile which installs
+ files to /usr/local. You can change this with the --prefix option:
+ 
+ $ ./configure --prefix=/opt/istat
+ 
+ If you wish to have the configuration file, istat.conf, stored in /etc,
+ then you can specify this location in the configure command:
+ 
+ $ ./configure --sysconfdir=/etc
+ 
+ The defaults should be fine for most users, and shouldn't conflict with
+ packages supplied by your operating system vendor.
+ 
+ 4. Build it!
+ 
+ $ make
+
+ If successful, you should be left with an 'istatd' binary.
+ 
+ 5. Install it
+ 
+ Generally, you will need to be an administrator user in order to install it.
+ This varies between distributions, but typically you can install with:
+ 
+ $ sudo make install
+ 
+ If you want to prefix installation paths in order to install a staging 
+ directory (for example, for packaging), set the DESTDIR variable:
+ 
+ $ sudo make install DESTDIR=/tmp/istat-packaging
+ 
