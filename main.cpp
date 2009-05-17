@@ -60,8 +60,6 @@ int main(int argc, char ** argv)
     Switchboard switchboard;
     ArgumentSet arguments(argc, argv);
 
-    umask(077);
-	
     if (arguments.isset("version") || arguments.isset("v"))
     {
         cout << PACKAGE_NAME << " version " << PACKAGE_VERSION << endl;
