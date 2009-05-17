@@ -53,18 +53,18 @@ void SocketSet::operator += (Socket & _socket)
     
     FD_SET(_socket.get_id(), &socketset);
     
-    cout << "(" << _socket.get_address() << ":" << _socket.get_port() << ") Socket added to socket set." << endl;
+    // cout << "(" << _socket.get_address() << ":" << _socket.get_port() << ") Socket added to socket set." << endl;
 }
 
 void SocketSet::operator -= (Socket & _socket)
 {
-    cout << "(" << _socket.get_address() << ":" << _socket.get_port() << ") Disconnected." << endl;
+    // cout << "(" << _socket.get_address() << ":" << _socket.get_port() << ") Disconnected." << endl;
     
     for (std::vector<Socket>::iterator eraser = connections.begin(); eraser != connections.end(); ++eraser)
     {
         if ((*eraser).get_id() == _socket.get_id())
         {
-            cout << "(" << _socket.get_address() << ":" << _socket.get_port() << ") Socket deleted from socket set." << endl;
+            // cout << "(" << _socket.get_address() << ":" << _socket.get_port() << ") Socket deleted from socket set." << endl;
             
             connections.erase(eraser);
             

@@ -62,7 +62,7 @@ void Daemon::create(bool _back, const string & user)
     {
         if ((pid = fork()) > 0)
         {
-            cout << "Entering standalone mode with pid " << pid << endl;
+            // cout << "Entering standalone mode with pid " << pid << endl;
             exit(0);
         }
         
@@ -126,7 +126,7 @@ void Daemon::destroy()
 
 void SignalResponder::destroy()
 {
-    cout << endl << "Shutting down and saving clients." << endl;
+    // cout << endl << "Shutting down and saving clients." << endl;
     
     this->sockets->close();
     this->listener->close();

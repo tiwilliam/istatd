@@ -54,6 +54,7 @@ class ClientSet
         int is_authenticated(const std::string & _duuid);
         void update_sessions(const std::string & _duuid, int _socket, SocketSet * _sockets);
         int length();
+        void clear_cache();
         void save_cache();
         void read_cache(const std::string & cachedir);
         

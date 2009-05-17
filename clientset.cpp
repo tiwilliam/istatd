@@ -56,7 +56,7 @@ void ClientSet::operator += (Client & _client)
     
     clients.push_back(_client);
     
-    cout << "(" << _client.name << ":" << _client.duuid << ") Client added to client set." << endl;
+    // cout << "(" << _client.name << ":" << _client.duuid << ") Client added to client set." << endl;
 }
 
 Client ClientSet::get_client(int _socket)
@@ -115,36 +115,56 @@ int ClientSet::length()
     return clients.size();
 }
 
-void ClientSet::save_cache()
+void ClientSet::clear_cache()
 {
-    stringstream path;
-    string cache_file = "clients.dat";
-    
-    if (!check_dir_exist(this->cache_dir))
+    if (this->cache_dir.length())
     {
-        if (mkdir(this->cache_dir.c_str(), 0755) != 0)
+        stringstream path;
+        string cache_file = "clients.dat";
+        path << this->cache_dir << "/" << cache_file;
+
+        if (check_dir_exist(this->cache_dir))
         {
-            cout << "Could not create cache directory '" << this->cache_dir << "': " << strerror(errno) << endl;
-            return;
+            ofstream out(path.str().c_str());
+            
+            if (out)
+            {
+                out << "";
+                cout << "Successfully cleared all sessions." << endl;
+            }
+            else
+            {
+                cout << "Could not clear sessions in '" << path.str() << "': " << strerror(errno) << endl;
+            }
+            
+            out.close();
         }
     }
-    
-    path << this->cache_dir << "/" << cache_file;
-    
-    ofstream out(path.str().c_str());
-    
-    if (!out)
+}
+
+void ClientSet::save_cache()
+{
+    if (this->cache_dir.length())
     {
-        cout << "Could not create cache file '" << path.str() << "': " << strerror(errno) << endl;
-        return;
+        stringstream path;
+        string cache_file = "clients.dat";
+        path << this->cache_dir << "/" << cache_file;
+        
+        ofstream out(path.str().c_str());
+        
+        if (!out)
+        {
+            cout << "Could not create file '" << path.str() << "': " << strerror(errno) << endl;
+            return;
+        }
+        
+        for (std::vector<Client>::iterator client = clients.begin(); client != clients.end(); ++client)
+        {
+            out << client->name << ":" << client->duuid << ":" << client->ready << endl;
+        }
+        
+        out.close();
     }
-    
-    for (std::vector<Client>::iterator client = clients.begin(); client != clients.end(); ++client)
-    {
-        out << client->name << ":" << client->duuid << ":" << client->ready << endl;
-    }
-    
-    out.close();
 }
 
 void ClientSet::read_cache(const std::string & _cache_dir)
@@ -156,8 +176,10 @@ void ClientSet::read_cache(const std::string & _cache_dir)
     string cache_file = "clients.dat";
     
     this->cache_dir = _cache_dir;
-    
     path << this->cache_dir << "/" << cache_file;
+    
+    if (check_file_exist(path.str()) == 0)
+        create_file(this->cache_dir, cache_file);
     
     ifstream cache(path.str().c_str());
     
@@ -173,8 +195,6 @@ void ClientSet::read_cache(const std::string & _cache_dir)
                 client.name = array.at(0);
                 client.duuid = array.at(1);
                 client.ready = to_int(array.at(2));
-            
-                cout << "Loading clients from file cache." << endl;
             
                 if (clients.size())
                 {

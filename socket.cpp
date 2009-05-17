@@ -72,7 +72,7 @@ int Socket::listen()
         return false;
     }
     
-    cout << "(" << address << ":" << port << ") Socket binded." << endl;
+    // cout << "(" << address << ":" << port << ") Socket binded." << endl;
     
     if (::listen(socket, 5) == -1)
     {
@@ -80,7 +80,7 @@ int Socket::listen()
         return false;
     }
     
-    cout << "(" << address << ":" << port << ") Socket initialized." << endl;
+    // cout << "(" << address << ":" << port << ") Socket initialized." << endl;
     return true;
 }
 
@@ -107,7 +107,7 @@ Socket Socket::accept()
         cout << "Could not accept connection: " << strerror(errno) << endl;
     }
     
-    cout << "(" << inet_ntoa(theirAddress.sin_addr) << ":" << ntohs(theirAddress.sin_port) << ") New connection accepted." << endl;
+    // cout << "(" << inet_ntoa(theirAddress.sin_addr) << ":" << ntohs(theirAddress.sin_port) << ") New connection accepted." << endl;
     
     return Socket(theirSocket, inet_ntoa(theirAddress.sin_addr), ntohs(theirAddress.sin_port));
 }
@@ -123,7 +123,7 @@ int Socket::send(const string & _data)
         return 0;
     }
     
-    cout << "(" << address << ":" << port << ") Data sent: " << _data << endl;
+    // cout << "(" << address << ":" << port << ") Data sent: " << _data << endl;
     
     return result;
 }
@@ -144,8 +144,10 @@ int Socket::receive(string & _data, int _max)
     
     _data = buffer;
     
+    /*
     if (_data.length() > 0)
         cout << "(" << address << ":" << port << ") Data recv: " << _data << endl;
+    */
     
     return result;
 }

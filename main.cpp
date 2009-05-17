@@ -58,10 +58,13 @@ int main(int argc, char ** argv)
     SocketSet sockets;
     Switchboard switchboard;
     ArgumentSet arguments(argc, argv);
-
-    cout << PACKAGE_NAME << " version " << PACKAGE_VERSION << endl;
     
-    if (arguments.isset("version") || arguments.isset("v")) return 0;
+    if (arguments.isset("version") || arguments.isset("v"))
+    {
+        cout << PACKAGE_NAME << " version " << PACKAGE_VERSION << endl;
+        return 0;
+    }
+    
     if (arguments.isset("help") || arguments.isset("h"))
     {
         cout << "usage: istat [-a HOST] [-p PORT]" << endl;
@@ -105,6 +108,13 @@ int main(int argc, char ** argv)
 
     // Get old sessions from disk cache
     clients.read_cache(prop_cache);
+    
+    // Clear cache of saved sessions
+    if (arguments.isset("clear-sessions"))
+    {
+        clients.clear_cache();
+        return 0;
+    }
 
     // Create socket, pid file and put in background if desired
     unixdaemon.create(prop_back, prop_user);
