@@ -73,6 +73,7 @@ struct sys_info
     struct load_avg avg;
 };
 
+int sys_init(void);
 int get_uptime();
 int get_unixtime();
 int get_cpu_load(struct cpu_load * _cpu);

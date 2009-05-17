@@ -34,6 +34,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_ERRNO_H
+# include <errno.h>
+#endif
 #ifdef HAVE_SYS_MNTTAB_H
 # include <sys/mnttab.h>
 #elif defined(HAVE_MNTENT_H)
@@ -48,6 +51,9 @@
 #ifdef HAVE_SYS_LOADAVG_H
 # include <sys/loadavg.h>
 #endif
+#ifdef HAVE_KSTAT_H
+# include <kstat.h>
+#endif
 
 #include "system.h"
 
@@ -55,8 +61,53 @@
 # define MNTTAB                        "/etc/mtab"
 #endif
 
+#ifdef HAVE_LIBKSTAT
+kstat_ctl_t *ksh;
+#endif
+
+int sys_init(void)
+{
+#ifdef HAVE_LIBKSTAT
+	if(NULL == (ksh = kstat_open()))
+		{
+			fprintf(stderr, "kstat_open(): %s\n", strerror(errno));
+			return -1;
+		}
+#endif
+	return 0;
+}
+
 int get_uptime()
 {
+#ifdef HAVE_LIBKSTAT
+	kstat_t *ksp;
+	kstat_named_t *kn;
+	static time_t boottime;
+	
+	if(0 == boottime)
+	{
+		if(NULL == (ksp = kstat_lookup(ksh, "unix", -1, "system_misc"))) return -1;
+		if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
+		if(NULL == (kn = (kstat_named_t *) kstat_data_lookup(ksp, "boot_time"))) return -1;
+		switch(kn->data_type)
+		{
+#ifdef KSTAT_DATA_INT32
+		case KSTAT_DATA_INT32:         boottime = kn->value.i32; break;
+		case KSTAT_DATA_UINT32:        boottime = kn->value.ui32; break;
+		case KSTAT_DATA_INT64:         boottime = kn->value.i64; break;
+		case KSTAT_DATA_UINT64:        boottime = kn->value.ui64; break;
+#else
+		case KSTAT_DATA_LONG:          boottime = kn->value.l; break;
+		case KSTAT_DATA_ULONG:         boottime = kn->value.ul; break;
+		case KSTAT_DATA_LONGLONG:      boottime = kn->value.ll; break;
+		case KSTAT_DATA_ULONGLONG:     boottime = kn->value.ull; break;
+#endif
+		default:
+			return -1;
+		}
+	}
+	return time(NULL) - boottime;
+#else
     int uptime;
     static FILE * fp = NULL;
 
@@ -67,6 +118,7 @@ int get_uptime()
     fclose(fp);
 
     return uptime;
+#endif
 }
 
 int get_unixtime()

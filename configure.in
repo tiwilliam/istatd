@@ -50,9 +50,9 @@ AC_CHECK_FUNC([xmlFileOpen],[
 ],[
 	AC_MSG_ERROR([xml2-config was located, but a test program linking against -lxml2 could not be built])
 ])
-
+AC_CHECK_LIB([kstat],[kstat_open])
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

@@ -100,7 +100,11 @@ int main(int argc, char ** argv)
     string prop_code      = arguments.get("code", config.get("server_code", "00000"));
     string prop_sock      = arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
     string prop_cache     = config.get("cache_dir", "/var/cache/istat");
-    
+   
+	if(-1 == sys_init())
+	{
+		return 1;
+	}
     Daemon unixdaemon(prop_pid, prop_sock);
     Socket listener(prop_host, to_int(prop_port));
     SignalResponder signalresponder(&sockets, &listener, &unixdaemon, &clients);
