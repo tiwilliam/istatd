@@ -13,3 +13,5 @@
   
     log.info() << "Log this: " << var;
     log.warn() << "Ou panic!";
+
+  * Support for fans and temperature messure (lm-sensor?)
