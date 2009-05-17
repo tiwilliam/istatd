@@ -324,7 +324,7 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
 # define mnt_dir mnt_mountp 
 #endif
     {
-        if (strcmp(entry->mnt_fsname, _dev) == 0)
+        if (strcmp(entry->mnt_fsname, _dev) == 0 || strcmp(entry->mnt_dir, _dev) == 0)
         {
             get_size = true;
             
@@ -354,7 +354,7 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
 			bsize = space.f_bsize;
 #endif
             _disk->t = (space.f_blocks * bsize + 1024 / 2) / 1024;
-            _disk->u = ((space.f_blocks - space.f_bfree) * bsize + 1024 / 2) / 1024;
+            _disk->u = ((space.f_blocks - space.f_bavail) * bsize + 1024 / 2) / 1024;
             _disk->f = _disk->t - _disk->u;
             _disk->p = ((float) _disk->u / _disk->t) * 100;
         }
