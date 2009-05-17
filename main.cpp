@@ -86,7 +86,7 @@ int main(int argc, char ** argv)
     }
     
     // Load and parse configuration
-    Config config(arguments.get("c", "/etc/istat.conf"));
+    Config config(arguments.get("c", CONFIG_FILE_PATH));
     
     config.parse();
     config.validate();

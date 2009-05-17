@@ -62,5 +62,11 @@ AC_FUNC_FORK
 AC_FUNC_GETMNTENT
 AC_CHECK_FUNCS([gethostbyname getmntent inet_ntoa memset mkdir select socket strerror])
 
+AC_MSG_CHECKING([for default location of configuration file])
+test x"$prefix" = x"NONE" && prefix="$ac_default_prefix"
+configpath=`eval echo "$sysconfdir"/istat.conf`
+AC_MSG_RESULT([$configpath])
+AC_DEFINE_UNQUOTED([CONFIG_FILE_PATH],["${configpath}"],[default location of the configuration file])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

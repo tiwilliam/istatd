@@ -1,5 +1,5 @@
 CXX			= @CXX@
-CFLAGS			= -c @CPPFLAGS@
+CFLAGS			= -c @DEFS@ @CPPFLAGS@
 OFLAGS			= @CPPFLAGS@ @LDFLAGS@
 LIBS			= @LIBS@
 CSOURCES		= $(wildcard *.c)
@@ -12,41 +12,30 @@ MODE_DIRS		= 755
 MODE_FILE		= 644
 MODE_CONF		= 600
 
-RM				= /bin/rm -rf
+RM			= /bin/rm -rf
 RMDIR			= /bin/rmdir
 
-DESTDIR			=
-
 INSTALL			= @INSTALL@
-INSTALL_FILE	= $(INSTALL) -m $(MODE_FILE)
-INSTALL_CONF	= $(INSTALL) -m $(MODE_CONF)
-INSTALL_PROG	= $(INSTALL) -m $(MODE_PROG) -s
-INSTALL_DIRS	= $(INSTALL) -m $(MODE_DIRS) -d
+INSTALL_FILE		= $(INSTALL) -m $(MODE_FILE)
+INSTALL_CONF		= $(INSTALL) -m $(MODE_CONF)
+INSTALL_PROG		= $(INSTALL) -m $(MODE_PROG) -s
+INSTALL_DIRS		= $(INSTALL) -m $(MODE_DIRS) -d
 
-share			= /usr/share
 prefix			= @prefix@
-exec_prefix		= @prefix@
-datarootdir		= @prefix@$(share)
-
-ifeq ($(prefix), /)
-	override prefix		  = ""
-	override exec_prefix  = ""
-	override datarootdir  = $(share)
-endif
-
-ifeq ($(prefix), /usr)
-	override datarootdir  = $(share)
-endif
+exec_prefix		= @exec_prefix@
+share			= @datarootdir@
+datarootdir		= @datarootdir@
+localstatedir		= @localstatedir@
 
 ETCDIR			= @sysconfdir@
 BINDIR			= @bindir@
-MANDIR			= @datadir@/man
+MANDIR			= @mandir@
 INCDIR			= @includedir@
 LIBDIR			= @libdir@
 
-all: $(ALLSOURCES) istatd info
+all: $(ALLSOURCES) istatd$(EXEEXT) info
 	
-istatd: $(OBJECTS)
+istatd$(EXEEXT): $(OBJECTS)
 	$(CXX) $(OFLAGS) $(OBJECTS) -o $@ $(LIBS)
 
 .c.o:
@@ -59,11 +48,11 @@ info:
 	@echo ""
 	@echo "---------------------------------------------------------------------------"
 	@echo ""
-	@echo "      Binary path:         $(DESTDIR)$(BINDIR)"
-	@echo "     Library path:         $(DESTDIR)$(LIBDIR)"
-	@echo "     Include path:         $(DESTDIR)$(INCDIR)"
-	@echo "      Config path:         $(DESTDIR)$(ETCDIR)"
-	@echo "         Man path:         $(DESTDIR)$(MANDIR)"
+	@echo "      Binary path:         $(BINDIR)"
+	@echo "     Library path:         $(LIBDIR)"
+	@echo "     Include path:         $(INCDIR)"
+	@echo "      Config path:         $(ETCDIR)"
+	@echo "         Man path:         $(MANDIR)"
 	@echo ""
 	@echo "           Binary:         istatd"
 	@echo "           Config:         istat.conf"
@@ -88,7 +77,7 @@ uninstall:
 	$(RM) $(DESTDIR)$(MANDIR)/man5/istat.conf.5
 
 clean:
-	$(RM) *.o
+	$(RM) $(OBJECTS)
 	$(RM) istatd
 	
 distclean: clean
