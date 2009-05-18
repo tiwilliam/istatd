@@ -65,3 +65,4 @@ fi
 progress "Generating configure script"
 ${AUTOCONF26} || exit
 
+rm -rf autom4te.cache
