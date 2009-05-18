@@ -204,15 +204,6 @@ int create_file(const string & dir, const string & file, mode_t mask)
     stringstream temp;
     temp << dir << "/" << file;
     
-    if (!check_dir_exist(dir))
-    {
-        if (mkdir(dir.c_str(), 0755) != 0)
-        {
-            cout << "Could not create directory '" << dir << "': " << strerror(errno) << endl;
-            return -1;
-        }
-    }
-    
     umask(mask);
 
     ofstream out(temp.str().c_str());
