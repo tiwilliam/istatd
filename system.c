@@ -378,7 +378,7 @@ int get_load_avg(struct load_avg * _load)
 int get_disk_info(const char * _dev, struct disk_info * _disk)
 {
     FILE * table;
-    unsigned long bsize;
+    unsigned long long bsize;
 #ifdef HAVE_STATVFS
     struct statvfs space;
 #else
@@ -436,8 +436,8 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
 #else
             bsize = space.f_bsize;
 #endif
-            _disk->t = (space.f_blocks * bsize + 1024 / 2) / 1024;
-            _disk->u = ((space.f_blocks - space.f_bavail) * bsize + 1024 / 2) / 1024;
+            _disk->t = ((unsigned long long) space.f_blocks * bsize) / 1024;
+            _disk->u = ((unsigned long long) (space.f_blocks - space.f_bavail) * bsize) / 1024;
             _disk->f = _disk->t - _disk->u;
             _disk->p = ((float) _disk->u / _disk->t) * 100;
         }
