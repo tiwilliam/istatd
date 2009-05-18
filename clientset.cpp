@@ -209,7 +209,9 @@ void ClientSet::read_cache(const std::string & _cache_dir)
     }
     else
     {
-        cout << "Could not read cache file '" << path.str() << "': " << strerror(errno) << endl;
+        // Ignore no such file errors, we will create the file upon save
+        if (errno != ENOENT)
+            cout << "Could not read cache file '" << path.str() << "': " << strerror(errno) << endl;
     }
 
     cache.close();
