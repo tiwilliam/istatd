@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008, 2009 William Tisäter. All rights reserved.
+ *  Copyright 2009 William Tisäter. All rights reserved.
  *  Copyright 2009 Mo McRoberts.
  * 
  *  Redistribution and use in source and binary forms, with or without

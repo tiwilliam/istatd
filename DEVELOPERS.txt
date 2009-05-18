@@ -1,96 +1,95 @@
 
   DEVELOPER INFO FOR ISTAT
  -------------------------------------------------------------------------
+  1. Prerequisites
+  
+  You will need GNU autoconf installed. Most Linux distributions include
+  this in a package named "autoconf" or "autoconf-26" or similar. You will
+  need at least version 2.61 of autoconf.
+  
+  You will also need libxml2. If your operating system has separate 'user'
+  and 'developer' packages, you will need to install the 'developer' package.
+  For example, on Ubuntu, you need to install 'libxml2-dev'. This package
+  contains the header files and libraries used at compile-time.
+  
+  At present, iStat Server only builds and runs on Linux. Ports to other
+  operating systems are planned!
+  
+  2. Preparing the source tree (Subversion check-outs only)
+  
+  If you've checked out the sources from the Subversion repository or have
+  downloaded a snapshot, your source directory won't contain a 'configure'
+  script and you will need to run 'autogen' to generate one. The autogen
+  script invokes autoconf and automake, so you'll need those installed
+  (autoconf should be verson 2.61 or above, and automake should be at
+  least version 1.10).
  
- 1. Prerequisites
+  You might find that even though you have autoconf and automake installed,
+  the programs that are installed aren't actually called 'autoconf' or
+  'automake' (or the ones with those names are old versions). If this is
+  the case, you should set the ACLOCAL110, AUTOHEADER26, AUTOCONF26 and
+  AUTOMAKE110 environment variables to the names of the relevant programs
+  on your system before running autogen.
+  
+  Check out the source tree if you haven't already:
+  
+  $ svn co http://istat.googlecode.com/svn/trunk/ istat
+  
+  Change to the source directory, if you're not in it already:
+  
+  $ cd istat
+  
+  Generate config.h.in and configure from the configure.in template:
+  
+  $ sh autogen
  
- You will need GNU autoconf installed. Most Linux distributions include
- this in a package named "autoconf" or "autoconf-26" or similar. You will
- need at least version 2.61 of autoconf.
+  If you (or somebody else) makes changes to configure.in or any of the
+  Makefile.am files, you will need to re-run the above command (making
+  sure the above environment variables are still set if you needed them).
  
- You will also need libxml2. If your operating system has separate 'user'
- and 'developer' packages, you will need to install the 'developer' package.
- For example, on Ubuntu, you need to install 'libxml2-dev'. This package
- contains the header files and libraries used at compile-time.
+  3. Run the configure script
+  
+  For a default configuration, simply run the configure script in the
+  source directory. This will perform tests on your build environment and
+  generate a Makefile:
+  
+  $ ./configure
+  
+  By default, the configure script will generate a Makefile which installs
+  files to /usr/local. You can change this with the --prefix option:
+  
+  $ ./configure --prefix=/opt/istat
+  
+  If you wish to have the configuration file, istat.conf, stored in /etc,
+  then you can specify this location in the configure command:
+  
+  $ ./configure --sysconfdir=/etc
+  
+  The defaults should be fine for most users, and shouldn't conflict with
+  packages supplied by your operating system vendor.
+  
+  4. Build it!
+  
+  $ make
  
- At present, iStat Server only builds and runs on Linux. Ports to other
- operating systems are planned!
- 
- 2. Preparing the source tree (Subversion check-outs only)
- 
- If you've checked out the sources from the Subversion repository or have
- downloaded a snapshot, your source directory won't contain a 'configure'
- script and you will need to run 'autogen' to generate one. The autogen
- script invokes autoconf and automake, so you'll need those installed
- (autoconf should be verson 2.61 or above, and automake should be at
- least version 1.10).
-
- You might find that even though you have autoconf and automake installed,
- the programs that are installed aren't actually called 'autoconf' or
- 'automake' (or the ones with those names are old versions). If this is
- the case, you should set the ACLOCAL110, AUTOHEADER26, AUTOCONF26 and
- AUTOMAKE110 environment variables to the names of the relevant programs
- on your system before running autogen.
- 
- Check out the source tree if you haven't already:
- 
- $ svn co http://istat.googlecode.com/svn/trunk/ istat
- 
- Change to the source directory, if you're not in it already:
- 
- $ cd istat
- 
- Generate config.h.in and configure from the configure.in template:
- 
- $ sh autogen
-
- If you (or somebody else) makes changes to configure.in or any of the
- Makefile.am files, you will need to re-run the above command (making
- sure the above environment variables are still set if you needed them).
-
- 3. Run the configure script
- 
- For a default configuration, simply run the configure script in the
- source directory. This will perform tests on your build environment and
- generate a Makefile:
- 
- $ ./configure
- 
- By default, the configure script will generate a Makefile which installs
- files to /usr/local. You can change this with the --prefix option:
- 
- $ ./configure --prefix=/opt/istat
- 
- If you wish to have the configuration file, istat.conf, stored in /etc,
- then you can specify this location in the configure command:
- 
- $ ./configure --sysconfdir=/etc
- 
- The defaults should be fine for most users, and shouldn't conflict with
- packages supplied by your operating system vendor.
- 
- 4. Build it!
- 
- $ make
-
- If successful, you should be left with an 'istatd' binary.
- 
- 5. Install it
- 
- Generally, you will need to be an administrator user in order to install it.
- This varies between distributions, but typically you can install with:
- 
- $ sudo make install
- 
- If you want to prefix installation paths in order to install a staging 
- directory (for example, for packaging), set the DESTDIR variable:
- 
- $ sudo make install DESTDIR=/tmp/istat-packaging
- 
- 6. Create a tarball
- 
- To create a tarball, simply run 'make dist' after you've successfully
- configured your tree. This will create a .tar.gz file containing the
- sources ready for distribution. Note that the version number used in
- the filename will probably be the one after the last released version,
- as it gets set in preparation for the next future.
+  If successful, you should be left with an 'istatd' binary.
+  
+  5. Install it
+  
+  Generally, you will need to be an administrator user in order to install it.
+  This varies between distributions, but typically you can install with:
+  
+  $ sudo make install
+  
+  If you want to prefix installation paths in order to install a staging 
+  directory (for example, for packaging), set the DESTDIR variable:
+  
+  $ sudo make install DESTDIR=/tmp/istat-packaging
+  
+  6. Create a tarball
+  
+  To create a tarball, simply run 'make dist' after you've successfully
+  configured your tree. This will create a .tar.gz file containing the
+  sources ready for distribution. Note that the version number used in
+  the filename will probably be the one after the last released version,
+  as it gets set in preparation for the next future.
