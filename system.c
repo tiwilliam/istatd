@@ -182,7 +182,7 @@ int get_cpu_load(struct cpu_load * _cpu)
     if (!(fp = fopen("/proc/stat", "r"))) return -1;
     if (!fgets(buf, sizeof(buf), fp)) return -1;
     
-    sscanf(buf, "cpu %lu %lu %lu %lu", &_cpu->u, &_cpu->n, &_cpu->s, &_cpu->i);
+    sscanf(buf, "cpu %llu %llu %llu %llu", &_cpu->u, &_cpu->n, &_cpu->s, &_cpu->i);
     fclose(fp);
 #endif    
     return 0;
@@ -247,11 +247,11 @@ int get_mem_info(struct mem_info * _mem)
 
     while (fgets(buf, sizeof(buf), fp))
     {
-        sscanf(buf, "MemFree: %lu kB", &_mem->f);
-        sscanf(buf, "Active: %lu kB", &_mem->a);
-        sscanf(buf, "Inactive: %lu kB", &_mem->i);
-        sscanf(buf, "Cached: %lu kB", &_mem->c);
-        sscanf(buf, "SwapTotal: %lu kB", &_mem->swt);
+        sscanf(buf, "MemFree: %llu kB", &_mem->f);
+        sscanf(buf, "Active: %llu kB", &_mem->a);
+        sscanf(buf, "Inactive: %llu kB", &_mem->i);
+        sscanf(buf, "Cached: %llu kB", &_mem->c);
+        sscanf(buf, "SwapTotal: %llu kB", &_mem->swt);
     }
     
     fclose(fp);
@@ -260,8 +260,8 @@ int get_mem_info(struct mem_info * _mem)
     
     while (fgets(buf, sizeof(buf), fp))
     {
-        sscanf(buf, "pswpin %lu", &_mem->swi);
-        sscanf(buf, "pswpout %lu", &_mem->swo);
+        sscanf(buf, "pswpin %llu", &_mem->swi);
+        sscanf(buf, "pswpout %llu", &_mem->swo);
     }
     
     fclose(fp);
@@ -330,7 +330,7 @@ int get_net_info(const char * _dev, struct net_data * _data)
     
     while (!feof(fp))
     {
-        fscanf(fp, "%7[^:]:%lu %*u %*u %*u %*u %*u %*u %*u %lu %*[^\n] ", dev, &_data->r, &_data->s);
+        fscanf(fp, "%7[^:]:%llu %*u %*u %*u %*u %*u %*u %*u %llu %*[^\n] ", dev, &_data->r, &_data->s);
         
         if (strncmp(dev, _dev, 7) == 0)
         {

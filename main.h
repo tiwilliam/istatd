@@ -33,8 +33,6 @@
 
 #include <iostream>
 
-#define STANDALONE 1
-
 void handler(int _signal);
 
 #endif
