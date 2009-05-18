@@ -135,7 +135,10 @@ int get_uptime()
 
     if (!(fp = fopen("/proc/uptime", "r"))) return -1;
 
-    fscanf(fp, "%d", &uptime);
+    if(1 != fscanf(fp, "%d", &uptime))
+	{
+		return -1;
+	}
 
     fclose(fp);
 
@@ -327,7 +330,7 @@ int get_net_info(const char * _dev, struct net_data * _data)
 #else   
     char dev[8];
     static FILE * fp = NULL;
-    bool found_device = false;
+    int found_device = 0;
     
     if (!(fp = fopen("/proc/net/dev", "r"))) return -1;
     
@@ -339,7 +342,7 @@ int get_net_info(const char * _dev, struct net_data * _data)
         
         if (strncmp(dev, _dev, 7) == 0)
         {
-            found_device = true;
+            found_device = 1;
             break;
         }
     }
@@ -381,7 +384,7 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
 #else
     struct statfs space;
 #endif
-    bool get_size = false;
+    int get_size = 0;
 #ifdef USE_STRUCT_MNTENT
     struct mntent * entry;
 #elif defined(USE_STRUCT_MNTTAB)
@@ -406,7 +409,7 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
     {
         if (strcmp(entry->mnt_fsname, _dev) == 0 || strcmp(entry->mnt_dir, _dev) == 0)
         {
-            get_size = true;
+            get_size = 1;
             
             _disk->name = entry->mnt_dir;
             _disk->device = _dev;

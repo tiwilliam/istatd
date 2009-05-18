@@ -52,7 +52,7 @@ struct load_avg
 struct disk_info
 {
     float p;
-    bool active;
+    int active;
     const char * name, * device;
     unsigned long long t, u, f;
 };
@@ -73,6 +73,10 @@ struct sys_info
     struct load_avg avg;
 };
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 int sys_init(void);
 int get_uptime();
 int get_unixtime();
@@ -82,4 +86,8 @@ int get_load_avg(struct load_avg * _load);
 int get_net_info(const char * _dev, struct net_data * _data);
 int get_disk_info(const char * _dev, struct disk_info * _disk);
 
+# ifdef __cplusplus
+};
+#endif
+	
 #endif
