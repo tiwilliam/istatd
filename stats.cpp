@@ -49,12 +49,12 @@ void Stats::update_system_stats()
     
     for (nit = nets.begin(); nit < nets.end(); nit++)
     {
-        if ((*nit).active == false) continue;
+        if ((*nit).active == 0) continue;
         
         if (get_net_info((*nit).device, &net_data) == -1)
         {
             cout << "Could not get network data for '" << (*nit).device << "'. Device not found." << endl;
-            (*nit).active = false;
+            (*nit).active = 0;
         }
         else
         {
@@ -70,12 +70,12 @@ void Stats::update_system_stats()
     
     for (dit = disks.begin(); dit < disks.end(); dit++)
     {
-        if ((*dit).active == false) continue;
+        if ((*dit).active == 0) continue;
         
         if (get_disk_info((*dit).device, &(*dit)) == -1)
         {
             cout << "Could not get disk data for '" << (*dit).device << "'. Device not found in /etc/mtab." << endl;
-            (*dit).active = false;
+            (*dit).active = 0;
         }
     }
     
