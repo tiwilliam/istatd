@@ -57,11 +57,6 @@ if egrep '^AC_CONFIG_HEADER' "$srcdir/configure.ac" >/dev/null ; then
 	progress "Generating config.h.in"
 	${AUTOHEADER26} || exit
 fi
-if egrep '^AC_PROG_LIBTOOL' "$srcdir/configure.ac" >/dev/null ; then
-	progress "Generating ltmain.sh"
-	${LIBTOOLIZE15} --force --copy --automake || exit
-fi
-
 if egrep "^AM_INIT_AUTOMAKE" "$srcdir/configure.ac" >/dev/null ; then
 	progress "Generating Makefile.in from Makefile.am"
 	${AUTOMAKE110} --add-missing --copy || exit
