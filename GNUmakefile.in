@@ -83,4 +83,4 @@ clean:
 	$(RM) istatd
 	
 distclean: clean
-	$(RM) config.h Makefile
+	$(RM) config.h GNUmakefile
