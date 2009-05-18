@@ -64,6 +64,9 @@
 #ifdef HAVE_KSTAT_H
 # include <kstat.h>
 #endif
+#ifdef HAVE_SYS_SWAP_H
+# include <sys/swap.h>
+#endif
 
 #include "system.h"
 
@@ -186,11 +189,19 @@ int get_cpu_load(struct cpu_load * _cpu)
 
 int get_mem_info(struct mem_info * _mem)
 {
+#if defined(HAVE_SYS_SWAP_H) && defined(HAVE_SWAPCTL)
+	struct swaptable *st;
+	struct swapent *ent;
+	char *pbuf, *obuf;
+	int bpp, num, c;
+#endif
 #ifdef HAVE_LIBKSTAT
 	kstat_t *ksp;
 	kstat_named_t *kn;
 	unsigned long long lv, ps;
-
+	int cc, ncpu;
+	cpu_stat_t cs;
+	
 	memset(_mem, 0, sizeof(struct mem_info));
 	if(NULL == (ksp = kstat_lookup(ksh, "unix", -1, "system_pages"))) return -1;
 	if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
@@ -211,6 +222,22 @@ int get_mem_info(struct mem_info * _mem)
 		_mem->f = (lv * ps) / 1024;
 	}
 	_mem->a = _mem->t - _mem->c - _mem->f;
+	ncpu = sysconf(_SC_NPROCESSORS_CONF);
+	for(cc = 0; cc < ncpu; cc++)
+	{
+		if(p_online(cc, P_STATUS) != P_ONLINE)
+		{
+			continue;
+		}
+		if(NULL != (ksp = kstat_lookup(ksh, "cpu_stat", cc, NULL)))
+		{
+			if(-1 != kstat_read(ksh, ksp, &cs))
+			{
+				_mem->swi += cs.cpu_vminfo.pgin;
+				_mem->swo += cs.cpu_vminfo.pgout;
+			}
+		}
+	}
 #else
 	char buf[320];
     static FILE * fp = NULL;
@@ -240,6 +267,32 @@ int get_mem_info(struct mem_info * _mem)
     
     _mem->t = _mem->f + _mem->a + _mem->i + _mem->c + 1;
 #endif
+# if defined(HAVE_SYS_SWAP_H) && defined(HAVE_SWAPCTL)
+	if (0 == _mem->swt && -1 != (num = swapctl(SC_GETNSWP, NULL)))
+	{
+		bpp = getpagesize() >> DEV_BSHIFT;
+		st = (struct swaptable *) malloc(num = sizeof(swapent_t) + sizeof(int));
+		pbuf = obuf = (char *) malloc(num * MAXPATHLEN);
+		ent = st->swt_ent;
+		/* Provide buffers for the swap device names */
+		for (c = 0; c < num; c++, ent++)
+		{
+			ent->ste_path = pbuf;
+			pbuf += MAXPATHLEN;
+		}
+		/* Retrieve the devices */
+		if(-1 != (num = swapctl(SC_LIST, st)))
+		{
+			ent = st->swt_ent;
+			for (c = 0; c < num; c++, ent++)
+			{
+				_mem->swt += ent->ste_pages * bpp * DEV_BSIZE / 1024;
+			}
+		}
+		free(obuf);
+		free(st);
+	}
+# endif
     return 0;
 }
 
