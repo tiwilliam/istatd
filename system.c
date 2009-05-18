@@ -245,6 +245,27 @@ int get_mem_info(struct mem_info * _mem)
 
 int get_net_info(const char * _dev, struct net_data * _data)
 {
+#ifdef HAVE_LIBKSTAT
+	kstat_t *ksp;
+	kstat_named_t *kn;
+	char name[32];
+
+	strncpy(name, _dev, sizeof(name) - 1);
+	name[sizeof(name) - 1] = 0;
+	if(NULL == (ksp = kstat_lookup(ksh, "link", -1, name))) return -1;
+	if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
+	kn = (kstat_named_t *) ksp->ks_data;
+	if(NULL == (kn = (kstat_named_t *) kstat_data_lookup(ksp, "obytes64")))
+	{
+		return -1;
+	}
+	_data->s = ksgetull(kn);
+	if(NULL == (kn = (kstat_named_t *) kstat_data_lookup(ksp, "rbytes64")))
+	{
+		return -1;
+	}
+	_data->r = ksgetull(kn);
+#else	
     char dev[8];
     static FILE * fp = NULL;
     bool found_device = false;
@@ -267,7 +288,7 @@ int get_net_info(const char * _dev, struct net_data * _data)
     fclose(fp);
     
     if (!found_device) return -1;
-
+#endif
     return 0;
 }
 
