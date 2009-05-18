@@ -3,6 +3,9 @@
 
 AC_PREREQ([2.61])
 AC_INIT([istat], [0.5.3], [http://code.google.com/p/istat/issues/entry])
+AM_INIT_AUTOMAKE([foreign])
+AM_MAINTAINER_MODE
+
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
@@ -81,5 +84,8 @@ configpath=`eval echo "$sysconfdir"/istat.conf`
 AC_MSG_RESULT([$configpath])
 AC_DEFINE_UNQUOTED([CONFIG_FILE_PATH],["${configpath}"],[default location of the configuration file])
 
-AC_CONFIG_FILES([GNUmakefile])
+AC_CONFIG_FILES([
+Makefile
+resource/Makefile
+])
 AC_OUTPUT

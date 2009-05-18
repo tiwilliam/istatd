@@ -151,13 +151,13 @@ void ClientSet::save_cache()
         path << this->cache_dir << "/" << cache_file;
         
         ofstream out(path.str().c_str());
-        
+        chmod(path.str().c_str(), 0600);
+		
         if (!out)
         {
             cout << "Could not create file '" << path.str() << "': " << strerror(errno) << endl;
             return;
         }
-        
         for (std::vector<Client>::iterator client = clients.begin(); client != clients.end(); ++client)
         {
             out << client->name << ":" << client->duuid << ":" << client->ready << endl;
