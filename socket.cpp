@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <alloca.h>
 #include <string.h>
 #include <iostream>
 #include <arpa/inet.h>
@@ -131,7 +132,7 @@ int Socket::send(const string & _data)
 int Socket::receive(string & _data, int _max)
 {
     int result = 0;
-    char buffer[_max + 1];
+    char *buffer = static_cast<char*>(alloca(sizeof(char)*(_max + 1)));
     
     memset(buffer, 0, _max + 1);
     

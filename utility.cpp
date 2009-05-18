@@ -128,7 +128,7 @@ vector<string> split(const string & str, const string str_delim)
 {
     vector<string> v;
     string str_elem("");
-    unsigned int ui_cur_pos, ui_last_pos = 0;
+    std::string::size_type ui_cur_pos, ui_last_pos = 0;
     
     // Check for empty string
     if (str.empty()) return v;

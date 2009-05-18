@@ -36,12 +36,12 @@
 
 struct cpu_load
 {
-    long long unsigned int u, n, s, i;
+    unsigned long u, n, s, i;
 };
 
 struct mem_info
 {
-    long long unsigned int t, f, a, i, c, swt, swi, swo;
+    unsigned long t, f, a, i, c, swt, swi, swo;
 };
 
 struct load_avg
@@ -54,14 +54,14 @@ struct disk_info
     float p;
     bool active;
     const char * name, * device;
-    long long unsigned int t, u, f;
+    unsigned long t, u, f;
 };
 
 struct net_data
 {
     int upt;
     time_t uxt;
-    long long unsigned int s, r;
+    unsigned long s, r;
 };
 
 struct sys_info

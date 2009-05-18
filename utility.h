@@ -58,7 +58,7 @@ template<class T> int to_int(const T & val)
 template<class T> std::string to_ascii(const T & val)
 {
     std::ostringstream buffer;
-    for (std::string::const_iterator i = val.begin(); i != val.end(); i++) buffer << (int) * i;
+    for (std::string::const_iterator i = val.begin(); i != val.end(); i++) buffer << static_cast<int>(*i);
     return buffer.str();
 }
 

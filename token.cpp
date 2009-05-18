@@ -32,7 +32,7 @@
 
 Tokens::Tokens(std::string _data, const char * _token)
 {
-    unsigned int pos;
+    std::string::size_type pos;
     
     tokens.clear();
     

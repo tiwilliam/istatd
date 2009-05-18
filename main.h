@@ -37,7 +37,4 @@
 
 void handler(int _signal);
 
-typedef signed long long int64;
-typedef unsigned long long uint64;
-
 #endif
