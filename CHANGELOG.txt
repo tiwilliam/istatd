@@ -2,6 +2,11 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
   * Version: 0.5.3
+  * New: Solaris support. Yay!
+  * New: Changed to automake building system.
+  * New: monitor_disk can now take mount points.
+  * Fix: Permissions problem with cache fixed.
+  * Fix: Resolved issue with no memory stats running istatd on a VPS.
  -------------------------------------------------------------------------
   * Version: 0.5.2
   * New: Cache directory now configurable by cache_dir in config.
