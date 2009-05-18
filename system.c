@@ -39,6 +39,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef HAVE_PATHS_H
+# include <paths.h>
+#endif
 #ifdef HAVE_ERRNO_H
 # include <errno.h>
 #endif
@@ -71,8 +74,8 @@
 
 #include "system.h"
 
-#ifndef MNTTAB
-# define MNTTAB                        "/etc/mtab"
+#ifndef _PATH_MOUNTED
+# define _PATH_MOUNTED                 "/etc/mtab"
 #endif
 
 #ifdef HAVE_LIBKSTAT
@@ -392,9 +395,9 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
 #endif
     
 #ifdef HAVE_SETMNTENT
-    if (!(table = setmntent(MNTTAB, "r"))) return -1;
+    if (!(table = setmntent(_PATH_MOUNTED, "r"))) return -1;
 #else
-    if (!(table = fopen(MNTTAB, "r"))) return -1;
+    if (!(table = fopen(_PATH_MOUNTED, "r"))) return -1;
     resetmnttab(table);
 #endif
     
@@ -440,9 +443,9 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
             _disk->u = ((unsigned long long) (space.f_blocks - space.f_bavail) * bsize) / 1024;
             _disk->f = _disk->t - _disk->u;
             _disk->p = ((float) _disk->u / _disk->t) * 100;
+            
+            return 0;
         }
-        
-        return 0;
     }
     
     return -1;
