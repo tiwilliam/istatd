@@ -178,9 +178,6 @@ void ClientSet::read_cache(const std::string & _cache_dir)
     this->cache_dir = _cache_dir;
     path << this->cache_dir << "/" << cache_file;
     
-    if (check_file_exist(path.str()) == 0)
-        create_file(this->cache_dir, cache_file);
-    
     ifstream cache(path.str().c_str());
     
     if (cache.good())

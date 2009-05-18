@@ -36,6 +36,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 
 #include "utility.h"
 
@@ -198,7 +199,7 @@ vector<string> explode(string source, const string & delims)
     return ret;
 }
 
-int create_file(const string & dir, const string & file)
+int create_file(const string & dir, const string & file, mode_t mask)
 {
     stringstream temp;
     temp << dir << "/" << file;
@@ -211,6 +212,8 @@ int create_file(const string & dir, const string & file)
             return -1;
         }
     }
+    
+    umask(mask);
 
     ofstream out(temp.str().c_str());
 

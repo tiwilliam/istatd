@@ -52,8 +52,8 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Socket * _ac
     int element_code;
     stringstream temp;
     string element_name;
-    int element_content_int;
     xmlChar * element_content;
+    int element_content_int = 0;
     vector<sys_info> data_history;
     vector<net_info> data_net_history;
     vector<disk_info> data_disk_history;

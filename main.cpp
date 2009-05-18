@@ -102,16 +102,17 @@ int main(int argc, char ** argv)
     string prop_sock      = arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
     string prop_cache     = config.get("cache_dir", "/var/cache/istat");
    
-	if(-1 == sys_init())
-	{
-		return 1;
-	}
+	if(-1 == sys_init()) return 1;
+	
     Daemon unixdaemon(prop_pid, prop_sock);
     Socket listener(prop_host, to_int(prop_port));
     SignalResponder signalresponder(&sockets, &listener, &unixdaemon, &clients);
     
     ::pn_signalresponder = &signalresponder;
 
+    // Create socket, pid file and put in background if desired
+    unixdaemon.create(prop_back, prop_user);
+    
     // Get old sessions from disk cache
     clients.read_cache(prop_cache);
     
@@ -121,9 +122,6 @@ int main(int argc, char ** argv)
         clients.clear_cache();
         return 0;
     }
-
-    // Create socket, pid file and put in background if desired
-    unixdaemon.create(prop_back, prop_user);
 
     signal(SIGHUP,  handler);
     signal(SIGUSR1, handler);

@@ -34,6 +34,8 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 int get_current_user();
 int get_id_from_name(const std::string & name);
@@ -41,7 +43,7 @@ int get_file_owner(const std::string & file);
 int pid_dead(int pid);
 int check_dir_exist(const std::string & dir);
 int check_file_exist(const std::string & file);
-int create_file(const std::string & dir, const std::string & file);
+int create_file(const std::string & dir, const std::string & file, mode_t mask);
 
 std::string trim(const std::string & source, const char * delims = " \t\r\n");
 std::vector<std::string> split(const std::string & str, const std::string str_delim);
