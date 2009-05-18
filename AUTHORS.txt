@@ -1,5 +1,5 @@
-William Tis√§ter <william@defunct.cc>
-- the bulk of the work, Linux monitoring
+William Tis‰ter <william@defunct.cc>
+- The bulk of the work, Linux monitoring
 
 Mo McRoberts <mo@nevali.net>
 - Solaris port, autoconf hackery
