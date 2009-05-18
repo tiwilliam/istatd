@@ -68,20 +68,21 @@ int main(int argc, char ** argv)
     
     if (arguments.isset("help") || arguments.isset("h"))
     {
+        cout << endl;
         cout << "usage: istat [-a HOST] [-p PORT]" << endl;
         cout << endl;
-        cout << "    -d          run in background" << endl;
-        cout << "    -c          custom config file location" << endl;
-        cout << "    -a          listen on this address" << endl;
-        cout << "    -p          listen on this port" << endl;
-        cout << "    -u          change running user" << endl;
-        cout << "    -h          print this help text" << endl;
-        cout << "    -v          print version number" << endl;
+        cout << "    -d                 run in background" << endl;
+        cout << "    -c                 custom config file location" << endl;
+        cout << "    -a                 listen on this address" << endl;
+        cout << "    -p                 listen on this port" << endl;
+        cout << "    -u                 change running user" << endl;
+        cout << "    -h                 print this help text" << endl;
+        cout << "    -v                 print version number" << endl;
         cout << endl;
-        cout << "    --pid       custom pid file location" << endl;
-        cout << "    --code      custom lock code" << endl;
+        cout << "    --pid              custom pid file location" << endl;
+        cout << "    --code             custom lock code" << endl;
+        cout << "    --clear-sessions   clear all authorized sessions" << endl;
         cout << endl;
-        
         return 0;
     }
     
