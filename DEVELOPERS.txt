@@ -20,12 +20,17 @@
  
  If you've checked out the sources from the Subversion repository or have
  downloaded a snapshot, your source directory won't contain a 'configure'
- script and you will need to run autoconf to generate one.
- 
- You might find that even though you have autoconf installed, the actual
- autoconf program is installed as 'autoconf26' or 'autoconf-2.6' or similar.
- If so, the same will apply to 'autoheader', too. Substitute the appropriate
- names when running the below commands:
+ script and you will need to run 'autogen' to generate one. The autogen
+ script invokes autoconf and automake, so you'll need those installed
+ (autoconf should be verson 2.61 or above, and automake should be at
+ least version 1.10).
+
+ You might find that even though you have autoconf and automake installed,
+ the programs that are installed aren't actually called 'autoconf' or
+ 'automake' (or the ones with those names are old versions). If this is
+ the case, you should set the ACLOCAL110, AUTOHEADER26, AUTOCONF26 and
+ AUTOMAKE110 environment variables to the names of the relevant programs
+ on your system before running autogen.
  
  Check out the source tree if you haven't already:
  
@@ -37,11 +42,11 @@
  
  Generate config.h.in and configure from the configure.in template:
  
- $ autoheader
- $ autoconf
+ $ sh autogen
 
- If you (or somebody else) makes changes to configure.in, you will need
- to re-run the above two commands.
+ If you (or somebody else) makes changes to configure.in or any of the
+ Makefile.am files, you will need to re-run the above command (making
+ sure the above environment variables are still set if you needed them).
 
  3. Run the configure script
  
@@ -82,3 +87,10 @@
  
  $ sudo make install DESTDIR=/tmp/istat-packaging
  
+ 6. Create a tarball
+ 
+ To create a tarball, simply run 'make dist' after you've successfully
+ configured your tree. This will create a .tar.gz file containing the
+ sources ready for distribution. Note that the version number used in
+ the filename will probably be the one after the last released version,
+ as it gets set in preparation for the next future.
