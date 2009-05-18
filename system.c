@@ -242,18 +242,23 @@ int get_mem_info(struct mem_info * _mem)
 #else
     char buf[320];
     static FILE * fp = NULL;
+	unsigned long long memtotal = 0;
 
     if (!(fp = fopen("/proc/meminfo", "r"))) return -1;
 
     while (fgets(buf, sizeof(buf), fp))
     {
+		sscanf(buf, "MemTotal: %llu kB", &memtotal);
         sscanf(buf, "MemFree: %llu kB", &_mem->f);
         sscanf(buf, "Active: %llu kB", &_mem->a);
         sscanf(buf, "Inactive: %llu kB", &_mem->i);
         sscanf(buf, "Cached: %llu kB", &_mem->c);
         sscanf(buf, "SwapTotal: %llu kB", &_mem->swt);
     }
-    
+    if (0 == _mem->a && 0 == _mem->i && 0 == _mem->c)
+    {
+        _mem->a = memtotal - _mem->f;
+	}
     fclose(fp);
     
     if (!(fp = fopen("/proc/vmstat", "r"))) return -1;
