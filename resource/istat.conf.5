@@ -24,11 +24,11 @@ Where to store cache files with information like authorized clients. (default: /
 .It monitor_net
 Network interface to monitor. (default: eth0)
 .It monitor_disk
-Full search path to disk or list of disks to monitor. When specifying more than one disk, use paranteses around the list:
+Can contain search path to device or mount point. When specifying more than one disk, use paranteses around the list:
 
 monitor_disk        /dev/sda1
 
-monitor_disk        ( /dev/sda1 /dev/sda2 )
+monitor_disk        ( /dev/sda1 /home )
 .El
 .Sh SEE ALSO
 .Xr istatd 1
