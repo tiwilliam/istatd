@@ -34,6 +34,7 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 
 #include "utility.h"
@@ -123,21 +124,16 @@ void ClientSet::clear_cache()
         string cache_file = "clients.dat";
         path << this->cache_dir << "/" << cache_file;
 
-        if (check_dir_exist(this->cache_dir))
+        if (check_file_exist(path.str()))
         {
-            ofstream out(path.str().c_str());
-            
-            if (out)
+            if (unlink(path.str().c_str()) == 0)
             {
-                out << "";
                 cout << "Successfully cleared all sessions." << endl;
             }
             else
             {
                 cout << "Could not clear sessions in '" << path.str() << "': " << strerror(errno) << endl;
             }
-            
-            out.close();
         }
     }
 }
