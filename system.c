@@ -443,7 +443,8 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
             _disk->u = ((unsigned long long) (space.f_blocks - space.f_bavail) * bsize) / 1024;
             _disk->f = _disk->t - _disk->u;
             _disk->p = ((float) _disk->u / _disk->t) * 100;
-			return 0;
+            
+            return 0;
         }
 
     }
