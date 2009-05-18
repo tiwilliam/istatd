@@ -1,6 +1,8 @@
 
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
+  * Version: 0.5.4
+ -------------------------------------------------------------------------
   * Version: 0.5.3
   * New: Solaris support. Yay!
   * New: Changed to automake building system.
