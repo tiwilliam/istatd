@@ -33,6 +33,10 @@
 # include "config.h"
 #endif
 
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
 #ifdef HAVE_SYS_SWAP_H
 # include <sys/swap.h>
 #endif

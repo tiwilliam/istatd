@@ -139,7 +139,7 @@ int get_cpu_load(struct cpu_load * _cpu)
 }
 # endif /*USE_CPU_KSTAT*/
 
-# ifdef /*USE_MEM_KSTAT*/
+# ifdef USE_MEM_KSTAT
 int get_mem_info(struct mem_info * _mem)
 {
     kstat_t *ksp;

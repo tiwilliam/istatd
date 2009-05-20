@@ -78,6 +78,8 @@ use_disk=none
 dnl Specific tests for probe types
 
 AC_CHECK_LIB([kstat],[kstat_open],[
+AC_DEFINE_UNQUOTED([HAVE_LIBKSTAT],1,[Define if libkstat is available])
+LIBS="$LIBS -lkstat"
 use_cpu=kstat
 use_net=kstat
 use_uptime=kstat
@@ -166,7 +168,7 @@ case $use_mem in
 		AC_DEFINE_UNQUOTED([USE_MEM_PROCFS],1,[Use procfs to probe memory usage])
 		;;
 	kstat)
-		AC_DEFINE_UNQUOTED([USE_MEM_GETLOADAVG],1,[Use kstat(3) to probe memory usage])
+		AC_DEFINE_UNQUOTED([USE_MEM_KSTAT],1,[Use kstat(3) to probe memory usage])
 		;;
 	*)
 		AC_MSG_ERROR([cannot determine memory usage probe type for ${host_os}])
