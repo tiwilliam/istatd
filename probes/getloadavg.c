@@ -1,5 +1,6 @@
 /*
  *  Copyright 2009 William Tisäter. All rights reserved.
+ *  Copyright 2009 Mo McRoberts.
  * 
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
@@ -28,68 +29,31 @@
  *
  */
 
-#ifndef _SYSTEM_H
-#define _SYSTEM_H
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <time.h>
+#define _BSD_SOURCE                    1
+
 #include <stdio.h>
+#include <stdlib.h>
 
-struct cpu_load
-{
-    unsigned long long u, n, s, i;
-};
-
-struct mem_info
-{
-    unsigned long long t, f, a, i, c, swt, swi, swo;
-};
-
-struct load_avg
-{
-    float one, two, three;
-};
-
-struct disk_info
-{
-    float p;
-    int active;
-    const char * name, * device;
-    unsigned long long t, u, f;
-};
-
-struct net_data
-{
-    int upt;
-    time_t uxt;
-    unsigned long long s, r;
-};
-
-struct sys_info
-{
-    int upt;
-    time_t uxt;
-    struct mem_info mem;
-    struct cpu_load cpu;
-    struct load_avg avg;
-};
-
-# ifdef __cplusplus
-extern "C" {
-# endif
-
-int kstat_init(void);
-
-int get_uptime();
-int get_unixtime();
-int get_cpu_load(struct cpu_load * _cpu);
-int get_mem_info(struct mem_info * _mem);
-int get_swap_info(struct mem_info * _mem);
-int get_load_avg(struct load_avg * _load);
-int get_net_info(const char * _dev, struct net_data * _data);
-int get_disk_info(const char * _dev, struct disk_info * _disk);
-
-# ifdef __cplusplus
-};
+#ifdef HAVE_SYS_LOADAVG_H
+# include <sys/loadavg.h>
 #endif
-	
-#endif
+
+#include "system.h"
+
+#ifdef USE_LOAD_GETLOADAVG
+int get_load_avg(struct load_avg * _load)
+{
+	double loadavg[3];
+    
+    if(-1 == getloadavg(loadavg, 3)) return -1;
+    _load->one = (float) loadavg[0];
+    _load->two = (float) loadavg[1];
+    _load->three = (float) loadavg[2];
+	return 0;
+}
+#endif /*USE_LOAD_GETLOADAVG*/
+

@@ -102,7 +102,9 @@ int main(int argc, char ** argv)
     string prop_sock      = arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
     string prop_cache     = config.get("cache_dir", "/var/cache/istat");
    
-	if(-1 == sys_init()) return 1;
+#ifdef HAVE_LIBKSTAT
+	if(-1 == kstat_init()) return 1;
+#endif
 	
     Daemon unixdaemon(prop_pid, prop_sock);
     Socket listener(prop_host, to_int(prop_port));

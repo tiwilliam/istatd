@@ -1,5 +1,6 @@
 /*
  *  Copyright 2009 William Tisäter. All rights reserved.
+ *  Copyright 2009 Mo McRoberts.
  * 
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
@@ -28,68 +29,50 @@
  *
  */
 
-#ifndef _SYSTEM_H
-#define _SYSTEM_H
-
-#include <time.h>
-#include <stdio.h>
-
-struct cpu_load
-{
-    unsigned long long u, n, s, i;
-};
-
-struct mem_info
-{
-    unsigned long long t, f, a, i, c, swt, swi, swo;
-};
-
-struct load_avg
-{
-    float one, two, three;
-};
-
-struct disk_info
-{
-    float p;
-    int active;
-    const char * name, * device;
-    unsigned long long t, u, f;
-};
-
-struct net_data
-{
-    int upt;
-    time_t uxt;
-    unsigned long long s, r;
-};
-
-struct sys_info
-{
-    int upt;
-    time_t uxt;
-    struct mem_info mem;
-    struct cpu_load cpu;
-    struct load_avg avg;
-};
-
-# ifdef __cplusplus
-extern "C" {
-# endif
-
-int kstat_init(void);
-
-int get_uptime();
-int get_unixtime();
-int get_cpu_load(struct cpu_load * _cpu);
-int get_mem_info(struct mem_info * _mem);
-int get_swap_info(struct mem_info * _mem);
-int get_load_avg(struct load_avg * _load);
-int get_net_info(const char * _dev, struct net_data * _data);
-int get_disk_info(const char * _dev, struct disk_info * _disk);
-
-# ifdef __cplusplus
-};
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
-	
+
+#ifdef HAVE_SYS_SWAP_H
+# include <sys/swap.h>
 #endif
+
+#include "system.h"
+
+#ifdef USE_SWAP_SWAPCTL
+
+int get_swap_info(struct mem_info * _mem)
+{
+    struct swaptable *st;
+    struct swapent *ent;
+    char *pbuf, *obuf;
+    int bpp, num, c;
+
+    if (0 == _mem->swt && -1 != (num = swapctl(SC_GETNSWP, NULL)))
+    {
+        bpp = getpagesize() >> DEV_BSHIFT;
+        st = (struct swaptable *) malloc(num = sizeof(swapent_t) + sizeof(int));
+        pbuf = obuf = (char *) malloc(num * MAXPATHLEN);
+        ent = st->swt_ent;
+        /* Provide buffers for the swap device names */
+        for (c = 0; c < num; c++, ent++)
+        {
+            ent->ste_path = pbuf;
+            pbuf += MAXPATHLEN;
+        }
+        /* Retrieve the devices */
+        if(-1 != (num = swapctl(SC_LIST, st)))
+        {
+            ent = st->swt_ent;
+            for (c = 0; c < num; c++, ent++)
+            {
+                _mem->swt += ent->ste_pages * bpp * DEV_BSIZE / 1024;
+            }
+        }
+        free(obuf);
+        free(st);
+    }
+	return 0;
+}
+
+#endif /*USE_SWAP_SWAPCTL*/

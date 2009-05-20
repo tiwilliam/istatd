@@ -1,4 +1,4 @@
-SUBDIRS = resource
+SUBDIRS = probes . resource
 
 EXTRA_DIST = CHANGELOG.txt DEVELOPERS.txt AUTHORS.txt
 
@@ -17,4 +17,6 @@ istatd_SOURCES = \
 	stats.h stats.cpp \
 	token.h token.cpp \
 	utility.h utility.cpp \
-	system.h system.c
+	system.h
+
+istatd_LDADD = probes/libprobes.a

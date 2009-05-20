@@ -3,6 +3,8 @@ istatd
 config.h
 config.log
 config.status
+config.guess
+config.sub
 configure
 config.h.in
 Makefile

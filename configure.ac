@@ -5,6 +5,8 @@ AC_PREREQ([2.61])
 AC_INIT([istat], [0.5.4], [http://code.google.com/p/istat/issues/entry])
 AM_INIT_AUTOMAKE([foreign])
 AM_MAINTAINER_MODE
+AC_CANONICAL_HOST
+AC_PROG_RANLIB
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -53,7 +55,52 @@ AC_CHECK_FUNC([xmlFileOpen],[
 ],[
 	AC_MSG_ERROR([xml2-config was located, but a test program linking against -lxml2 could not be built])
 ])
-AC_CHECK_LIB([kstat],[kstat_open])
+
+case "${host_os}" in
+	linux|linux-*)
+		have_procfs=procfs
+		;;
+	*)
+		have_procfs=none
+		;;
+esac
+
+dnl Fall back to procfs, if available
+
+use_cpu=$have_procfs
+use_net=$have_procfs
+use_uptime=$have_procfs
+use_mem=$have_procfs
+use_load=$have_procfs
+use_swap=$have_procfs
+use_disk=none
+
+dnl Specific tests for probe types
+
+AC_CHECK_LIB([kstat],[kstat_open],[
+use_cpu=kstat
+use_net=kstat
+use_uptime=kstat
+use_mem=kstat
+])
+
+AC_CHECK_FUNC([getloadavg],[
+use_load=getloadavg
+])
+
+dnl We only use swapctl if procfs isn't available
+AC_CHECK_FUNC([swapctl],[
+test x"$use_swap" = x"none" && use_swap=swapctl
+])
+
+AC_CHECK_FUNC([statvfs],[
+use_disk=statvfs
+],[
+	AC_CHECK_FUNC([statfs],[
+		use_disk=statfs
+	])
+])
+
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h])
 
@@ -63,14 +110,14 @@ AC_HEADER_STDBOOL
 # Checks for library functions.
 AC_FUNC_FORK
 AC_FUNC_GETMNTENT
-AC_CHECK_FUNCS([gethostbyname getmntent inet_ntoa memset mkdir select socket strerror statvfs setmntent getloadavg swapctl])
+AC_CHECK_FUNCS([gethostbyname getmntent inet_ntoa memset mkdir select socket strerror statvfs setmntent])
 
 # Try to figure out which type of mntent structure we're dealing with
 AC_CHECK_MEMBER([struct mnttab.mnt_special],[AC_DEFINE_UNQUOTED([USE_STRUCT_MNTTAB],[1],[define to use 'struct mnttab'])],,[
 #include <stdio.h>
 #include <sys/mnttab.h>
 ])
-AC_CHECK_MEMBER([struct mntent.mnt_fsname],[AC_DEFINE_UNQUOTED([USE_STRUCT_MNTENT],[1],[define to use 'strut mntent'])],,[
+AC_CHECK_MEMBER([struct mntent.mnt_fsname],[AC_DEFINE_UNQUOTED([USE_STRUCT_MNTENT],[1],[define to use 'struct mntent'])],,[
 #include <stdio.h>
 #include <mntent.h>
 ])
@@ -78,14 +125,111 @@ AC_CHECK_MEMBER([struct statvfs.f_frsize],[AC_DEFINE_UNQUOTED([HAVE_STATVFS_FRSI
 #include <sys/types.h>
 #include <sys/statvfs.h>
 ])
+
 AC_MSG_CHECKING([for default location of configuration file])
 test x"$prefix" = x"NONE" && prefix="$ac_default_prefix"
 configpath=`eval echo "$sysconfdir"/istat.conf`
 AC_MSG_RESULT([$configpath])
 AC_DEFINE_UNQUOTED([CONFIG_FILE_PATH],["${configpath}"],[default location of the configuration file])
 
+AC_MSG_CHECKING([CPU usage probe type])
+case $use_cpu in
+	procfs)
+		AC_DEFINE_UNQUOTED([USE_CPU_PROCFS],1,[Use procfs to probe CPU usage])
+		;;
+	kstat)
+		AC_DEFINE_UNQUOTED([USE_CPU_KSTAT],1,[Use kstat(3) to probe CPU usage])
+		;;
+	*)
+		AC_MSG_ERROR([cannot determine CPU usage probe type for ${host_os}])
+		;;
+esac
+AC_MSG_RESULT($use_cpu)
+
+AC_MSG_CHECKING([load average probe type])
+case $use_load in
+	procfs)
+		AC_DEFINE_UNQUOTED([USE_LOAD_PROCFS],1,[Use procfs to probe load average])
+		;;
+	getloadavg)
+		AC_DEFINE_UNQUOTED([USE_LOAD_GETLOADAVG],1,[Use getloadavg(3) to probe load average])
+		;;
+	*)
+		AC_MSG_ERROR([cannot determine load average probe type for ${host_os}])
+		;;
+esac
+AC_MSG_RESULT($use_load)
+
+AC_MSG_CHECKING([memory usage probe type])
+case $use_mem in
+	procfs)
+		AC_DEFINE_UNQUOTED([USE_MEM_PROCFS],1,[Use procfs to probe memory usage])
+		;;
+	kstat)
+		AC_DEFINE_UNQUOTED([USE_MEM_GETLOADAVG],1,[Use kstat(3) to probe memory usage])
+		;;
+	*)
+		AC_MSG_ERROR([cannot determine memory usage probe type for ${host_os}])
+		;;
+esac
+AC_MSG_RESULT($use_mem)
+
+AC_MSG_CHECKING([swap probe type])
+case $use_swap in
+	procfs)
+		AC_DEFINE_UNQUOTED([USE_SWAP_PROCFS],1,[Use procfs to probe swap])
+		;;
+	swapctl)
+		AC_DEFINE_UNQUOTED([USE_SWAP_SWAPCTL],1,[Use swapctl(3) to probe swap])
+		;;
+	*)
+		AC_MSG_ERROR([cannot determine swap probe type for ${host_os}])
+		;;
+esac
+AC_MSG_RESULT($use_swap)
+
+AC_MSG_CHECKING([uptime probe type])
+case $use_uptime in
+	procfs)
+		AC_DEFINE_UNQUOTED([USE_UPTIME_PROCFS],1,[Use procfs to probe uptime])
+		;;
+	kstat)
+		AC_DEFINE_UNQUOTED([USE_UPTIME_KSTAT],1,[Use kstat(3) to probe load average])
+		;;
+	*)
+		AC_MSG_ERROR([cannot determine uptime probe type for ${host_os}])
+		;;
+esac
+AC_MSG_RESULT($use_uptime)
+
+AC_MSG_CHECKING([network activity probe type])
+case $use_net in
+	procfs)
+		AC_DEFINE_UNQUOTED([USE_NET_PROCFS],1,[Use procfs to probe network activity])
+		;;
+	kstat)
+		AC_DEFINE_UNQUOTED([USE_NET_KSTAT],1,[Use kstat(3) to probe network activity])
+		;;
+	*)
+		AC_MSG_ERROR([cannot determine network activity probe type for ${host_os}])
+		;;
+esac
+AC_MSG_RESULT($use_uptime)
+
+AC_MSG_CHECKING([disk space probe type])
+case $use_disk in
+	statfs|statvfs)
+		AC_DEFINE_UNQUOTED([USE_DISK_STATFS],1,[Use statfs/statvfs(2) to probe disk space])
+		;;
+	*)
+		AC_MSG_ERROR([cannot determine disk usage probe type for ${host_os}])
+		;;
+esac
+AC_MSG_RESULT($use_disk)
+
 AC_CONFIG_FILES([
 Makefile
 resource/Makefile
+probes/Makefile
 ])
 AC_OUTPUT
