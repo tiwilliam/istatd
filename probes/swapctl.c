@@ -44,7 +44,6 @@
 #include "system.h"
 
 #ifdef USE_SWAP_SWAPCTL
-
 int get_swap_info(struct mem_info * _mem)
 {
     struct swaptable *st;
@@ -76,7 +75,7 @@ int get_swap_info(struct mem_info * _mem)
         free(obuf);
         free(st);
     }
-	return 0;
+    
+    return 0;
 }
-
 #endif /*USE_SWAP_SWAPCTL*/

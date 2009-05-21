@@ -53,8 +53,8 @@ struct disk_info
 {
     float p;
     int active;
-    const char * name, * device;
     unsigned long long t, u, f;
+    const char *name, *device, *uuid, *label;
 };
 
 struct net_data
@@ -81,15 +81,15 @@ int kstat_init(void);
 
 int get_uptime();
 int get_unixtime();
-int get_cpu_load(struct cpu_load * _cpu);
-int get_mem_info(struct mem_info * _mem);
-int get_swap_info(struct mem_info * _mem);
-int get_load_avg(struct load_avg * _load);
-int get_net_info(const char * _dev, struct net_data * _data);
-int get_disk_info(const char * _dev, struct disk_info * _disk);
+int get_cpu_load(struct cpu_load *_cpu);
+int get_mem_info(struct mem_info *_mem);
+int get_swap_info(struct mem_info *_mem);
+int get_load_avg(struct load_avg *_load);
+int get_net_info(const char *_dev, struct net_data *_data);
+int get_disk_info(const char *_dev, struct disk_info *_disk);
 
 # ifdef __cplusplus
 };
 #endif
-	
+
 #endif

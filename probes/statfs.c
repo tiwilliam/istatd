@@ -63,7 +63,6 @@
 #endif
 
 #ifdef USE_DISK_STATFS
-
 int get_disk_info(const char * _dev, struct disk_info * _disk)
 {
     FILE * table;
@@ -75,7 +74,7 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
 # endif
     int get_size = 0;
 # ifdef USE_STRUCT_MNTENT
-    struct mntent * entry;
+    struct mntent *entry;
 # elif defined(USE_STRUCT_MNTTAB)
     struct mnttab *entry, ebuf;
 # endif
@@ -101,17 +100,18 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
             get_size = 1;
             
             _disk->name = entry->mnt_dir;
-            _disk->device = _dev;
+            _disk->device = entry->mnt_fsname;
             
             break;
         }
     }
-    
+
 # ifdef HAVE_SETMNTENT
     endmntent(table);
 # else
     fclose(table);
 # endif
+
     if (get_size)
     {
 # ifdef HAVE_STATVFS
@@ -132,9 +132,8 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
             
             return 0;
         }
-
-    }    
+    }
+    
     return -1;
 }
-
 #endif /*USE_DISK_STATFS*/
