@@ -84,7 +84,7 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
     sys_info prev;
     stringstream temp;
     int diff_u, diff_s, diff_n, diff_i;
-    float load_t, load_u, load_s, load_n;
+    int load_t, load_u, load_s, load_n;
     
 	if(0 == _history->size()) return temp.str();
     temp << "<CPU>";
@@ -106,11 +106,10 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
         diff_n = cur->cpu.n - prev.cpu.n;
         diff_i = cur->cpu.i - prev.cpu.i;
         
-        load_t = diff_u + diff_s + diff_n + diff_i;
-        
-        load_u = ((float) diff_u / load_t) * 100;
-        load_s = ((float) diff_s / load_t) * 100;
-        load_n = ((float) diff_n / load_t) * 100;
+        load_t = (int) (diff_u + diff_s + diff_n + diff_i);
+        load_u = (int) (((float) diff_u / load_t) * 100);
+        load_s = (int) (((float) diff_s / load_t) * 100);
+        load_n = (int) (((float) diff_n / load_t) * 100);
         
         temp << "<c id=\"" << uptime << "\" u=\"" << load_u << "\" s=\"" << load_s << "\" n=\"" << load_n << "\"></c>";
     }
