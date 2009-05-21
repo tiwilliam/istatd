@@ -37,10 +37,37 @@ static fslabel_probe_t probes[] = {
 };
 
 int
+fslabel_identify_file(const char *path, char *fstype, size_t flen, char *label, size_t llen, char *uuid, size_t uulen)
+{
+	int r;
+	fslabel_t fslabel;
+	
+	if(1 != (r = fslabel_identify(path, &fslabel)))
+	{
+		return r;
+	}
+	if(NULL != fstype)
+	{
+		fslabel__strlcpy(fstype, fslabel.fstype, flen);
+	}
+	if(NULL != label)
+	{
+		fslabel__strlcpy(label, fslabel.label, llen);
+	}
+	if(NULL != uuid)
+	{
+		fslabel__strlcpy(uuid, fslabel.uuid, uulen);
+	}
+	return 1;
+}
+
+
+int
 fslabel_identify(const char *path, fslabel_t *fslabel)
 {
 	int fd, cr, r;
 	
+	memset(fslabel, 0, sizeof(fslabel));
 	do
 	{
 		fd = open(path, O_RDONLY|O_BINARY);

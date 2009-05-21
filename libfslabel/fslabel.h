@@ -42,7 +42,7 @@ struct fslabel_struct
 extern "C" {
 # endif
 	
-int fslabel_identify_file(const char *path, char *fstype, size_t *flen, char *label, size_t *llen, char *uuid, size_t *uulen);
+int fslabel_identify_file(const char *path, char *fstype, size_t flen, char *label, size_t llen, char *uuid, size_t uulen);
 
 int fslabel_identify(const char *path, fslabel_t *fslabel);
 int fslabel_identify_fd(int fd, fslabel_t *fslabel);
