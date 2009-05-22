@@ -1,4 +1,4 @@
-SUBDIRS = probes . resource
+SUBDIRS = probes libfslabel . resource
 
 EXTRA_DIST = CHANGELOG.txt DEVELOPERS.txt AUTHORS.txt
 
@@ -19,4 +19,4 @@ istatd_SOURCES = \
 	utility.h utility.cpp \
 	system.h
 
-istatd_LDADD = probes/libprobes.a
+istatd_LDADD = probes/libprobes.a libfslabel/libfslabel.a

@@ -66,6 +66,7 @@
 int get_disk_info(const char * _dev, struct disk_info * _disk)
 {
     FILE * table;
+    char tmp[128] = "";
     unsigned long long bsize;
 # ifdef HAVE_STATVFS
     struct statvfs space;
@@ -99,8 +100,15 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
         {
             get_size = 1;
             
-            _disk->name = entry->mnt_dir;
-            _disk->device = entry->mnt_fsname;
+            // Save device string
+            strncpy(tmp, entry->mnt_fsname, sizeof(tmp) - 1);
+            tmp[strlen(tmp)] = 0;
+            strcpy((char *) _disk->device, tmp);
+            
+            // Save mount directory string
+            strncpy(tmp, entry->mnt_dir, sizeof(tmp) - 1);
+            tmp[strlen(tmp)] = 0;
+            strcpy((char *) _disk->name, tmp);
             
             break;
         }

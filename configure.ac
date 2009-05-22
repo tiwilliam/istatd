@@ -233,5 +233,6 @@ AC_CONFIG_FILES([
 Makefile
 resource/Makefile
 probes/Makefile
+libfslabel/Makefile
 ])
 AC_OUTPUT
