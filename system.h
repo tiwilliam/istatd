@@ -33,6 +33,7 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <limits.h>
 
 struct cpu_load
 {
@@ -54,7 +55,10 @@ struct disk_info
     float p;
     int active;
     unsigned long long t, u, f;
-    const char *name, *device, *uuid, *label;
+    char name[PATH_MAX];
+	char device[PATH_MAX];
+	char uuid[32];
+	char label[64];
 };
 
 struct net_data

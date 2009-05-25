@@ -38,6 +38,7 @@ using namespace std;
 
 void Stats::update_system_stats()
 {
+	char tmp[PATH_MAX];
     sys_info stats;
     net_data net_data;
     vector<net_info>::iterator nit;
@@ -72,7 +73,9 @@ void Stats::update_system_stats()
     {
         if ((*dit).active == 0) continue;
         
-        if (get_disk_info((*dit).device, &(*dit)) == -1)
+		strncpy(tmp, (*dit).device, sizeof(tmp) - 1);
+		tmp[sizeof(tmp) - 1] = 0;
+        if (get_disk_info(tmp, &(*dit)) == -1)
         {
             cout << "Could not get disk data for '" << (*dit).device << "'. Device not found in /etc/mtab." << endl;
             (*dit).active = 0;
@@ -120,7 +123,9 @@ void Stats::add_disk(const char * _disk)
 {
     disk_info temp;
     
-    temp.device = _disk;
+	memset(&temp, 0, sizeof(temp));
+    strncpy(temp.device, _disk, sizeof(temp.device - 1));
+	temp.device[sizeof(temp.device) - 1] = 0;
     temp.active = true;
     
     disks.push_back(temp);

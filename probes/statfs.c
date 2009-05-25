@@ -59,7 +59,11 @@
 #include "system.h"
 
 #ifndef _PATH_MOUNTED
-# define _PATH_MOUNTED                 "/etc/mtab"
+# ifdef MNTTAB
+#  define _PATH_MOUNTED                MNTTAB
+# else
+#  define _PATH_MOUNTED                "/etc/mtab"
+# endif
 #endif
 
 #ifdef USE_DISK_STATFS
@@ -79,7 +83,7 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
 # elif defined(USE_STRUCT_MNTTAB)
     struct mnttab *entry, ebuf;
 # endif
-    
+
 # ifdef HAVE_SETMNTENT
     if (!(table = setmntent(_PATH_MOUNTED, "r"))) return -1;
 # else
@@ -101,14 +105,11 @@ int get_disk_info(const char * _dev, struct disk_info * _disk)
             get_size = 1;
             
             // Save device string
-            strncpy(tmp, entry->mnt_fsname, sizeof(tmp) - 1);
-            tmp[strlen(tmp)] = 0;
-            strcpy((char *) _disk->device, tmp);
+            strncpy(_disk->device, entry->mnt_fsname, sizeof(_disk->device) - 1);
+			_disk->device[sizeof(_disk->device) - 1] = 0;
             
-            // Save mount directory string
-            strncpy(tmp, entry->mnt_dir, sizeof(tmp) - 1);
-            tmp[strlen(tmp)] = 0;
-            strcpy((char *) _disk->name, tmp);
+            strncpy(_disk->name, entry->mnt_dir, sizeof(_disk->name) - 1);
+			_disk->name[sizeof(_disk->name) - 1] = 0;			
             
             break;
         }
