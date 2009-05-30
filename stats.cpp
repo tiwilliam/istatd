@@ -117,11 +117,6 @@ void Stats::update_system_stats()
 				get_disk_info(tmp, (*dit).uuid, (*dit).label, (*dit).name, (*dit).device);
 				
 				(*dit).last_update = uxt;
-				
-				cout << "device: " << (*dit).device << endl;
-				cout << "label:  " << (*dit).label << endl;
-				cout << "uuid:   " << (*dit).uuid << endl;
-				cout << "name:   " << (*dit).name << endl;
 			}
 		}
 	}

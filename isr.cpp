@@ -172,8 +172,6 @@ string isr_disk_data(vector<disk_info> * _disks, int _init)
 		if (strlen((*cur).uuid)) disk_uuid = (*cur).uuid;
 		
 		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "\" f=\"" << (*cur).history.back().f / 1000 << "\" p=\"" << (*cur).history.back().p << "\"></d>";
-
-		cout << temp.str() << endl << endl;
 	}
 	
 	temp << "</DISKS>";
