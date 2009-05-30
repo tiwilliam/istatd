@@ -79,7 +79,7 @@ int get_unixtime()
 }
 
 #ifdef USE_CPU_PROCFS
-int get_cpu_load(struct cpu_load * _cpu)
+int get_cpu_data(struct cpu_data * _cpu)
 {
     char buf[320];
     static FILE * fp = NULL;
@@ -94,7 +94,7 @@ int get_cpu_load(struct cpu_load * _cpu)
 #endif
 
 #ifdef USE_MEM_PROCFS
-int get_mem_info(struct mem_info * _mem)
+int get_mem_data(struct mem_data * _mem)
 {
     char buf[320];
     static FILE * fp = NULL;
@@ -133,7 +133,7 @@ int get_mem_info(struct mem_info * _mem)
 #endif
 
 #ifdef USE_NET_PROCFS
-int get_net_info(const char * _dev, struct net_data * _data)
+int get_net_data(const char * _dev, struct net_data * _data)
 {
     char dev[8];
     static FILE * fp = NULL;
@@ -162,13 +162,13 @@ int get_net_info(const char * _dev, struct net_data * _data)
 #endif
 
 #ifdef USE_LOAD_PROCFS
-int get_load_avg(struct load_avg * _load)
+int get_avg_data(struct cpu_load *_cpu)
 {
     static FILE * fp = NULL;
     
     if (!(fp = fopen("/proc/loadavg", "r"))) return -1;
     
-    fscanf(fp, "%f %f %f", &_load->one, &_load->two, &_load->three);
+    fscanf(fp, "%f %f %f", &_cpu->one, &_cpu->two, &_cpu->three);
     
     fclose(fp);
     return 0;

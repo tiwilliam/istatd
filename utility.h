@@ -4,16 +4,16 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *
- *    1.  Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
+ *	1.  Redistributions of source code must retain the above copyright
+ *		notice, this list of conditions and the following disclaimer.
  *
- *    2.  Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
+ *	2.  Redistributions in binary form must reproduce the above copyright
+ *		notice, this list of conditions and the following disclaimer in the
+ *		documentation and/or other materials provided with the distribution.
  *
- *    3.  The name of the copyright holder may not be used to endorse or promote
- *        products derived from this software without specific prior written
- *        permission.
+ *	3.  The name of the copyright holder may not be used to endorse or promote
+ *		products derived from this software without specific prior written
+ *		permission.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -51,24 +51,24 @@ std::vector<std::string> explode(std::string source, const std::string & delims 
 
 template<class T> int to_int(const T & val)
 {
-    int n;
-    std::stringstream buffer(val);
-    buffer >> n;
-    return n;
+	int n;
+	std::stringstream buffer(val);
+	buffer >> n;
+	return n;
 }
 
 template<class T> std::string to_ascii(const T & val)
 {
-    std::ostringstream buffer;
-    for (std::string::const_iterator i = val.begin(); i != val.end(); i++) buffer << static_cast<int>(*i);
-    return buffer.str();
+	std::ostringstream buffer;
+	for (std::string::const_iterator i = val.begin(); i != val.end(); i++) buffer << static_cast<int>(*i);
+	return buffer.str();
 }
 
 template<class T> std::string to_string(const T & val)
 {
-    std::ostringstream buffer;
-    buffer << val;
-    return buffer.str();
+	std::ostringstream buffer;
+	buffer << val;
+	return buffer.str();
 }
 
 #endif

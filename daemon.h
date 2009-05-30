@@ -4,16 +4,16 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *
- *    1.  Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
+ *	1.  Redistributions of source code must retain the above copyright
+ *		notice, this list of conditions and the following disclaimer.
  *
- *    2.  Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
+ *	2.  Redistributions in binary form must reproduce the above copyright
+ *		notice, this list of conditions and the following disclaimer in the
+ *		documentation and/or other materials provided with the distribution.
  *
- *    3.  The name of the copyright holder may not be used to endorse or promote
- *        products derived from this software without specific prior written
- *        permission.
+ *	3.  The name of the copyright holder may not be used to endorse or promote
+ *		products derived from this software without specific prior written
+ *		permission.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -40,31 +40,31 @@
 
 class Daemon
 {
-    public:
-        Daemon(const std::string & _pidfile, const std::string & _sockfile) : pidfile(_pidfile), sockfile(_sockfile) {}
-        
-        void create(bool _back, const std::string & _user);
-        void destroy();
-        
-    private:
-        std::string pidfile;
-        std::string sockfile;
+	public:
+		Daemon(const std::string & _pidfile, const std::string & _sockfile) : pidfile(_pidfile), sockfile(_sockfile) {}
+		
+		void create(bool _back, const std::string & _user);
+		void destroy();
+		
+	private:
+		std::string pidfile;
+		std::string sockfile;
 };
 
 class SignalResponder
 {
-    public:
-        SignalResponder(SocketSet * _sockets, Socket * _listener, Daemon * _unixdaemon, ClientSet * _clients) : listener(_listener), sockets(_sockets), unixdaemon(_unixdaemon), clients(_clients) {}
-        
-        void destroy();
-        void on_sigint();
-        void on_sigterm();
-        
-    private:
-        Socket * listener;
-        SocketSet * sockets;
-        Daemon * unixdaemon;
-        ClientSet * clients;
+	public:
+		SignalResponder(SocketSet * _sockets, Socket * _listener, Daemon * _unixdaemon, ClientSet * _clients) : listener(_listener), sockets(_sockets), unixdaemon(_unixdaemon), clients(_clients) {}
+		
+		void destroy();
+		void on_sigint();
+		void on_sigterm();
+		
+	private:
+		Socket * listener;
+		SocketSet * sockets;
+		Daemon * unixdaemon;
+		ClientSet * clients;
 };
 
 #endif

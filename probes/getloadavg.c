@@ -45,14 +45,14 @@
 #include "system.h"
 
 #ifdef USE_LOAD_GETLOADAVG
-int get_load_avg(struct load_avg * _load)
+int get_avg_data(struct cpu_data *_cpu)
 {
 	double loadavg[3];
     
     if(-1 == getloadavg(loadavg, 3)) return -1;
-    _load->one = (float) loadavg[0];
-    _load->two = (float) loadavg[1];
-    _load->three = (float) loadavg[2];
+    _cpu->one = (float) loadavg[0];
+    _cpu->two = (float) loadavg[1];
+    _cpu->three = (float) loadavg[2];
 	return 0;
 }
 #endif /*USE_LOAD_GETLOADAVG*/

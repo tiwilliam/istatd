@@ -44,7 +44,7 @@
 #include "system.h"
 
 #ifdef USE_SWAP_SWAPCTL
-int get_swap_info(struct mem_info * _mem)
+int get_swp_data(struct mem_data * _mem)
 {
     struct swaptable *st;
     struct swapent *ent;

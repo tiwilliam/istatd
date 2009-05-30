@@ -4,16 +4,16 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *
- *    1.  Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
+ *	1.  Redistributions of source code must retain the above copyright
+ *		notice, this list of conditions and the following disclaimer.
  *
- *    2.  Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
+ *	2.  Redistributions in binary form must reproduce the above copyright
+ *		notice, this list of conditions and the following disclaimer in the
+ *		documentation and/or other materials provided with the distribution.
  *
- *    3.  The name of the copyright holder may not be used to endorse or promote
- *        products derived from this software without specific prior written
- *        permission.
+ *	3.  The name of the copyright holder may not be used to endorse or promote
+ *		products derived from this software without specific prior written
+ *		permission.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,24 +39,24 @@
 
 class SocketSet
 {
-    public:
-        SocketSet();
-        
-        void operator += (Socket & _socket);
-        void operator -= (Socket & _socket);
-        bool operator == (Socket & _socket);
-        
-        Socket & get_ready();
-        Socket & get_socket(int _socket);
-        int get_status(int _timeout = 0);
-        void send(const std::string & _data);
-        void close();
-        
-    private:
-        int highest;
-        fd_set readyset;
-        fd_set socketset;
-        std::vector<Socket> connections;
+	public:
+		SocketSet();
+		
+		void operator += (Socket & _socket);
+		void operator -= (Socket & _socket);
+		bool operator == (Socket & _socket);
+		
+		Socket & get_ready();
+		Socket & get_socket(int _socket);
+		int get_status(int _timeout = 0);
+		void send(const std::string & _data);
+		void close();
+		
+	private:
+		int highest;
+		fd_set readyset;
+		fd_set socketset;
+		std::vector<Socket> connections;
 };
 
 #endif

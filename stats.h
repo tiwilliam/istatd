@@ -4,16 +4,16 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *
- *    1.  Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
+ *	1.  Redistributions of source code must retain the above copyright
+ *		notice, this list of conditions and the following disclaimer.
  *
- *    2.  Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
+ *	2.  Redistributions in binary form must reproduce the above copyright
+ *		notice, this list of conditions and the following disclaimer in the
+ *		documentation and/or other materials provided with the distribution.
  *
- *    3.  The name of the copyright holder may not be used to endorse or promote
- *        products derived from this software without specific prior written
- *        permission.
+ *	3.  The name of the copyright holder may not be used to endorse or promote
+ *		products derived from this software without specific prior written
+ *		permission.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -31,37 +31,61 @@
 #ifndef _STATS_H
 #define _STATS_H
 
+#define NET_HISTORY			300
+#define DISK_HISTORY		300
+#define STAT_HISTORY		300
+
 #include <vector>
+#include <limits.h>
 
 #include "system.h"
 
 class net_info
 {
-    public:
-        bool active;
-        unsigned int id;
-        const char * device;
-        std::vector<net_data> history;
+	public:
+		bool active;
+		unsigned int id;
+		
+		char device[PATH_MAX];
+		
+		std::vector<net_data> history;
+};
+
+class disk_info
+{
+	public:
+		time_t uxt;
+		
+		bool active;
+		unsigned int id;
+		
+		char uuid[37];
+		char label[33];
+		char name[PATH_MAX];
+		char device[PATH_MAX];
+		unsigned int last_update;
+		
+		std::vector<disk_data> history;
 };
 
 class Stats
 {
-    public:
-        void add_net(const char * _iface);
-        void add_disk(const char * _disk);
-        
-        void update_system_stats();
-        
-        sys_info get_stats();
-        unsigned int get_size();
-        std::vector<disk_info> get_disk_history();
-        std::vector<sys_info> get_history(int _pos);
-        std::vector<net_info> get_net_history(int _pos);
-        
-    private:
-        std::vector<net_info> nets;
-        std::vector<disk_info> disks;
-        std::vector<sys_info> history;
+	public:
+		void add_net(const char * _iface);
+		void add_disk(const char * _disk);
+		
+		void update_system_stats();
+		
+		sys_info get_stats();
+		unsigned int get_size();
+		std::vector<disk_info> get_disk_history();
+		std::vector<sys_info> get_history(int _pos);
+		std::vector<net_info> get_net_history(int _pos);
+		
+	private:
+		std::vector<net_info> nets;
+		std::vector<disk_info> disks;
+		std::vector<sys_info> history;
 };
 
 #endif

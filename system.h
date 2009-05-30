@@ -4,16 +4,16 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *
- *    1.  Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
+ *	1.  Redistributions of source code must retain the above copyright
+ *		notice, this list of conditions and the following disclaimer.
  *
- *    2.  Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
+ *	2.  Redistributions in binary form must reproduce the above copyright
+ *		notice, this list of conditions and the following disclaimer in the
+ *		documentation and/or other materials provided with the distribution.
  *
- *    3.  The name of the copyright holder may not be used to endorse or promote
- *        products derived from this software without specific prior written
- *        permission.
+ *	3.  The name of the copyright holder may not be used to endorse or promote
+ *		products derived from this software without specific prior written
+ *		permission.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -33,48 +33,38 @@
 
 #include <time.h>
 #include <stdio.h>
-#include <limits.h>
 
-struct cpu_load
+struct cpu_data
 {
-    unsigned long long u, n, s, i;
+	float one, two, three;
+	unsigned long long u, n, s, i;
 };
 
-struct mem_info
+struct mem_data
 {
-    unsigned long long t, f, a, i, c, swt, swi, swo;
-};
-
-struct load_avg
-{
-    float one, two, three;
-};
-
-struct disk_info
-{
-    float p;
-    int active;
-    unsigned long long t, u, f;
-    char name[PATH_MAX];
-	char device[PATH_MAX];
-	char uuid[32];
-	char label[64];
+	unsigned long long t, f, a, i, c, swt, swi, swo;
 };
 
 struct net_data
 {
-    int upt;
-    time_t uxt;
-    unsigned long long s, r;
+	int upt;
+	time_t uxt;
+	unsigned long long s, r;
+};
+
+struct disk_data
+{
+	float p;
+	time_t uxt;
+	unsigned long long t, u, f;
 };
 
 struct sys_info
 {
-    int upt;
-    time_t uxt;
-    struct mem_info mem;
-    struct cpu_load cpu;
-    struct load_avg avg;
+	int upt;
+	time_t uxt;
+	struct mem_data mem;
+	struct cpu_data cpu;
 };
 
 # ifdef __cplusplus
@@ -82,15 +72,15 @@ extern "C" {
 # endif
 
 int kstat_init(void);
-
-int get_uptime();
-int get_unixtime();
-int get_cpu_load(struct cpu_load *_cpu);
-int get_mem_info(struct mem_info *_mem);
-int get_swap_info(struct mem_info *_mem);
-int get_load_avg(struct load_avg *_load);
-int get_net_info(const char *_dev, struct net_data *_data);
-int get_disk_info(const char *_dev, struct disk_info *_disk);
+int get_uptime(void);
+int get_unixtime(void);
+int get_cpu_data(struct cpu_data *_cpu);
+int get_avg_data(struct cpu_data *_cpu);
+int get_mem_data(struct mem_data *_mem);
+int get_swp_data(struct mem_data *_mem);
+int get_net_data(const char *_dev, struct net_data *_data);
+int get_disk_data(const char *_dev, struct disk_data *_disk);
+int get_disk_info(char * _path, char * _uuid, char * _label, char * _name, char * _device);
 
 # ifdef __cplusplus
 };

@@ -64,7 +64,7 @@ fslabel__ext_probe(fslabel_src_t *src, fslabel_t *dest)
 		}
 	if(htons(header.magic) != EXT_MAGIC)
 		{
-			fprintf(stderr, "ext: expected 0x%04x, found 0x%04x\n", htons(header.magic), EXT_MAGIC);
+			// fprintf(stderr, "ext: expected 0x%04x, found 0x%04x\n", htons(header.magic), EXT_MAGIC);
 			return 0;
 		}
 	memcpy(lbuf, header.label, 16);

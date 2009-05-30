@@ -42,11 +42,11 @@
   Generate config.h.in and configure from the configure.in template:
   
   $ sh autogen
- 
+  
   If you (or somebody else) makes changes to configure.in or any of the
   Makefile.am files, you will need to re-run the above command (making
   sure the above environment variables are still set if you needed them).
- 
+  
   3. Run the configure script
   
   For a default configuration, simply run the configure script in the

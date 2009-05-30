@@ -4,16 +4,16 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *
- *    1.  Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
+ *	1.  Redistributions of source code must retain the above copyright
+ *		notice, this list of conditions and the following disclaimer.
  *
- *    2.  Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
+ *	2.  Redistributions in binary form must reproduce the above copyright
+ *		notice, this list of conditions and the following disclaimer in the
+ *		documentation and/or other materials provided with the distribution.
  *
- *    3.  The name of the copyright holder may not be used to endorse or promote
- *        products derived from this software without specific prior written
- *        permission.
+ *	3.  The name of the copyright holder may not be used to endorse or promote
+ *		products derived from this software without specific prior written
+ *		permission.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -36,19 +36,19 @@
 
 class Tokens
 {
-    public:
-        Tokens(std::string _data, const char * _token);
-        
-        std::string operator[] (int _token) { return getToken(_token); }
-        
-        std::string getText(int _begin);
-        std::string getToken(int _token);
-        int getSize() { return tokens.size(); }
-        
-        std::string stripBreak(std::string _data);
-        
-    private:
-        std::list<std::string> tokens;
+	public:
+		Tokens(std::string _data, const char * _token);
+		
+		std::string operator[] (int _token) { return get_token(_token); }
+		
+		std::string get_text(int _begin);
+		std::string get_token(int _token);
+		int get_size() { return tokens.size(); }
+		
+		std::string strip_break(std::string _data);
+		
+	private:
+		std::list<std::string> tokens;
 };
 
 #endif

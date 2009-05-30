@@ -1,5 +1,8 @@
-William Tisäter <william@defunct.cc>
-- The bulk of the work, Linux monitoring
-
-Mo McRoberts <mo@nevali.net>
-- Solaris port, autoconf hackery
+ 
+  AUTHORS OF ISTAT
+ -------------------------------------------------------------------------
+  William Tisäter <william@defunct.cc>
+  - The bulk of the work, Linux monitoring
+  
+  Mo McRoberts <mo@nevali.net>
+  - Solaris port, autoconf hackery, libfslabel creator
