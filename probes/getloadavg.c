@@ -5,16 +5,16 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
  *
- *    1.  Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
+ *	1.  Redistributions of source code must retain the above copyright
+ *		notice, this list of conditions and the following disclaimer.
  *
- *    2.  Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
+ *	2.  Redistributions in binary form must reproduce the above copyright
+ *		notice, this list of conditions and the following disclaimer in the
+ *		documentation and/or other materials provided with the distribution.
  *
- *    3.  The name of the copyright holder may not be used to endorse or promote
- *        products derived from this software without specific prior written
- *        permission.
+ *	3.  The name of the copyright holder may not be used to endorse or promote
+ *		products derived from this software without specific prior written
+ *		permission.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -33,7 +33,7 @@
 # include "config.h"
 #endif
 
-#define _BSD_SOURCE                    1
+#define _BSD_SOURCE					1
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,11 +48,11 @@
 int get_avg_data(struct cpu_data *_cpu)
 {
 	double loadavg[3];
-    
-    if(-1 == getloadavg(loadavg, 3)) return -1;
-    _cpu->one = (float) loadavg[0];
-    _cpu->two = (float) loadavg[1];
-    _cpu->three = (float) loadavg[2];
+	
+	if(-1 == getloadavg(loadavg, 3)) return -1;
+	_cpu->one = (float) loadavg[0];
+	_cpu->two = (float) loadavg[1];
+	_cpu->three = (float) loadavg[2];
 	return 0;
 }
 #endif /*USE_LOAD_GETLOADAVG*/
