@@ -71,17 +71,17 @@ int main(int argc, char ** argv)
 		cout << endl;
 		cout << "usage: istat [-a HOST] [-p PORT]" << endl;
 		cout << endl;
-		cout << "	-d				 run in background" << endl;
-		cout << "	-c				 custom config file location" << endl;
-		cout << "	-a				 listen on this address" << endl;
-		cout << "	-p				 listen on this port" << endl;
-		cout << "	-u				 change running user" << endl;
-		cout << "	-h				 print this help text" << endl;
-		cout << "	-v				 print version number" << endl;
+		cout << "    -d                 run in background" << endl;
+		cout << "    -c                 custom config file location" << endl;
+		cout << "    -a                 listen on this address" << endl;
+		cout << "    -p                 listen on this port" << endl;
+		cout << "    -u                 change running user" << endl;
+		cout << "    -h                 print this help text" << endl;
+		cout << "    -v                 print version number" << endl;
 		cout << endl;
-		cout << "	--pid			  custom pid file location" << endl;
-		cout << "	--code			 custom lock code" << endl;
-		cout << "	--clear-sessions   clear all authorized sessions" << endl;
+		cout << "    --pid              custom pid file location" << endl;
+		cout << "    --code             custom lock code" << endl;
+		cout << "    --clear-sessions   clear all authorized sessions" << endl;
 		cout << endl;
 		return 0;
 	}
@@ -93,14 +93,14 @@ int main(int argc, char ** argv)
 	config.validate();
 	
 	// Load configuration properties from command line and config file
-	bool prop_back		= arguments.isset("d");
-	string prop_host	  = arguments.get("a", config.get("network_addr", "0.0.0.0"));
-	string prop_port	  = arguments.get("p", config.get("network_port", "5109"));
-	string prop_user	  = arguments.get("u", config.get("server_user", "istat"));
-	string prop_pid	   = arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
-	string prop_code	  = arguments.get("code", config.get("server_code", "00000"));
-	string prop_sock	  = arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
-	string prop_cache	 = config.get("cache_dir", "/var/cache/istat");
+	bool prop_back			= arguments.isset("d");
+	string prop_host		= arguments.get("a", config.get("network_addr", "0.0.0.0"));
+	string prop_port		= arguments.get("p", config.get("network_port", "5109"));
+	string prop_user		= arguments.get("u", config.get("server_user", "istat"));
+	string prop_pid			= arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
+	string prop_code		= arguments.get("code", config.get("server_code", "00000"));
+	string prop_sock		= arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
+	string prop_cache		= config.get("cache_dir", "/var/cache/istat");
    
 #ifdef HAVE_LIBKSTAT
 	if(-1 == kstat_init()) return 1;
