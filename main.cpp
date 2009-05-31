@@ -93,30 +93,30 @@ int main(int argc, char ** argv)
 	config.validate();
 	
 	// Load configuration properties from command line and config file
-	bool prop_back			= arguments.isset("d");
-	string prop_host		= arguments.get("a", config.get("network_addr", "0.0.0.0"));
-	string prop_port		= arguments.get("p", config.get("network_port", "5109"));
-	string prop_user		= arguments.get("u", config.get("server_user", "istat"));
-	string prop_pid			= arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
-	string prop_code		= arguments.get("code", config.get("server_code", "00000"));
-	string prop_sock		= arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
-	string prop_cache		= config.get("cache_dir", "/var/cache/istat");
+	bool arg_d								= arguments.isset("d");
+	
+	string cf_network_addr				= arguments.get("a", config.get("network_addr", "0.0.0.0"));
+	string cf_network_port				= arguments.get("p", config.get("network_port", "5109"));
+	string cf_server_user				= arguments.get("u", config.get("server_user", "istat"));
+	string cf_server_pid					= arguments.get("pid", config.get("server_pid", "/var/run/istat/istat.pid"));
+	string cf_server_socket				= arguments.get("socket", config.get("server_socket", "/tmp/istat.sock"));
+	string cf_cache_dir					= arguments.get("cache", config.get("cache_dir", "/var/cache/istat"));
    
 #ifdef HAVE_LIBKSTAT
 	if(-1 == kstat_init()) return 1;
 #endif
 	
-	Daemon unixdaemon(prop_pid, prop_sock);
-	Socket listener(prop_host, to_int(prop_port));
+	Daemon unixdaemon(cf_server_pid, cf_server_socket);
+	Socket listener(cf_network_addr, to_int(cf_network_port));
 	SignalResponder signalresponder(&sockets, &listener, &unixdaemon, &clients);
 	
 	::pn_signalresponder = &signalresponder;
 
 	// Create socket, pid file and put in background if desired
-	unixdaemon.create(prop_back, prop_user);
+	unixdaemon.create(arg_d, cf_server_user);
 	
 	// Get old sessions from disk cache
-	clients.read_cache(prop_cache);
+	clients.read_cache(cf_cache_dir);
 	
 	// Clear cache of saved sessions
 	if (arguments.isset("clear-sessions"))
@@ -183,7 +183,7 @@ int main(int argc, char ** argv)
 		
 				if (active_socket.receive(data, 1024))
 				{
-					switchboard.parse(&sockets, &clients, &active_socket, &stats, &arguments, data, prop_code);
+					switchboard.parse(&sockets, &clients, &config, &active_socket, &stats, &arguments, data);
 				}
 				else
 				{

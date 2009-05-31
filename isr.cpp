@@ -148,33 +148,37 @@ string isr_network_data(vector<net_info> * _history, int _init)
 	return temp.str();
 }
 
-string isr_disk_data(vector<disk_info> * _disks, int _init)
+string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk_fallback_label, const string cf_disk_filesystem_label, const string cf_disk_rename_label)
 {
 	stringstream temp;
 	string disk_label, disk_uuid;
 	
 	if(0 == _disks->size()) return temp.str();
 	
+	// cout << "fallback: " << cf_disk_fallback_label << endl;
+	// cout << "fslabel:  " << to_int(cf_disk_filesystem_label) << endl;
+	// cout << "rename:   " << cf_disk_rename_label << endl;
+	
 	temp << "<DISKS>";
  
 	for (vector<disk_info>::iterator cur = _disks->begin(); cur != _disks->end(); ++cur)
 	{
 		if ((*cur).active == false) continue;
-
-		cout << "what: " << strlen((*cur).label) << " - " << (*cur).device << endl;
 		
 		// Default values
 		disk_label = (*cur).device;
 		disk_uuid = (*cur).device;
 		
 		// Set label and uuid if libfslabel was able to retrive data
-		if (strlen((*cur).label)) disk_label = (*cur).label;
+		if (strlen((*cur).label) && to_int(cf_disk_filesystem_label) == 1) disk_label = (*cur).label;
 		if (strlen((*cur).uuid)) disk_uuid = (*cur).uuid;
 		
-		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "\" f=\"" << (*cur).history.back().f / 1000 << "\" p=\"" << (*cur).history.back().p << "\"></d>";
+		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "\" f=\"" << (*cur).history.front().f / 1000 << "\" p=\"" << (*cur).history.front().p << "\"></d>";
 	}
 	
 	temp << "</DISKS>";
+	
+	// cout << temp.str() << endl;
 	
 	return temp.str();
 }

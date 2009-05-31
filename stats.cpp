@@ -58,7 +58,7 @@ void Stats::update_system_stats()
 	
 	for (nit = nets.begin(); nit < nets.end(); nit++)
 	{
-		if ((*nit).active == 0) continue;
+		if ((*nit).active == false) continue;
 
 		strncpy(tmp, (*nit).device, sizeof(tmp) - 1);
 		tmp[sizeof(tmp) - 1] = 0;
@@ -66,7 +66,7 @@ void Stats::update_system_stats()
 		if (get_net_data(tmp, &net_data) == -1)
 		{
 			cout << "Could not get network data for '" << (*nit).device << "'. Device not found." << endl;
-			(*nit).active = 0;
+			(*nit).active = false;
 		}
 		else
 		{
@@ -85,21 +85,29 @@ void Stats::update_system_stats()
 	
 	for (dit = disks.begin(); dit < disks.end(); dit++)
 	{
-		if ((*dit).active == 0) continue;
+		if ((*dit).active == false) continue;
 		
-		strncpy(tmp, (*dit).device, sizeof(tmp) - 1);
-		tmp[sizeof(tmp) - 1] = 0;
+		// Update the disk information every minute
+		last_update_diff = uxt - (*dit).last_update;
 		
-		if (get_disk_data(tmp, &disk_data) == -1)
+		if (last_update_diff > 60)
+		{
+			get_disk_info((*dit).device, (*dit).uuid, (*dit).label, (*dit).name, (*dit).device);
+			
+			(*dit).last_update = uxt;
+		}
+		
+		// Get block size data from mount path
+		if (get_disk_data((*dit).name, &disk_data) == -1)
 		{
 			cout << "Could not get disk data for '" << (*dit).device << "'. Device not found in /etc/mtab." << endl;
-			(*dit).active = 0;
+			(*dit).active = false;
 		}
 		else
 		{
 			disk_data.uxt = uxt;
 			
-			// Insert and pop out old history
+			// Insert new data and pop out old
 			if (!(*dit).history.size())
 				(*dit).history.insert((*dit).history.begin(), disk_data);
 			
@@ -107,17 +115,6 @@ void Stats::update_system_stats()
 				(*dit).history.insert((*dit).history.begin(), disk_data);
 			
 			if ((*dit).history.size() > DISK_HISTORY) (*dit).history.pop_back();
-			
-			
-			// Update the disk information every minute
-			last_update_diff = uxt - (*dit).last_update;
-			
-			if (last_update_diff > 60)
-			{
-				get_disk_info(tmp, (*dit).uuid, (*dit).label, (*dit).name, (*dit).device);
-				
-				(*dit).last_update = uxt;
-			}
 		}
 	}
 	
@@ -127,7 +124,7 @@ void Stats::update_system_stats()
 	if (!history.size())
 		history.insert(history.begin(), stats);
 	
-	if (stats.upt != history.front().upt)
+	if (stats.uxt != history.front().uxt)
 		history.insert(history.begin(), stats);
 	
 	if (history.size() > STAT_HISTORY) history.pop_back();

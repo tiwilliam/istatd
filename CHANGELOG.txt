@@ -2,6 +2,9 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
   * Version: 0.5.4
+  * New: Implemented libfslabel. Support for reading disk labels.
+  * Fix: CPU calculation gone bad. -0% idle not more an issue.
+  * Fix: Some dubious C string manipulation.
  -------------------------------------------------------------------------
   * Version: 0.5.3
   * New: Solaris support. Yay!
@@ -15,12 +18,12 @@
   * New: Created basic man page documentation.
   * New: Flag for clearing the cache. (--clear-sessions)
   * Fix: Should be more quiet on the stdout now.
-  * Fix: Default path to configuration file will now be honoured
-  * Fix: Makefile should obey configured paths
+  * Fix: Default path to configuration file will now be honoured.
+  * Fix: Makefile should obey configured paths.
  -------------------------------------------------------------------------
   * Version: 0.5.1
   * Fix: Display help and version without read permission to config.
   * Fix: Forgot to rename properties for network and port that was changed.
  -------------------------------------------------------------------------
   * Version: 0.5.0
-  * New: First release
+  * New: First release.

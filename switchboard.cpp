@@ -34,6 +34,7 @@
 #include <libxml/xmlmemory.h>
 
 #include "isr.h"
+#include "conf.h"
 #include "stats.h"
 #include "socket.h"
 #include "utility.h"
@@ -44,7 +45,9 @@
 
 using namespace std;
 
-void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Socket * _active_socket, Stats * _stats, ArgumentSet * arguments, const string & _data, const string & _prop_code)
+void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _config, \
+								Socket * _active_socket, Stats * _stats, ArgumentSet * arguments, \
+								const string & _data)
 {
 	int rid;
 	Client client;
@@ -54,13 +57,20 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Socket * _ac
 	string element_name;
 	xmlChar * element_content;
 	int element_content_int = 0;
+	
 	vector<sys_info> data_history;
 	vector<net_info> data_net_history;
 	vector<disk_info> data_disk_history;
 	
+	// Load properties from config file
+	string cf_server_code				= _config->get("server_code", "00000");
+	string cf_disk_fallback_label		= _config->get("disk_fallback_label", "dir");
+	string cf_disk_filesystem_label  = _config->get("disk_filesystem_label", "1");
+	string cf_disk_rename_label      = _config->get("disk_rename_label");
+	
 	if (_data.substr(0, 1) != "<")
 	{
-		if (_data == _prop_code)
+		if (_data == cf_server_code)
 		{
 			_clients->authenticate(_active_socket->get_id());
 			_active_socket->send(isr_accept_code());
@@ -190,7 +200,7 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Socket * _ac
 									
 									case DISK:
 										data_disk_history = _stats->get_disk_history();
-										temp << isr_disk_data(&data_disk_history, element_content_int);
+										temp << isr_disk_data(&data_disk_history, element_content_int, cf_disk_fallback_label, cf_disk_filesystem_label, cf_disk_rename_label);
 										break;
 								}
 							

@@ -34,24 +34,25 @@
 #include <list>
 #include <iostream>
 
+#include "conf.h"
 #include "stats.h"
 #include "socket.h"
 #include "socketset.h"
 #include "clientset.h"
 
-#define CPU			99
+#define CPU				99
 #define NETWORK		110
 #define MEMORY		109
-#define LOAD		108111
-#define TEMP		116
-#define FAN			102
+#define LOAD			108111
+#define TEMP			116
+#define FAN				102
 #define UPTIME		117
-#define DISK		100
+#define DISK			100
 
 class Switchboard
 {
 	public:
-		void parse(SocketSet * _sockets, ClientSet * _clients, Socket * _active_socket, Stats * _stats, ArgumentSet * _arguments, const std::string & _data, const std::string & _prop_code);
+		void parse(SocketSet * _sockets, ClientSet * _clients, Config * _config, Socket * _active_socket, Stats * _stats, ArgumentSet * _arguments, const std::string & _data);
 };
 
 #endif

@@ -89,6 +89,7 @@ int get_disk_data(const char * _dev, struct disk_data * _disk_data)
 # else
 		bsize = space.f_bsize;
 # endif
+		
 		_disk_data->t = ((unsigned long long) space.f_blocks * bsize) / 1024;
 		_disk_data->u = ((unsigned long long) (space.f_blocks - space.f_bavail) * bsize) / 1024;
 		_disk_data->f = _disk_data->t - _disk_data->u;
