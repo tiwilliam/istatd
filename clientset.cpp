@@ -192,6 +192,8 @@ void ClientSet::read_cache(const std::string & _cache_dir)
 			if (line.length())
 			{
 				array = explode(line, ":");
+				
+				if (array.size() < 5) continue;
 			
 				client.socket = 0;
 				client.name = array.at(0);
