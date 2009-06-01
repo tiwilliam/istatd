@@ -49,14 +49,11 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 								Socket * _active_socket, Stats * _stats, ArgumentSet * arguments, \
 								const string & _data)
 {
-	int rid;
-	Client client;
-	string content;
-	int element_code;
 	stringstream temp;
-	string element_name;
-	xmlChar * element_content;
-	int element_content_int = 0;
+	char *name, *duuid;
+	xmlChar *element_content;
+	string content, element_name;
+	int rid, socket, element_code, element_content_int = 0;
 	
 	vector<sys_info> data_history;
 	vector<net_info> data_net_history;
@@ -67,6 +64,8 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 	string cf_disk_fallback_label		= _config->get("disk_fallback_label", "dir");
 	string cf_disk_filesystem_label  = _config->get("disk_filesystem_label", "1");
 	string cf_disk_rename_label      = _config->get("disk_rename_label");
+	
+	socket = _active_socket->get_id();
 	
 	if (_data.substr(0, 1) != "<")
 	{
@@ -107,23 +106,24 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 					
 					if (element_name == "h")
 					{
-						client.ready = 0;
-						client.socket = _active_socket->get_id();
-						client.name = (const char *) xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+						name = (char *) xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 						cur = cur->next;
-						client.duuid = (const char *) xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+						duuid = (char *) xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 					
-						// Clean old sessions and update socket id for current duuid
-						_clients->update_sessions(client.duuid, _active_socket->get_id(), _sockets);
+						// Clean old sessions and update socket id for current duuid, create new if nothing found
+						_clients->init_session(duuid, socket, name);
 					
 						// Check if this user is already authenticated
-						if (_clients->is_authenticated(client.duuid))
+						if (_clients->is_authenticated(duuid))
 						{
 							_active_socket->send(isr_accept_connection(0, 6, _stats->get_stats().upt + 1, _stats->get_stats().upt));
+							
+							_clients->get_client(socket)->force_disk_refresh();
+							_clients->get_client(socket)->force_temp_refresh();
+							_clients->get_client(socket)->force_fans_refresh();
 						}
 						else
 						{
-							(*_clients) += client;
 							_active_socket->send(isr_accept_connection(1, 6, _stats->get_stats().upt + 1, _stats->get_stats().upt));
 						}
 						
@@ -140,13 +140,12 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 					
 					if (element_name == "rid")
 					{
-						if (_clients->is_authenticated(_clients->get_client(_active_socket->get_id()).duuid))
+						if (_clients->is_authenticated(_clients->get_client(_active_socket->get_id())->duuid))
 						{
 							rid = to_int((const char *) xmlNodeListGetString(doc, cur->xmlChildrenNode, 1));
-						
-							// TODO: Let the client know if there have been changes to disks, temps or fans.
+							
 							temp << isr_create_header();
-							temp << isr_create_session(rid, 0, 0, 0);
+							temp << isr_create_session(rid, _clients->get_client(socket)->sid_disk, _clients->get_client(socket)->sid_temp, _clients->get_client(socket)->sid_fans);
 							
 							if ((cur = cur->next) == NULL)
 							{

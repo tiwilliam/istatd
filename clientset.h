@@ -43,19 +43,26 @@ class Client
 		int socket;
 		std::string name;
 		std::string duuid;
+		unsigned int sid_disk;
+		unsigned int sid_fans;
+		unsigned int sid_temp;
+		
+		void force_disk_refresh(void) { sid_disk++; }
+		void force_fans_refresh(void) { sid_fans++; }
+		void force_temp_refresh(void) { sid_temp++; }
 };
 
 class ClientSet
 {
 	public:
 		void operator += (Client & _client);
-		Client get_client(int _socket);
 		void authenticate(int _socket);
+		Client *get_client(int _socket);
 		int is_authenticated(const std::string & _duuid);
-		void update_sessions(const std::string & _duuid, int _socket, SocketSet * _sockets);
-		int length();
-		void clear_cache();
-		void save_cache();
+		void init_session(const std::string & _duuid, int _socket, const std::string & _name);
+		int length(void);
+		void clear_cache(void);
+		void save_cache(void);
 		void read_cache(const std::string & cachedir);
 		
 	private:

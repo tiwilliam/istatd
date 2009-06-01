@@ -45,22 +45,10 @@ using namespace std;
 
 void ClientSet::operator += (Client & _client)
 {
-	for (std::vector<Client>::iterator search = clients.begin(); search != clients.end(); ++search)
-	{
-		if (search->duuid == _client.duuid)
-		{
-			search->name = _client.name;
-			
-			return;
-		}
-	}
-	
 	clients.push_back(_client);
-	
-	// cout << "(" << _client.name << ":" << _client.duuid << ") Client added to client set." << endl;
 }
 
-Client ClientSet::get_client(int _socket)
+Client *ClientSet::get_client(int _socket)
 {
 	vector<Client>::iterator search;
 	
@@ -68,11 +56,11 @@ Client ClientSet::get_client(int _socket)
 	{
 		if (search->socket == _socket)
 		{
-			return (*search);
+			return &(*search);
 		}
 	}
 	
-	return (*search);
+	return &(*search);
 }
 
 void ClientSet::authenticate(int _socket)
@@ -99,24 +87,45 @@ int ClientSet::is_authenticated(const string & _duuid)
 	return 0;
 }
 
-void ClientSet::update_sessions(const std::string & _duuid, int _socket, SocketSet * _sockets)
+void ClientSet::init_session(const string & _duuid, int _socket, const string & _name)
 {
+	bool found_entry = false;
+	
 	for (std::vector<Client>::iterator eraser = clients.begin(); eraser != clients.end(); ++eraser)
 	{
 		if (eraser->duuid == _duuid)
 		{
+			eraser->name = _name;
 			eraser->socket = _socket;
+			
+			found_entry = true;
+			
 			break;
 		}
 	}
+	
+	if (!found_entry)
+	{
+		Client new_client;
+		
+		new_client.ready = 0;
+		new_client.name = _name;
+		new_client.duuid = _duuid;
+		new_client.socket = _socket;
+		new_client.sid_disk = 0;
+		new_client.sid_temp = 0;
+		new_client.sid_fans = 0;
+		
+		*this += new_client;
+	}
 }
 
-int ClientSet::length()
+int ClientSet::length(void)
 {
 	return clients.size();
 }
 
-void ClientSet::clear_cache()
+void ClientSet::clear_cache(void)
 {
 	if (this->cache_dir.length())
 	{
@@ -138,7 +147,7 @@ void ClientSet::clear_cache()
 	}
 }
 
-void ClientSet::save_cache()
+void ClientSet::save_cache(void)
 {
 	if (this->cache_dir.length())
 	{
@@ -156,7 +165,7 @@ void ClientSet::save_cache()
 		}
 		for (std::vector<Client>::iterator client = clients.begin(); client != clients.end(); ++client)
 		{
-			out << client->name << ":" << client->duuid << ":" << client->ready << endl;
+			out << client->name << ":" << client->duuid << ":" << client->ready << ":" << client->sid_disk << ":" << client->sid_temp << ":" << client->sid_fans << endl;
 		}
 		
 		out.close();
@@ -188,6 +197,9 @@ void ClientSet::read_cache(const std::string & _cache_dir)
 				client.name = array.at(0);
 				client.duuid = array.at(1);
 				client.ready = to_int(array.at(2));
+				client.sid_disk = to_int(array.at(3));
+				client.sid_temp = to_int(array.at(4));
+				client.sid_fans = to_int(array.at(5));
 			
 				if (clients.size())
 				{
