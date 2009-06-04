@@ -58,20 +58,32 @@ void Stats::update_system_stats()
 	
 	for (nit = nets.begin(); nit < nets.end(); nit++)
 	{
-		if ((*nit).active == false) continue;
+		last_update_diff = uxt - (*nit).last_update;
+		
+		// Skip this device if last try is less than one minute away.
+		if ((*nit).active == false && last_update_diff < 10) continue;
+		
+		// Save last probe time. Good for fail check interval.
+		(*nit).last_update = uxt;
 
 		strncpy(tmp, (*nit).device, sizeof(tmp) - 1);
 		tmp[sizeof(tmp) - 1] = 0;
 		
 		if (get_net_data(tmp, &net_data) == -1)
 		{
-			cout << "Could not get network data for '" << (*nit).device << "'. Device not found." << endl;
-			(*nit).active = false;
+			// Only print warning if device is active
+			if ((*nit).active)
+			{
+				cout << "Could not get network data for '" << (*nit).device << "'. Device not found." << endl;
+				(*nit).active = false;
+			}
 		}
 		else
 		{
 			net_data.uxt = uxt;
 			net_data.upt = get_uptime();
+			
+			(*nit).active = true;
 			
 			if (!(*nit).history.size())
 				(*nit).history.insert((*nit).history.begin(), net_data);
@@ -92,7 +104,7 @@ void Stats::update_system_stats()
 		
 		if (last_update_diff > 60)
 		{
-			get_disk_info((*dit).device, (*dit).uuid, (*dit).label, (*dit).name, (*dit).device);
+			get_disk_info((*dit).device, (*dit).uuid, (*dit).label, (*dit).name);
 			
 			(*dit).last_update = uxt;
 		}

@@ -64,6 +64,7 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 	string cf_disk_fallback_label		= _config->get("disk_fallback_label", "dir");
 	string cf_disk_filesystem_label  = _config->get("disk_filesystem_label", "1");
 	string cf_disk_rename_label      = _config->get("disk_rename_label");
+	string cf_server_reject_delay    = _config->get("server_reject_delay", "3");
 	
 	socket = _active_socket->get_id();
 	
@@ -75,7 +76,10 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 			_active_socket->send(isr_accept_code());
 		}
 		else
+		{
+			// TODO: Bruteforce protection, delay reject.
 			_active_socket->send(isr_reject_code());
+		}
 	}
 	else
 	{

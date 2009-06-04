@@ -59,6 +59,7 @@ class SignalResponder
 		void destroy();
 		void on_sigint();
 		void on_sigterm();
+		void on_sighup();
 		
 	private:
 		Socket * listener;

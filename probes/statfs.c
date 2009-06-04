@@ -101,7 +101,7 @@ int get_disk_data(const char * _dev, struct disk_data * _disk_data)
 	return -1;
 }
 
-int get_disk_info(char * _path, char * _uuid, char * _label, char * _name, char * _device)
+int get_disk_info(char * _device, char * _uuid, char * _label, char * _name)
 {
 	int r;
 	FILE *table;
@@ -129,7 +129,7 @@ int get_disk_info(char * _path, char * _uuid, char * _label, char * _name, char 
 	#  define mnt_dir mnt_mountp 
 	# endif
 		{
-			if (strcmp(entry->mnt_fsname, _path) == 0 || strcmp(entry->mnt_dir, _path) == 0)
+			if (strcmp(entry->mnt_fsname, _device) == 0 || strcmp(entry->mnt_dir, _device) == 0)
 			{
 				if ((r = fslabel_identify(entry->mnt_fsname, &label)) == 1)
 				{

@@ -80,7 +80,7 @@ int get_mem_data(struct mem_data *_mem);
 int get_swp_data(struct mem_data *_mem);
 int get_net_data(const char *_dev, struct net_data *_data);
 int get_disk_data(const char *_dev, struct disk_data *_disk);
-int get_disk_info(char * _path, char * _uuid, char * _label, char * _name, char * _device);
+int get_disk_info(char * _device, char * _uuid, char * _label, char * _name);
 
 # ifdef __cplusplus
 };

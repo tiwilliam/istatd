@@ -123,8 +123,9 @@ string isr_cpu_data(vector<sys_info> * _history, int _init)
 string isr_network_data(vector<net_info> * _history, int _init)
 {
 	stringstream temp;
-
-	if(0 == _history->size()) return temp.str();	
+	
+	if(0 == _history->size()) return temp.str();
+	
 	for (vector<net_info>::iterator cur = _history->begin(); cur != _history->end(); ++cur)
 	{
 		if ((*cur).active == false) continue;

@@ -47,6 +47,7 @@ class net_info
 		unsigned int id;
 		
 		char device[PATH_MAX];
+		unsigned int last_update;
 		
 		std::vector<net_data> history;
 };
@@ -54,8 +55,6 @@ class net_info
 class disk_info
 {
 	public:
-		time_t uxt;
-		
 		bool active;
 		unsigned int id;
 		

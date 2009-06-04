@@ -143,3 +143,8 @@ void SignalResponder::on_sigterm()
 {
 	this->destroy();
 }
+
+void SignalResponder::on_sighup()
+{
+	cout << "Placeholder for reloading config." << endl;
+}

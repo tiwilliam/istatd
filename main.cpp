@@ -211,6 +211,10 @@ void handler(int _signal)
 			case SIGTERM:
 				pn_signalresponder->on_sigterm();
 				return;
+			
+			case SIGHUP:
+				pn_signalresponder->on_sighup();
+				return;
 		}
 	}
 }
