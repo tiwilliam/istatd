@@ -52,7 +52,8 @@ std::vector<std::string> explode(std::string source, const std::string & delims 
 template<class T> int to_int(const T & val)
 {
 	int n;
-	std::stringstream buffer(val);
+	std::stringstream buffer;
+	buffer << val;
 	buffer >> n;
 	return n;
 }
