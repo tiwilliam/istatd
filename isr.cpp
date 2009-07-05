@@ -149,7 +149,7 @@ string isr_network_data(vector<net_info> * _history, int _init)
 	return temp.str();
 }
 
-string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk_fallback_label, const string cf_disk_filesystem_label, vector<string> cf_disk_rename_label, int _temp_hack)
+string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk_mount_path_label, const string cf_disk_filesystem_label, vector<string> cf_disk_rename_label, int _temp_hack)
 {
 	stringstream temp;
 	vector<string> conf_label;
@@ -182,10 +182,10 @@ string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk
 			}
 		}
 		
-		if (to_int(cf_disk_fallback_label))
-			disk_label = (*cur).device;
-		else
+		if (to_int(cf_disk_mount_path_label))
 			disk_label = (*cur).name;
+		else
+			disk_label = (*cur).device;
 		
 		// Set label and uuid if libfslabel was able to retrive data and is configured to do it
 		if (strlen((*cur).label) && to_int(cf_disk_filesystem_label) == 1)

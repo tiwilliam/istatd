@@ -47,7 +47,7 @@ std::string isr_accept_connection(int _ath, int _ss, int _c, int _n);
 
 std::string isr_cpu_data(std::vector<sys_info> * _history, int _init);
 std::string isr_network_data(std::vector<net_info> * _history, int _init);
-std::string isr_disk_data(std::vector<disk_info> * _disks, int _init, const std::string cf_disk_fallback_label, const std::string cf_disk_filesystem_label, std::vector<std::string> cf_disk_rename_label, int _temp_hack);
+std::string isr_disk_data(std::vector<disk_info> * _disks, int _init, const std::string cf_disk_mount_path_label, const std::string cf_disk_filesystem_label, std::vector<std::string> cf_disk_rename_label, int _temp_hack);
 std::string isr_uptime_data(std::vector<sys_info> * _history);
 std::string isr_loadavg_data(std::vector<sys_info> * _history);
 std::string isr_memory_data(std::vector<sys_info> * _history);

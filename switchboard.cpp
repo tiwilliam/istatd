@@ -62,7 +62,7 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 	// Load properties from config file
 	string cf_server_code					= _config->get("server_code", "00000");
 	string cf_server_reject_delay			= _config->get("server_reject_delay", "3");
-	string cf_disk_fallback_label			= _config->get("disk_fallback_label", "0");
+	string cf_disk_mount_path_label		= _config->get("disk_mount_path_label", "0");
 	string cf_disk_filesystem_label		= _config->get("disk_filesystem_label", "1");
 	vector<string> cf_disk_rename_label	= _config->get_array("disk_rename_label");
 	
