@@ -149,32 +149,61 @@ string isr_network_data(vector<net_info> * _history, int _init)
 	return temp.str();
 }
 
-string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk_fallback_label, const string cf_disk_filesystem_label, const string cf_disk_rename_label)
+string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk_fallback_label, const string cf_disk_filesystem_label, vector<string> cf_disk_rename_label, int _temp_hack)
 {
 	stringstream temp;
-	string disk_label, disk_uuid;
+	vector<string> conf_label;
+	string disk_label, disk_label_custom, disk_uuid;
 	
 	if(0 == _disks->size()) return temp.str();
 	
-	// cout << "fallback: " << cf_disk_fallback_label << endl;
-	// cout << "fslabel:  " << to_int(cf_disk_filesystem_label) << endl;
-	// cout << "rename:   " << cf_disk_rename_label << endl;
-	
 	temp << "<DISKS>";
- 
+	
 	for (vector<disk_info>::iterator cur = _disks->begin(); cur != _disks->end(); ++cur)
 	{
 		if ((*cur).active == false) continue;
 		
-		// Default values
-		disk_label = (*cur).device;
-		disk_uuid = (*cur).device;
+		disk_uuid = "";
+		disk_label = "";
+		disk_label_custom = "";
 		
-		// Set label and uuid if libfslabel was able to retrive data
-		if (strlen((*cur).label) && to_int(cf_disk_filesystem_label) == 1) disk_label = (*cur).label;
-		if (strlen((*cur).uuid)) disk_uuid = (*cur).uuid;
+		// Read custom disk label from config
+		for (vector<string>::iterator cur_label = cf_disk_rename_label.begin(); cur_label != cf_disk_rename_label.end(); ++cur_label)
+		{
+			conf_label = explode(*cur_label);
+			
+			if (conf_label[1].length())
+			{
+				if (conf_label[0] == (*cur).device || conf_label[0] == (*cur).name)
+				{
+					disk_label_custom = trim(conf_label[1], "\"");
+					break;
+				}
+			}
+		}
 		
-		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "\" f=\"" << (*cur).history.front().f / 1000 << "\" p=\"" << (*cur).history.front().p << "\"></d>";
+		if (to_int(cf_disk_fallback_label))
+			disk_label = (*cur).device;
+		else
+			disk_label = (*cur).name;
+		
+		// Set label and uuid if libfslabel was able to retrive data and is configured to do it
+		if (strlen((*cur).label) && to_int(cf_disk_filesystem_label) == 1)
+			disk_label = (*cur).label;
+		
+		// Set custom disk label if configured. Will override everything.
+		if (disk_label_custom.length())
+			disk_label = disk_label_custom;
+		
+		// Use real uuid if we found one with libfslabel
+		if (strlen((*cur).uuid))
+			disk_uuid = (*cur).uuid;
+		else
+			disk_uuid = (*cur).device;
+		
+		// TEMPORY hack for current iStat version.
+		// Remove when new client is released.
+		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "-" << _temp_hack << "\" f=\"" << (*cur).history.front().f / 1000 << "\" p=\"" << (*cur).history.front().p << "\"></d>";
 	}
 	
 	temp << "</DISKS>";

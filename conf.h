@@ -58,6 +58,7 @@ class Config
 		void validate();
 		bool isset(const std::string & _var);
 		std::string get(const std::string & _var, const std::string & _default = "");
+		std::vector<std::string> get_array(const std::string & _var);
 		Property get_property(const std::string & _var);
 		
 	private:

@@ -90,9 +90,9 @@ void Config::parse()
 					property.val = "";
 					property.array = array;
 				}
+				
+				properties.push_back(property);
 			}
-			
-			properties.push_back(property);
 			
 			// Count lines for syntax error
 			num++;
@@ -157,6 +157,19 @@ string Config::get(const string & _var, const std::string & _default)
 	}
 	
 	return _default;
+}
+
+vector<string> Config::get_array(const string & _var)
+{
+	vector<string> temp;
+	
+	for (vector<Property>::iterator i = properties.begin(); i != properties.end(); i++)
+	{
+		if (i->var == _var)
+			temp.push_back(i->val);
+	}
+	
+	return temp;
 }
 
 Property Config::get_property(const string & _var)

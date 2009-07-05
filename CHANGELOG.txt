@@ -3,6 +3,7 @@
  -------------------------------------------------------------------------
   * Version: 0.5.4
   * New: Implemented libfslabel. Support for reading disk labels.
+  * New: Specify custom disk labels in config file.
   * Fix: CPU calculation gone bad. -0% idle not more an issue.
   * Fix: Some dubious C string manipulation.
   * Fix: Probe failed net ifaces every minute to see if they are up.

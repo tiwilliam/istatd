@@ -60,11 +60,11 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 	vector<disk_info> data_disk_history;
 	
 	// Load properties from config file
-	string cf_server_code				= _config->get("server_code", "00000");
-	string cf_disk_fallback_label		= _config->get("disk_fallback_label", "dir");
-	string cf_disk_filesystem_label  = _config->get("disk_filesystem_label", "1");
-	string cf_disk_rename_label      = _config->get("disk_rename_label");
-	string cf_server_reject_delay    = _config->get("server_reject_delay", "3");
+	string cf_server_code					= _config->get("server_code", "00000");
+	string cf_server_reject_delay			= _config->get("server_reject_delay", "3");
+	string cf_disk_fallback_label			= _config->get("disk_fallback_label", "0");
+	string cf_disk_filesystem_label		= _config->get("disk_filesystem_label", "1");
+	vector<string> cf_disk_rename_label	= _config->get_array("disk_rename_label");
 	
 	socket = _active_socket->get_id();
 	
@@ -203,7 +203,10 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 									
 									case DISK:
 										data_disk_history = _stats->get_disk_history();
-										temp << isr_disk_data(&data_disk_history, element_content_int, cf_disk_fallback_label, cf_disk_filesystem_label, cf_disk_rename_label);
+										
+										// sid_disk is a TEMPORARY hack for a bug in current verison of the client.
+										// Remove when new client is released.
+										temp << isr_disk_data(&data_disk_history, element_content_int, cf_disk_fallback_label, cf_disk_filesystem_label, cf_disk_rename_label, _clients->get_client(socket)->sid_disk);
 										break;
 								}
 							
@@ -211,7 +214,7 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 							}
 							
 							temp << "</isr>";
-					
+							
 							_active_socket->send(temp.str());
 						}
 					}
