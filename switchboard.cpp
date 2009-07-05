@@ -206,7 +206,7 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 										
 										// sid_disk is a TEMPORARY hack for a bug in current verison of the client.
 										// Remove when new client is released.
-										temp << isr_disk_data(&data_disk_history, element_content_int, cf_disk_fallback_label, cf_disk_filesystem_label, cf_disk_rename_label, _clients->get_client(socket)->sid_disk);
+										temp << isr_disk_data(&data_disk_history, element_content_int, cf_disk_mount_path_label, cf_disk_filesystem_label, cf_disk_rename_label, _clients->get_client(socket)->sid_disk);
 										break;
 								}
 							
