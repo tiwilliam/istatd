@@ -103,6 +103,11 @@ use_disk=statvfs
 	])
 ])
 
+AC_CHECK_LIB([avahi-client],[avahi_client_new],[
+AC_DEFINE_UNQUOTED([HAVE_LIBAVAHI_CLIENT],1,[Define if libavahi-client is available])
+LIBS="$LIBS -lavahi-client"
+])
+
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h])
 

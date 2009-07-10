@@ -37,6 +37,8 @@
 #include <sys/socket.h>
 
 #include "main.h"
+#include "avahi.h"
+#include "config.h"
 #include "daemon.h"
 #include "utility.h"
 
@@ -92,7 +94,7 @@ void Daemon::create(bool _back, const string & _user)
 	
 	if ((unix_socket = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
 	{
-		cout << "Could not create UNIX socket: " << strerror(errno) << endl;
+		cout << "Could not create UNIX socket file " << sockfile << ": " << strerror(errno) << endl;
 		exit(1);
 	}
 	
@@ -114,6 +116,11 @@ void Daemon::create(bool _back, const string & _user)
 		cout << "Could not listen to UNIX socket: " << strerror(errno) << endl;
 		exit(1);
 	}
+	
+#ifdef HAVE_LIBAVAHI_CLIENT
+	// Announce to Avahi we have a daemon running
+	// avahi_publish_service();
+#endif
 }
 
 void Daemon::destroy()

@@ -6,6 +6,7 @@ bin_PROGRAMS = istatd
 
 istatd_SOURCES = \
 	main.h main.cpp \
+	avahi.h avahi.cpp \
 	conf.h conf.cpp \
 	argument.h argument.cpp \
 	switchboard.h switchboard.cpp \
