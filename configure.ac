@@ -71,8 +71,8 @@ use_cpu=$have_procfs
 use_net=$have_procfs
 use_uptime=$have_procfs
 use_mem=$have_procfs
-use_load=$have_procfs
 use_swap=$have_procfs
+use_load=none
 use_disk=none
 
 dnl Specific tests for probe types
@@ -155,9 +155,6 @@ AC_MSG_RESULT($use_cpu)
 
 AC_MSG_CHECKING([load average probe type])
 case $use_load in
-	procfs)
-		AC_DEFINE_UNQUOTED([USE_LOAD_PROCFS],1,[Use procfs to probe load average])
-		;;
 	getloadavg)
 		AC_DEFINE_UNQUOTED([USE_LOAD_GETLOADAVG],1,[Use getloadavg(3) to probe load average])
 		;;
@@ -201,7 +198,7 @@ case $use_uptime in
 		AC_DEFINE_UNQUOTED([USE_UPTIME_PROCFS],1,[Use procfs to probe uptime])
 		;;
 	kstat)
-		AC_DEFINE_UNQUOTED([USE_UPTIME_KSTAT],1,[Use kstat(3) to probe load average])
+		AC_DEFINE_UNQUOTED([USE_UPTIME_KSTAT],1,[Use kstat(3) to probe uptime])
 		;;
 	*)
 		AC_MSG_ERROR([cannot determine uptime probe type for ${host_os}])
