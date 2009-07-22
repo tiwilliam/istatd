@@ -7,6 +7,7 @@
   * Fix: CPU calculation gone bad. -0% idle not more an issue.
   * Fix: Some dubious C string manipulation.
   * Fix: Probe failed net ifaces every minute to see if they are up.
+  * Fix: Create pid and cache directories automaticly.
  -------------------------------------------------------------------------
   * Version: 0.5.3
   * New: Solaris support. Yay!

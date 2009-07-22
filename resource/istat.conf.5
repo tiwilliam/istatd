@@ -14,11 +14,13 @@ Port to bind (default: 5109)
 .It server_code
 Lock code needed when connecting to the server for the first time. (default: 00000)
 .It server_socket
-Location of the unix socket. (default: /tmp/istat.sock)
+Location of the unix socket. (default: /tmp/istatd.sock)
 .It server_pid
-Location of the pid. (default: /var/run/istat/istat.pid)
+Location of the pid. (default: /var/run/istat/istatd.pid)
 .It server_user
 User to switch to when entering daemon mode. It's not recommended to use high privilaged users like root due to security reasons. Defaults to root if the user doesn't exist. (default: istat)
+.It server_group
+Group to switch to when entering daemon mode. Defaults to root if the group doesn't exist. (default: istat)
 .It cache_dir
 Where to store cache files with information like authorized clients. (default: /var/cache/istat)
 .It monitor_net
