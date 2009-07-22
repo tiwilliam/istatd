@@ -44,21 +44,71 @@
 
 using namespace std;
 
-void Daemon::create(bool _back, const string & _user)
+void Daemon::create(bool _back, const string &_user, const string &_group)
 {
-	int pid, uid;
+	int pid;
+	uid_t uid;
+	gid_t gid;
+	string piddir;
 
 	// Obtain new process group
 	setsid();
 	
-	// Switch user
-	if ((uid = get_id_from_name(_user)) >= 0)
+	// Translate user from configuration to uid
+	if ((uid = get_uid_from_str(_user)) < 0)
 	{
-		if (setuid(uid) != 0)
-		{
-			cout << "Could not switch user: " << strerror(errno) << endl;
-		}
+		cout << "Warning! Cannot get uid for username " << _user << ", will run as current user." << endl;
+		uid = get_current_uid();
 	}
+	
+	// Translate group from configuration to gid
+	if ((gid = get_gid_from_str(_group)) < 0)
+	{
+		cout << "Warning! Cannot get gid for group " << _group << ", will run as current group." << endl;
+		gid = get_current_gid();
+	}
+	
+	// Craete pid directory if it does not exist
+	piddir = pidfile.substr(0, pidfile.find_last_of("/"));
+	
+	if (check_dir_exist(piddir) == 0)
+	{
+		create_directory(piddir, 0755);
+		chown(piddir.c_str(), uid, gid);
+	}
+	
+	// Craete cache directory if it does not exist
+	if (check_dir_exist(cachedir) == 0)
+	{
+		create_directory(cachedir, 0755);
+		chown(cachedir.c_str(), uid, gid);
+	}
+	
+	// Create pid file
+	ofstream out(pidfile.c_str());
+	
+	if (!out)
+	{
+		cout << "Could not create pid file " << pidfile << ": " << strerror(errno) << endl;
+		exit(1);
+	}
+	
+	out << getpid();
+	out.close();
+	chmod(pidfile.c_str(), 0644);
+	chown(pidfile.c_str(), uid, gid);
+	
+	// Switch group for daemon
+	if (setgid(gid) != 0)
+		cout << "Could not switch to group " << _group << ": " << strerror(errno) << endl;
+	
+	// Switch user for daemon
+	if (setuid(uid) != 0)
+		cout << "Could not switch to user " << _user << ": " << strerror(errno) << endl;
+	
+	// Check if we are running the daemon as root
+	if (get_current_uid() == 0)
+		cout << "You are now running the daemon as root, this is not recommended." << endl;
 	
 	if (_back)
 	{
@@ -74,18 +124,6 @@ void Daemon::create(bool _back, const string & _user)
 		
 		sleep(1);
 	}
-
-	// Write pid file
-	ofstream out(pidfile.c_str());
-	
-	if (!out)
-	{
-		cout << "Could not create pid file " << pidfile << ": " << strerror(errno) << endl;
-		exit(1);
-	}
-	
-	out << getpid();
-	out.close();
 
 	// Create UNIX socket
 	int unix_socket;

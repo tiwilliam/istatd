@@ -41,20 +41,21 @@
 class Daemon
 {
 	public:
-		Daemon(const std::string & _pidfile, const std::string & _sockfile) : pidfile(_pidfile), sockfile(_sockfile) {}
+		Daemon(const std::string &_pidfile, const std::string &_sockfile, const std::string &_cachedir) : pidfile(_pidfile), sockfile(_sockfile), cachedir(_cachedir) {}
 		
-		void create(bool _back, const std::string & _user);
+		void create(bool _back, const std::string &_user, const std::string &_group);
 		void destroy();
 		
 	private:
 		std::string pidfile;
 		std::string sockfile;
+		std::string cachedir;
 };
 
 class SignalResponder
 {
 	public:
-		SignalResponder(SocketSet * _sockets, Socket * _listener, Daemon * _unixdaemon, ClientSet * _clients) : listener(_listener), sockets(_sockets), unixdaemon(_unixdaemon), clients(_clients) {}
+		SignalResponder(SocketSet *_sockets, Socket *_listener, Daemon *_unixdaemon, ClientSet *_clients) : listener(_listener), sockets(_sockets), unixdaemon(_unixdaemon), clients(_clients) {}
 		
 		void destroy();
 		void on_sigint();

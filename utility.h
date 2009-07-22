@@ -37,38 +37,40 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-int get_current_user();
-int get_id_from_name(const std::string & name);
-int get_file_owner(const std::string & file);
-int pid_dead(int pid);
-int check_dir_exist(const std::string & dir);
-int check_file_exist(const std::string & file);
-int create_file(const std::string & dir, const std::string & file, mode_t mask);
+uid_t get_current_uid();
+gid_t get_current_gid();
+uid_t get_uid_from_str(const std::string & _user);
+gid_t get_gid_from_str(const std::string & _group);
+int get_file_owner(const std::string & _file);
+int pid_dead(int _pid);
+int check_dir_exist(const std::string & _dir);
+int check_file_exist(const std::string & _file);
+int create_directory(const std::string &_dir, mode_t _mask);
 
-std::string trim(const std::string & source, const char * delims = " \t\r\n");
-std::vector<std::string> split(const std::string & str, const std::string str_delim);
-std::vector<std::string> explode(std::string source, const std::string & delims = " ");
+std::string trim(const std::string & _source, const char * _delims = " \t\r\n");
+std::vector<std::string> split(const std::string &_str, const std::string _delim);
+std::vector<std::string> explode(std::string _str, const std::string &_delim = " ");
 
-template<class T> int to_int(const T & val)
+template<class T> int to_int(const T &_val)
 {
 	int n;
 	std::stringstream buffer;
-	buffer << val;
+	buffer << _val;
 	buffer >> n;
 	return n;
 }
 
-template<class T> std::string to_ascii(const T & val)
+template<class T> std::string to_ascii(const T &_val)
 {
 	std::ostringstream buffer;
-	for (std::string::const_iterator i = val.begin(); i != val.end(); i++) buffer << static_cast<int>(*i);
+	for (std::string::const_iterator i = _val.begin(); i != _val.end(); i++) buffer << static_cast<int>(*i);
 	return buffer.str();
 }
 
-template<class T> std::string to_string(const T & val)
+template<class T> std::string to_string(const T &_val)
 {
 	std::ostringstream buffer;
-	buffer << val;
+	buffer << _val;
 	return buffer.str();
 }
 

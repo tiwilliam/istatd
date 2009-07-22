@@ -42,80 +42,89 @@
 
 using namespace std;
 
-int get_current_user()
+uid_t get_current_uid()
 {
 	return geteuid();
 }
 
-int get_id_from_name(const string & name)
+gid_t get_current_gid()
+{
+	return getegid();
+}
+
+uid_t get_uid_from_str(const string &_user)
 {
 	struct passwd * ent;
 	
-	if(!(ent = getpwnam(name.c_str())))
+	if(!(ent = getpwnam(_user.c_str())))
 	{
-		cout << "Could not get uid for username " << name << ", will run as current user instead." << endl;
-		if (get_current_user() == 0) cout << "You are now running the daemon as root, this is not recommended." << endl;
 		return -1;
 	}
 	
 	return(ent->pw_uid);
 }
 
-int get_file_owner(const string & file)
+uid_t get_gid_from_str(const string &_group)
+{
+	struct passwd * ent;
+	
+	if(!(ent = getpwnam(_group.c_str())))
+	{
+		return -1;
+	}
+	
+	return(ent->pw_gid);
+}
+
+int get_file_owner(const string &_file)
 {
 	struct stat stats;
 	
-	stat(file.c_str(), &stats);
+	stat(_file.c_str(), &stats);
 	
 	return stats.st_uid;
 }
 
-int pid_dead(int pid)
+int pid_dead(int _pid)
 {
-	int ret = 0;
+	// Return 1 if process is dead
+	if (waitpid(_pid, NULL, WNOHANG) != 0)
+		return 1;
 	
-	if (waitpid(pid, NULL, WNOHANG) != 0)
-		ret = 1;
-	
-	// Return 1 if process is dead		
-	return ret;
+	return 0;
 }
 
-int check_dir_exist(const string & dir)
+int check_dir_exist(const string &_dir)
 {
-	int result;
 	struct stat stats;
 	
-	if (stat(dir.c_str(), &stats) == 0 && S_ISDIR(stats.st_mode) == 1)
-		result = 1;
-	else
-		result = 0;
+	// Return 1 if dir exists
+	if (stat(_dir.c_str(), &stats) == 0 && S_ISDIR(stats.st_mode) == 1)
+		return 1;
 	
-	return result;
+	return 0;
 }
 
-int check_file_exist(const string & file)
+int check_file_exist(const string &_file)
 {
-	int result;
 	struct stat stats;
 	
-	if (stat(file.c_str(), &stats) == 0 && S_ISREG(stats.st_mode) == 1)
-		result = 1;
-	else
-		result = 0;
+	// Return 1 if file exists
+	if (stat(_file.c_str(), &stats) == 0 && S_ISREG(stats.st_mode) == 1)
+		return 1;
 	
-	return result;
+	return 0;
 }
 
-string trim(const string & source, const char * delims)
+string trim(const string & source, const char *_delim)
 {
 	string result(source);
-	string::size_type index = result.find_last_not_of(delims);
+	string::size_type index = result.find_last_not_of(_delim);
 	
 	if (index != string::npos)
 		result.erase(++index);
 	
-	index = result.find_first_not_of(delims);
+	index = result.find_first_not_of(_delim);
 	
 	if (index != string::npos)
 		result.erase(0, index);
@@ -125,37 +134,37 @@ string trim(const string & source, const char * delims)
 	return result;
 }
 
-vector<string> split(const string & str, const string str_delim)
+vector<string> split(const string &_str, const string _delim)
 {
 	vector<string> v;
 	string str_elem("");
 	std::string::size_type ui_cur_pos, ui_last_pos = 0;
 	
 	// Check for empty string
-	if (str.empty()) return v;
+	if (_str.empty()) return v;
 	
-	ui_cur_pos = str.find_first_of(str_delim.c_str(), ui_last_pos);
+	ui_cur_pos = _str.find_first_of(_delim.c_str(), ui_last_pos);
 	
-	while(ui_cur_pos != str.npos)
+	while(ui_cur_pos != _str.npos)
 	{
-		str_elem = str.substr(ui_last_pos, ui_cur_pos-ui_last_pos);
+		str_elem = _str.substr(ui_last_pos, ui_cur_pos-ui_last_pos);
 		v.push_back(str_elem);
 		
 		ui_last_pos = ui_cur_pos + 1;
-		ui_cur_pos = str.find_first_of(str_delim.c_str(), ui_last_pos);
+		ui_cur_pos = _str.find_first_of(_delim.c_str(), ui_last_pos);
 	}
 	
 	// Handle last substring - if any
-	if(str.length() != ui_last_pos)
+	if(_str.length() != ui_last_pos)
 	{
-		str_elem = str.substr(ui_last_pos,str.length()-ui_last_pos);
+		str_elem = _str.substr(ui_last_pos, _str.length()-ui_last_pos);
 		v.push_back(str_elem);
 	}
 	
 	return v;
 }
 
-vector<string> explode(string source, const string & delims)
+vector<string> explode(string _source, const string &_delim)
 {
 	vector<string> ret;
 	string splitted_part;
@@ -163,28 +172,28 @@ vector<string> explode(string source, const string & delims)
 	string::size_type pos, split_pos;
 	
 	// Loop array string until we can't find more delimiters
-	while (no_match < delims.length())
+	while (no_match < _delim.length())
 	{
 		no_match = 0;
 		split_pos = string::npos;
 		
 		// Find first occuring splitter
-		for (i = 0; i < delims.length(); i++)
+		for (i = 0; i < _delim.length(); i++)
 		{
-			pos = source.find(delims[i], 0);
+			pos = _source.find(_delim[i], 0);
 			
 			if (pos == string::npos) no_match++;
 			if (pos < split_pos) split_pos = pos;
 		}
 		
 		// Be nice to things wrapped with quotes
-		if (source[0] == '"' && source.substr(1).find_first_of("\"") != string::npos)
+		if (_source[0] == '"' && _source.substr(1).find_first_of("\"") != string::npos)
 		{
-			split_pos = source.substr(1).find_first_of("\"") + 2;
+			split_pos = _source.substr(1).find_first_of("\"") + 2;
 		}
 		
 		// One value from the array
-		splitted_part = source.substr(0, split_pos);
+		splitted_part = _source.substr(0, split_pos);
 		
 		// Save the value if it's not empty
 		if (splitted_part != "")
@@ -193,28 +202,16 @@ vector<string> explode(string source, const string & delims)
 		}
 		
 		// Remove value from string
-		source.erase(0, split_pos + 1);
+		_source.erase(0, split_pos + 1);
 	}
 	
 	return ret;
 }
 
-int create_file(const string & dir, const string & file, mode_t mask)
+int create_directory(const string &_dir, mode_t _mask)
 {
-	stringstream temp;
-	temp << dir << "/" << file;
-	
-	umask(mask);
-
-	ofstream out(temp.str().c_str());
-
-	if (!out)
-	{
-		cout << "Could not create file '" << temp.str() << "': " << strerror(errno) << endl;
+	if (mkdir(_dir.c_str(), _mask) < 0)
 		return -1;
-	}
-
-	out.close();
 	
 	return 0;
 }
