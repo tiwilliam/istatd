@@ -31,6 +31,17 @@ Can contain search path to device or mount point. When specifying more than one 
 monitor_disk        /dev/sda1
 
 monitor_disk        ( /dev/sda1 /dev/sda2 )
+
+.It disk_mount_path_label
+Set to 1 if you want to use mount path as label instead of the device name.
+.It disk_filesystem_label
+Set to 1 if you want to probe the filesystem for disk label, will override the mount path and device name.
+.It disk_rename_label
+Set custom disk label. Will override all other labels. You can use either the device name or mount path:
+
+disk_rename_label        /dev/sda1  "root"
+
+disk_rename_label        /home      "home"
 .El
 .Sh SEE ALSO
 .Xr istatd 1
