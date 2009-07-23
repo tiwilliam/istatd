@@ -124,10 +124,10 @@ int get_disk_info(char * _device, char * _uuid, char * _label, char * _name)
 	# elif defined(USE_STRUCT_MNTTAB)
 		FILE *table;
 		if (!(table = fopen(_PATH_MOUNTED, "r"))) return -1;
+		resetmnttab(table);
 	# endif
 	
 	# ifdef USE_STRUCT_MNTENT
-		resetmnttab(table);
 		while ((entry = getmntent(table)) != 0)
 	# elif defined(USE_STRUCT_MNTTAB)
 		entry = &ebuf;
