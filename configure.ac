@@ -127,7 +127,7 @@ LIBS="$LIBS -lavahi-client"
 ])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h sys/mount.h])
 
 # check net/if.h seperately, as it requires other headers on atleast FreeBSD
 AC_CHECK_HEADERS([net/if.h net/if_mib.h],[],[],

@@ -57,9 +57,9 @@
 # include <sys/statfs.h>
 #endif
 
-#include <sys/param.h>
-#include <sys/ucred.h>
-#include <sys/mount.h>
+#ifdef HAVE_SYS_MOUNT_H
+# include <sys/mount.h>
+#endif
 
 #include "system.h"
 #include "libfslabel/fslabel.h"
