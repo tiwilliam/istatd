@@ -56,7 +56,6 @@
 # include <kstat.h>
 #endif
 
-
 #include "system.h"
 
 #ifdef HAVE_LIBKSTAT
@@ -113,7 +112,7 @@ int get_uptime()
 # endif /*USE_UPTIME_KSTAT*/
 
 # ifdef USE_CPU_KSTAT
-int get_cpu_load(struct cpu_load * _cpu)
+int get_cpu_data(struct cpu_data * _cpu)
 {
 	kstat_t *ksp;
 	static int ncpu;
@@ -140,7 +139,9 @@ int get_cpu_load(struct cpu_load * _cpu)
 # endif /*USE_CPU_KSTAT*/
 
 # ifdef USE_MEM_KSTAT
-int get_mem_info(struct mem_info * _mem)
+int get_swap_data(struct mem_data * _mem);
+
+int get_mem_data(struct mem_data * _mem)
 {
 	kstat_t *ksp;
 	kstat_named_t *kn;
@@ -148,7 +149,7 @@ int get_mem_info(struct mem_info * _mem)
 	int cc, ncpu;
 	cpu_stat_t cs;
 	
-	memset(_mem, 0, sizeof(struct mem_info));
+	memset(_mem, 0, sizeof(struct mem_data));
 	if(NULL == (ksp = kstat_lookup(ksh, "unix", -1, "system_pages"))) return -1;
 	if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
 	ps = getpagesize();
@@ -184,12 +185,12 @@ int get_mem_info(struct mem_info * _mem)
 			}
 		}
 	}
-	return get_swap_info(_mem);
+	return get_swap_data(_mem);
 }
 # endif /*USE_MEM_KSTAT*/
 
 # ifdef USE_NET_KSTAT
-int get_net_info(const char * _dev, struct net_data * _data)
+int get_net_data(const char * _dev, struct net_data * _data)
 {
 	kstat_t *ksp;
 	kstat_named_t *kn;

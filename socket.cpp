@@ -28,15 +28,26 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <netdb.h>
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <alloca.h>
 #include <string.h>
 #include <iostream>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h>
+#endif
 
 #include "socket.h"
 
@@ -50,7 +61,7 @@ int Socket::listen()
 	if ((socket = ::socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		cout << "Could not create socket: " << strerror(errno) << endl;
-		return false;
+		return 0;
 	}
 	
 	setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (const char *) &yes, sizeof(yes));
@@ -70,7 +81,7 @@ int Socket::listen()
 	if (::bind(socket, (sockaddr *) &myAddress, sizeof(myAddress)) == -1)
 	{
 		cout << "Could not bind socket: " << strerror(errno) << endl;
-		return false;
+		return 0;
 	}
 	
 	// cout << "(" << address << ":" << port << ") Socket binded." << endl;
@@ -78,11 +89,11 @@ int Socket::listen()
 	if (::listen(socket, 5) == -1)
 	{
 		cout << "Could not listen on socket: " << strerror(errno) << endl;
-		return false;
+		return 0;
 	}
-	
+
 	// cout << "(" << address << ":" << port << ") Socket initialized." << endl;
-	return true;
+	return 1;
 }
 
 int Socket::nonblock()

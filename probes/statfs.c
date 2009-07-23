@@ -57,6 +57,10 @@
 # include <sys/statfs.h>
 #endif
 
+#include <sys/param.h>
+#include <sys/ucred.h>
+#include <sys/mount.h>
+
 #include "system.h"
 #include "libfslabel/fslabel.h"
 
@@ -104,29 +108,41 @@ int get_disk_data(const char * _dev, struct disk_data * _disk_data)
 int get_disk_info(char * _device, char * _uuid, char * _label, char * _name)
 {
 	int r;
-	FILE *table;
 	fslabel_t label;
-	
+
 	# ifdef USE_STRUCT_MNTENT
 		struct mntent *entry;
 	# elif defined(USE_STRUCT_MNTTAB)
 		struct mnttab *entry, ebuf;
-	# endif
-	
-	# ifdef HAVE_SETMNTENT
-		if (!(table = setmntent(_PATH_MOUNTED, "r"))) return -1;
 	# else
+		struct statfs *entry;
+	# endif
+
+	# ifdef HAVE_SETMNTENT
+		FILE *table;
+		if (!(table = setmntent(_PATH_MOUNTED, "r"))) return -1;
+	# elif defined(USE_STRUCT_MNTTAB)
+		FILE *table;
 		if (!(table = fopen(_PATH_MOUNTED, "r"))) return -1;
-		resetmnttab(table);
 	# endif
 	
 	# ifdef USE_STRUCT_MNTENT
+		resetmnttab(table);
 		while ((entry = getmntent(table)) != 0)
 	# elif defined(USE_STRUCT_MNTTAB)
 		entry = &ebuf;
 		while (!getmntent(table, entry))
 	#  define mnt_fsname mnt_special
-	#  define mnt_dir mnt_mountp 
+	#  define mnt_dir mnt_mountp
+	# else
+		int mnts;
+
+		if (!(mnts = getmntinfo(&entry, MNT_NOWAIT))) return -1;
+
+		for (mnts--; mnts >= 0; mnts--)
+	#  define mnt_fsname f_mntfromname
+	#  define mnt_dir f_mntonname
+	#  define entry (entry + mnts)
 	# endif
 		{
 			if (strcmp(entry->mnt_fsname, _device) == 0 || strcmp(entry->mnt_dir, _device) == 0)
@@ -135,30 +151,31 @@ int get_disk_info(char * _device, char * _uuid, char * _label, char * _name)
 				{
 					strncpy(_uuid, label.uuid, sizeof(label.uuid) - 1);
 					_uuid[sizeof(label.uuid) - 1] = 0;
-					
+
 					strncpy(_label, label.label, sizeof(label.label) - 1);
 					_label[sizeof(label.label) - 1] = 0;
 				}
-				/*
 				else if (0 == r)
 				{
-					printf("fslabel: %s: cannot identify filesystem.\n", entry->mnt_fsname);
+					_uuid[0] = 0;
+					_label[0] = 0;
+
+					/* printf("fslabel: %s: cannot identify filesystem.\n", entry->mnt_fsname); */
 				}
-				*/
 				
 				strncpy(_name, entry->mnt_dir, PATH_MAX - 1);
 				_name[PATH_MAX - 1] = 0;
 				
 				strncpy(_device, entry->mnt_fsname, PATH_MAX - 1);
 				_device[PATH_MAX - 1] = 0;
-				
+
 				break;
 			}
 		}
 	
 	# ifdef HAVE_SETMNTENT
 		endmntent(table);
-	# else
+	# elif defined(USE_STRUCT_MNTTAB)
 		fclose(table);
 	# endif
 	

@@ -51,7 +51,7 @@ AC_CHECK_HEADER([libxml/parser.h],,[
 	AC_MSG_ERROR([xml2-config was located, but the header files could not be found])
 ])
 AC_CHECK_FUNC([xmlFileOpen],[
-	AC_DEFINE_UNQUOTED([HAVE_LIBXML2],[1],[Define to 1 if you have the `xml2' library (-lxml2).])
+	AC_DEFINE_UNQUOTED([HAVE_LIBXML2],[1],[Define to 1 if you have the 'xml2' library (-lxml2).])
 ],[
 	AC_MSG_ERROR([xml2-config was located, but a test program linking against -lxml2 could not be built])
 ])
@@ -86,8 +86,26 @@ use_uptime=kstat
 use_mem=kstat
 ])
 
+AC_CHECK_LIB([kvm],[kvm_open],[
+AC_DEFINE_UNQUOTED([HAVE_LIBKVM],1,[Define if libkvm is available])
+LIBS="$LIBS -lkvm"
+use_mem=kvm
+use_swap=kvm
+])
+
 AC_CHECK_FUNC([getloadavg],[
 use_load=getloadavg
+])
+
+AC_CHECK_FUNC([clock_gettime],[
+use_uptime=gettime
+])
+
+dnl Use sysctl for cpu and net if procfs isn't available
+AC_CHECK_FUNC([sysctl],[
+AC_DEFINE_UNQUOTED([HAVE_SYSCTL],1,[Define if sysctl is available])
+test x"$use_cpu" = x"none" && use_cpu=sysctl
+test x"$use_net" = x"none" && use_net=sysctl
 ])
 
 dnl We only use swapctl if procfs isn't available
@@ -109,7 +127,18 @@ LIBS="$LIBS -lavahi-client"
 ])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h])
+
+# check net/if.h seperately, as it requires other headers on atleast FreeBSD
+AC_CHECK_HEADERS([net/if.h net/if_mib.h],[],[],
+[[
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif
+#ifdef HAVE_NET_IF_H
+# include <net/if.h>
+#endif
+]])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -117,7 +146,7 @@ AC_HEADER_STDBOOL
 # Checks for library functions.
 AC_FUNC_FORK
 AC_FUNC_GETMNTENT
-AC_CHECK_FUNCS([gethostbyname getmntent inet_ntoa memset mkdir select socket strerror statvfs setmntent])
+AC_CHECK_FUNCS([gethostbyname getmntent getmntinfo inet_ntoa memset mkdir select socket strerror statvfs setmntent])
 
 # Try to figure out which type of mntent structure we're dealing with
 AC_CHECK_MEMBER([struct mnttab.mnt_special],[AC_DEFINE_UNQUOTED([USE_STRUCT_MNTTAB],[1],[define to use 'struct mnttab'])],,[
@@ -147,6 +176,9 @@ case $use_cpu in
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_CPU_KSTAT],1,[Use kstat(3) to probe CPU usage])
 		;;
+	sysctl)
+		AC_DEFINE_UNQUOTED([USE_CPU_SYSCTL],1,[Use sysctl to probe CPU usage])
+		;;
 	*)
 		AC_MSG_ERROR([cannot determine CPU usage probe type for ${host_os}])
 		;;
@@ -172,6 +204,9 @@ case $use_mem in
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_MEM_KSTAT],1,[Use kstat(3) to probe memory usage])
 		;;
+	kvm)
+		AC_DEFINE_UNQUOTED([USE_MEM_KVM],1,[Use kvm(3) to probe memory usage])
+		;;
 	*)
 		AC_MSG_ERROR([cannot determine memory usage probe type for ${host_os}])
 		;;
@@ -185,6 +220,9 @@ case $use_swap in
 		;;
 	swapctl)
 		AC_DEFINE_UNQUOTED([USE_SWAP_SWAPCTL],1,[Use swapctl(3) to probe swap])
+		;;
+	kvm)
+		AC_DEFINE_UNQUOTED([USE_SWAP_KVM],1,[Use kvm(3) to probe swap])
 		;;
 	*)
 		AC_MSG_ERROR([cannot determine swap probe type for ${host_os}])
@@ -200,6 +238,9 @@ case $use_uptime in
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_UPTIME_KSTAT],1,[Use kstat(3) to probe uptime])
 		;;
+	gettime)
+		AC_DEFINE_UNQUOTED([USE_UPTIME_GETTIME],1,[Use clock_gettime(2) to probe load average])
+		;;
 	*)
 		AC_MSG_ERROR([cannot determine uptime probe type for ${host_os}])
 		;;
@@ -214,11 +255,14 @@ case $use_net in
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_NET_KSTAT],1,[Use kstat(3) to probe network activity])
 		;;
+	sysctl)
+		AC_DEFINE_UNQUOTED([USE_NET_SYSCTL],1,[Use sysctl to probe network activity])
+		;;
 	*)
 		AC_MSG_ERROR([cannot determine network activity probe type for ${host_os}])
 		;;
 esac
-AC_MSG_RESULT($use_uptime)
+AC_MSG_RESULT($use_net)
 
 AC_MSG_CHECKING([disk space probe type])
 case $use_disk in

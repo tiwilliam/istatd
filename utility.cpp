@@ -28,6 +28,7 @@
  *
  */
 
+#include <grp.h>
 #include <pwd.h>
 #include <vector>
 #include <sstream>
@@ -66,14 +67,14 @@ uid_t get_uid_from_str(const string &_user)
 
 uid_t get_gid_from_str(const string &_group)
 {
-	struct passwd * ent;
+	struct group * ent;
 	
-	if(!(ent = getpwnam(_group.c_str())))
+	if(!(ent = getgrnam(_group.c_str())))
 	{
 		return -1;
 	}
 	
-	return(ent->pw_gid);
+	return(ent->gr_gid);
 }
 
 int get_file_owner(const string &_file)

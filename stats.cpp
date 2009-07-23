@@ -112,7 +112,7 @@ void Stats::update_system_stats()
 		// Get block size data from mount path
 		if (get_disk_data((*dit).name, &disk_data) == -1)
 		{
-			cout << "Could not get disk data for '" << (*dit).device << "'. Device not found in /etc/mtab." << endl;
+			cout << "Could not get disk data for '" << (*dit).device << "'. Device not found." << endl;
 			(*dit).active = false;
 		}
 		else

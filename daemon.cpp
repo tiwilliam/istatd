@@ -67,21 +67,25 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		cout << "Warning! Cannot get gid for group " << _group << ", will run as current group." << endl;
 		gid = get_current_gid();
 	}
-	
+
+#ifdef USE_MEM_KVM
+	gid = get_gid_from_str("kmem");
+#endif
+
 	// Craete pid directory if it does not exist
 	piddir = pidfile.substr(0, pidfile.find_last_of("/"));
 	
 	if (check_dir_exist(piddir) == 0)
 	{
 		create_directory(piddir, 0755);
-		chown(piddir.c_str(), uid, gid);
+		chown(piddir.c_str(), uid, 0);
 	}
 	
 	// Craete cache directory if it does not exist
 	if (check_dir_exist(cachedir) == 0)
 	{
 		create_directory(cachedir, 0755);
-		chown(cachedir.c_str(), uid, gid);
+		chown(cachedir.c_str(), uid, 0);
 	}
 	
 	// Create pid file
