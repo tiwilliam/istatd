@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.61])
-AC_INIT([istat-server], [0.5.3], [http://code.google.com/p/istat/issues/entry])
+AC_INIT([istat], [0.5.3], [http://code.google.com/p/istat/issues/entry])
 AM_INIT_AUTOMAKE([foreign])
 AM_MAINTAINER_MODE
 
