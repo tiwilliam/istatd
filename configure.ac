@@ -79,26 +79,32 @@ dnl Specific tests for probe types
 
 AC_CHECK_LIB([kstat],[kstat_open],[
 AC_DEFINE_UNQUOTED([HAVE_LIBKSTAT],1,[Define if libkstat is available])
+have_kstat=yes
 LIBS="$LIBS -lkstat"
 use_cpu=kstat
 use_net=kstat
 use_uptime=kstat
 use_mem=kstat
-])
+],[have_kstat=no])
 
-AC_CHECK_LIB([kvm],[kvm_open],[
-AC_DEFINE_UNQUOTED([HAVE_LIBKVM],1,[Define if libkvm is available])
-LIBS="$LIBS -lkvm"
-use_mem=kvm
-use_swap=kvm
-])
-
+if test x"$have_kstat" = x"no" ; then
+	AC_CHECK_LIB([kvm],[kvm_open],[
+	AC_DEFINE_UNQUOTED([HAVE_LIBKVM],1,[Define if libkvm is available])
+	LIBS="$LIBS -lkvm"
+	use_mem=kvm
+	use_swap=kvm
+	])
+fi
 AC_CHECK_FUNC([getloadavg],[
 use_load=getloadavg
 ])
 
 AC_CHECK_FUNC([clock_gettime],[
-use_uptime=gettime
+AC_MSG_CHECKING([if CLOCK_UPTIME is available])
+AC_COMPILE_IFELSE([
+static clockid_t testuptime = CLOCK_UPTIME;
+],[have_clock_uptime=yes ; use_uptime=gettime],[have_clock_uptime=no])
+AC_MSG_RESULT([$have_clock_uptime])
 ])
 
 dnl Use sysctl for cpu and net if procfs isn't available

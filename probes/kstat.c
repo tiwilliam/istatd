@@ -139,8 +139,6 @@ int get_cpu_data(struct cpu_data * _cpu)
 # endif /*USE_CPU_KSTAT*/
 
 # ifdef USE_MEM_KSTAT
-int get_swap_data(struct mem_data * _mem);
-
 int get_mem_data(struct mem_data * _mem)
 {
 	kstat_t *ksp;
@@ -185,7 +183,7 @@ int get_mem_data(struct mem_data * _mem)
 			}
 		}
 	}
-	return get_swap_data(_mem);
+	return get_swp_data(_mem);
 }
 # endif /*USE_MEM_KSTAT*/
 
