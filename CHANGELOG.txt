@@ -1,6 +1,8 @@
 
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
+  * Version: 0.5.5
+ -------------------------------------------------------------------------
   * Version: 0.5.4
   * New: FreeBSD support. Yay!
   * New: Implemented libfslabel. Support for reading disk labels.
