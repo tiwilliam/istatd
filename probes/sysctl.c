@@ -32,7 +32,15 @@
 # include "config.h"
 #endif
 
-#include <time.h>
+#ifdef TIME_WITH_SYS_TIME
+# include <sys/time.h>
+# include <time.h>
+#elif defined(HAVE_SYS_TIME_H)
+# include <sys/time.h>
+#else
+# include <time.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -152,3 +160,23 @@ int get_uptime()
 }
 #endif /*USE_UPTIME_GETTIME*/
 
+#ifdef USE_UPTIME_SYSCTL
+int
+get_uptime(void)
+{
+	struct timeval tm;
+	time_t now;
+	int mib[2];
+	size_t size;
+	
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_BOOTTIME;
+	size = sizeof(tm);
+	now = time(NULL);
+	if(-1 != sysctl(mib, 2, &tm, &size, NULL, 0) && 0 != tm.tv_sec)
+		{
+			return now - tm.tv_sec;
+		}
+	return 0;
+}
+#endif /* USE_UPTIME_SYSCTL */

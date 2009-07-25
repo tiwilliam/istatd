@@ -99,9 +99,21 @@ AC_CHECK_FUNC([getloadavg],[
 use_load=getloadavg
 ])
 
+AC_HEADER_TIME
 AC_CHECK_FUNC([clock_gettime],[
 AC_MSG_CHECKING([if CLOCK_UPTIME is available])
 AC_COMPILE_IFELSE([
+#ifdef TIME_WITH_SYS_TIME
+# include <sys/time.h>
+# include <time.h>
+#else
+# ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# else
+#  include <time.h>
+# endif
+#endif
+
 static clockid_t testuptime = CLOCK_UPTIME;
 ],[have_clock_uptime=yes ; use_uptime=gettime],[have_clock_uptime=no])
 AC_MSG_RESULT([$have_clock_uptime])
@@ -112,7 +124,19 @@ AC_CHECK_FUNC([sysctl],[
 AC_DEFINE_UNQUOTED([HAVE_SYSCTL],1,[Define if sysctl is available])
 test x"$use_cpu" = x"none" && use_cpu=sysctl
 test x"$use_net" = x"none" && use_net=sysctl
-])
+have_sysctl=yes
+],[have_sysctl=no])
+
+dnl Try to use sysctl on freebsd if there's no CLOCK_UPTIME
+if test x"$use_uptime" = x"none" ; then
+	case "$host_os" in
+		freebsd*)
+			if test x"$have_sysctl" = x"yes" ; then
+				use_uptime=sysctl
+			fi
+			;;
+	esac
+fi
 
 dnl We only use swapctl if procfs isn't available
 AC_CHECK_FUNC([swapctl],[
@@ -133,7 +157,7 @@ LIBS="$LIBS -lavahi-client"
 ])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h sys/mount.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h sys/mount.h sys/param.h])
 
 # check net/if.h seperately, as it requires other headers on atleast FreeBSD
 AC_CHECK_HEADERS([net/if.h net/if_mib.h],[],[],
@@ -245,7 +269,10 @@ case $use_uptime in
 		AC_DEFINE_UNQUOTED([USE_UPTIME_KSTAT],1,[Use kstat(3) to probe uptime])
 		;;
 	gettime)
-		AC_DEFINE_UNQUOTED([USE_UPTIME_GETTIME],1,[Use clock_gettime(2) to probe load average])
+		AC_DEFINE_UNQUOTED([USE_UPTIME_GETTIME],1,[Use clock_gettime(2) to probe load uptime])
+		;;
+	sysctl)
+		AC_DEFINE_UNQUOTED([USE_UPTIME_SYSCTL],1,[Use sysctl(2) to probe uptime])
 		;;
 	*)
 		AC_MSG_ERROR([cannot determine uptime probe type for ${host_os}])
