@@ -71,7 +71,7 @@ int get_uptime(void)
 
 int get_unixtime()
 {
-	time_t cur;	
+	time_t cur;
 	
 	time(&cur);
 	
@@ -162,16 +162,15 @@ int get_net_data(const char * _dev, struct net_data * _data)
 #endif
 
 #ifdef USE_LOAD_PROCFS
-int get_avg_data(struct cpu_load *_cpu)
+int get_avg_data(struct cpu_data *_cpu)
 {
-        static FILE * fp = NULL;
-            
-            if (!(fp = fopen("/proc/loadavg", "r"))) return -1;
-                
-                fscanf(fp, "%f %f %f", &_cpu->one, &_cpu->two, &_cpu->three);
-                    
-                    fclose(fp);
-                        return 0;
+	static FILE * fp = NULL;
+
+	if (!(fp = fopen("/proc/loadavg", "r"))) return -1;                
+
+	fscanf(fp, "%f %f %f", &_cpu->one, &_cpu->two, &_cpu->three);
+	fclose(fp);
+	
+	return 0;
 }
 #endif
-
