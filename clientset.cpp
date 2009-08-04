@@ -202,12 +202,16 @@ void ClientSet::read_cache(const std::string & _cache_dir)
 				client.sid_disk = to_int(array.at(3));
 				client.sid_temp = to_int(array.at(4));
 				client.sid_fans = to_int(array.at(5));
-			
+
 				if (clients.size())
 				{
 					for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
 					{
-						if (it->duuid != client.duuid) *this += client;
+						if (it->duuid != client.duuid)
+                        {
+                            *this += client;
+                            break;
+                        }
 					}
 				}
 				else
