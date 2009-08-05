@@ -97,8 +97,6 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		exit(1);
 	}
 	
-	out << getpid();
-	out.close();
 	chmod(pidfile.c_str(), 0644);
 	chown(pidfile.c_str(), uid, gid);
 	
@@ -128,7 +126,10 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		
 		sleep(1);
 	}
-
+	
+	out << getpid();
+	out.close();
+	
 	// Create UNIX socket
 	int unix_socket;
 	socklen_t length;
