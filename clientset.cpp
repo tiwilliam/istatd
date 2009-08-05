@@ -178,6 +178,7 @@ void ClientSet::read_cache(const std::string & _cache_dir)
 	Client client;
 	stringstream path;
 	vector<string> array;
+	bool client_cached = false;
 	string cache_file = "clients.dat";
 	
 	this->cache_dir = _cache_dir;
@@ -194,7 +195,7 @@ void ClientSet::read_cache(const std::string & _cache_dir)
 				array = explode(line, ":");
 				
 				if (array.size() < 5) continue;
-			
+				
 				client.socket = 0;
 				client.name = array.at(0);
 				client.duuid = array.at(1);
@@ -202,22 +203,18 @@ void ClientSet::read_cache(const std::string & _cache_dir)
 				client.sid_disk = to_int(array.at(3));
 				client.sid_temp = to_int(array.at(4));
 				client.sid_fans = to_int(array.at(5));
-
+				
 				if (clients.size())
 				{
 					for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
 					{
-						if (it->duuid != client.duuid)
-                        {
-                            *this += client;
-                            break;
-                        }
+						if (it->duuid == client.duuid)
+							client_cached = true;
 					}
 				}
-				else
-				{
+				
+				if (!client_cached)
 					*this += client;
-				}
 			}
 		}
 	}
