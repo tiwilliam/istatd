@@ -72,16 +72,19 @@ int main(int argc, char ** argv)
 		cout << "usage: istat [-a HOST] [-p PORT]" << endl;
 		cout << endl;
 		cout << "    -d                 run in background" << endl;
-		cout << "    -c                 custom config file location" << endl;
-		cout << "    -a                 listen on this address" << endl;
-		cout << "    -p                 listen on this port" << endl;
-		cout << "    -u                 change running user" << endl;
 		cout << "    -h                 print this help text" << endl;
 		cout << "    -v                 print version number" << endl;
 		cout << endl;
-		cout << "    --pid              custom pid file location" << endl;
-		cout << "    --code             custom lock code" << endl;
-		cout << "    --clear-sessions   clear all authorized sessions" << endl;
+		cout << "    -c FILE            custom config file location" << endl;
+		cout << "    -a HOST            listen on this address" << endl;
+		cout << "    -p PORT            listen on this port" << endl;
+		cout << "    -u USER            change running user" << endl;
+		cout << "    -g GROUP           change running group" << endl;
+		cout << endl;
+		cout << "    --pid=FILE         custom pid file location" << endl;
+		cout << "    --cache=DIR        custom cache file location" << endl;
+		cout << "    --socket=FILE      custom socket file location" << endl;
+		cout << "    --code=CODE        custom lock code" << endl;
 		cout << endl;
 		return 0;
 	}

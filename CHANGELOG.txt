@@ -2,6 +2,9 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
   * Version: 0.5.5
+  * Fix: Reverted load avg. probe for procfs.
+  * Fix: Segfault when reading cache with more than one client.
+  * Fix: PID file contained the mother PID when -d was passed.
  -------------------------------------------------------------------------
   * Version: 0.5.4
   * New: FreeBSD support. Yay!
