@@ -2,6 +2,8 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
   * Version: 0.5.5
+  * Fix: Do not create PID file if it's not specified in config.
+  * Fix: Removed unneccesary linkage to libld.
   * Fix: Reverted load avg. probe for procfs.
   * Fix: Segfault when reading cache with more than one client.
   * Fix: PID file contained the mother PID when -d was passed.

@@ -33,6 +33,7 @@
 
 #include <list>
 #include <iostream>
+#include <string>
 
 class Tokens
 {

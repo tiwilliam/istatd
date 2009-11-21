@@ -33,6 +33,10 @@
 #include <string.h>
 #include <iostream>
 
+#include <unistd.h>
+#include <sys/time.h>
+#include <sys/types.h>
+
 #include "socketset.h"
 
 using namespace std;

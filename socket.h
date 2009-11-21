@@ -32,6 +32,7 @@
 #define _SOCKET_H
 
 #include <iostream>
+#include <string>
 
 class Socket
 {

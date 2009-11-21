@@ -46,6 +46,7 @@
 # endif
 
 # ifdef HAVE_ARPA_INET_H
+#  include <netinet/in.h>
 #  include <arpa/inet.h>
 # endif
 

@@ -31,6 +31,7 @@
 #ifndef _ARGUMENT_H
 #define _ARGUMENT_H
 
+#include <string>
 #include <vector>
 #include <iostream>
 

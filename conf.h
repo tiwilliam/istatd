@@ -31,6 +31,7 @@
 #ifndef _CONF_H
 #define _CONF_H
 
+#include <string>
 #include <vector>
 #include <iostream>
 

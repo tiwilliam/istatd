@@ -144,7 +144,7 @@ void Stats::update_system_stats()
 
 sys_info Stats::get_stats()
 {
-	return history.at(0);
+	return history[0];
 }
 
 unsigned int Stats::get_size()

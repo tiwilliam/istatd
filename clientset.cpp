@@ -197,12 +197,12 @@ void ClientSet::read_cache(const std::string & _cache_dir)
 				if (array.size() < 5) continue;
 				
 				client.socket = 0;
-				client.name = array.at(0);
-				client.duuid = array.at(1);
-				client.ready = to_int(array.at(2));
-				client.sid_disk = to_int(array.at(3));
-				client.sid_temp = to_int(array.at(4));
-				client.sid_fans = to_int(array.at(5));
+				client.name = array[0];
+				client.duuid = array[1];
+				client.ready = to_int(array[2]);
+				client.sid_disk = to_int(array[3]);
+				client.sid_temp = to_int(array[4]);
+				client.sid_fans = to_int(array[5]);
 				
 				if (clients.size())
 				{

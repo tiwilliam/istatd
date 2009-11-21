@@ -6,3 +6,6 @@
   
   Mo McRoberts <mo@nevali.net>
   - Solaris port, autoconf hackery, libfslabel creator
+
+  tangentsoft
+  - FreeBSD 4.10 support

@@ -163,6 +163,7 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h
 # check net/if.h seperately, as it requires other headers on atleast FreeBSD
 AC_CHECK_HEADERS([net/if.h net/if_mib.h],[],[],
 [[
+# include <sys/types.h>
 #ifdef HAVE_SYS_SOCKET_H
 # include <sys/socket.h>
 #endif

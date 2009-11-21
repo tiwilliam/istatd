@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <fstream>
+#include <sys/types.h>
 #include <sys/un.h>
 #include <stdlib.h>
 #include <iostream>
@@ -49,7 +50,7 @@ unsigned int Property::get_array_size()
 std::string Property::get_array(unsigned int _index)
 {
 	if (_index < array.size())
-		return array.at(_index);
+		return array[_index];
 	
 	return "";
 }
