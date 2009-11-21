@@ -69,7 +69,7 @@ int main(int argc, char ** argv)
 	if (arguments.isset("help") || arguments.isset("h"))
 	{
 		cout << endl;
-		cout << "usage: istat [-a HOST] [-p PORT]" << endl;
+		cout << "usage: istatd [-a HOST] [-p PORT]" << endl;
 		cout << endl;
 		cout << "    -d                 run in background" << endl;
 		cout << "    -h                 print this help text" << endl;

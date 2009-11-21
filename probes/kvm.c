@@ -83,7 +83,7 @@ int get_mem_data(struct mem_data * _mem)
 			fprintf(stderr, "kvm_nlist(): %s\n", strerror(errno));
 			kvm_close(kd);
 			return -1;
-                }
+		}
 
 		len = sizeof(sum);
 

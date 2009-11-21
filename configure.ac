@@ -36,11 +36,12 @@ AC_LINK_IFELSE([int main(void) { return 0; }],[
 ])
 
 # Checks for libraries.
-AC_CHECK_LIB([dl], [dlopen],,[
-	AC_CHECK_FUNC([dlopen],,[
-		AC_MSG_ERROR([cannot find a suitable dlopen() implementation])
-	])
-])
+# AC_CHECK_LIB([dl], [dlopen],,[
+# 	AC_CHECK_FUNC([dlopen],,[
+# 		AC_MSG_ERROR([cannot find a suitable dlopen() implementation])
+# 	])
+# ])
+
 AC_CHECK_PROG([XML2_CONFIG],[xml2-config],[xml2-config])
 if test x"$XML2_CONFIG" = x"" ; then
 	AC_MSG_ERROR([cannot find xml2-config: depending on your operating system you may need to install a '-dev' package for libxml2])
