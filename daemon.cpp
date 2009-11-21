@@ -46,10 +46,11 @@ using namespace std;
 
 void Daemon::create(bool _back, const string &_user, const string &_group)
 {
-	int pid;
 	uid_t uid;
 	gid_t gid;
+	ofstream out;
 	string piddir;
+	unsigned int pid, pos;
 
 	// Obtain new process group
 	setsid();
@@ -71,15 +72,6 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 #ifdef USE_MEM_KVM
 	gid = get_gid_from_str("kmem");
 #endif
-
-	// Craete pid directory if it does not exist
-	piddir = pidfile.substr(0, pidfile.find_last_of("/"));
-	
-	if (check_dir_exist(piddir) == 0)
-	{
-		create_directory(piddir, 0755);
-		chown(piddir.c_str(), uid, 0);
-	}
 	
 	// Craete cache directory if it does not exist
 	if (check_dir_exist(cachedir) == 0)
@@ -88,17 +80,34 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		chown(cachedir.c_str(), uid, 0);
 	}
 	
-	// Create pid file
-	ofstream out(pidfile.c_str());
+	// Craete pid directory if it does not exist
+	pos = pidfile.find_last_of("/");
 	
-	if (!out)
+	if (pos != string::npos)
 	{
-		cout << "Could not create pid file " << pidfile << ": " << strerror(errno) << endl;
-		exit(1);
+		piddir = pidfile.substr(0, pidfile.find_last_of("/"));
+	
+		if (check_dir_exist(piddir) == 0 && pidfile.length())
+		{
+			create_directory(piddir, 0755);
+			chown(piddir.c_str(), uid, 0);
+		}
 	}
 	
-	chmod(pidfile.c_str(), 0644);
-	chown(pidfile.c_str(), uid, gid);
+	// Only change owner if we want to change the pidfile
+	if (pidfile.length())
+	{
+		out.open(pidfile.c_str());
+		
+		if (!out)
+		{
+			cout << "Could not create pid file " << pidfile << ": " << strerror(errno) << endl;
+			exit(1);
+		}
+			
+		chmod(pidfile.c_str(), 0644);
+		chown(pidfile.c_str(), uid, gid);
+	}
 	
 	// Switch group for daemon
 	if (setgid(gid) != 0)
@@ -127,8 +136,12 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		sleep(1);
 	}
 	
-	out << getpid();
-	out.close();
+	// Only write pid if we have the file specified in conf or as argument
+	if (pidfile.length())
+	{
+		out << getpid();
+		out.close();
+	}
 	
 	// Create UNIX socket
 	int unix_socket;
