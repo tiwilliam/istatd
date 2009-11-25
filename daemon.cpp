@@ -53,7 +53,8 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 	gid_t gid;
 	ofstream out;
 	string piddir;
-	unsigned int pid, pos;
+	unsigned int pid;
+	string::size_type pos;
 
 	// Obtain new process group
 	setsid();
@@ -83,9 +84,8 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		chown(cachedir.c_str(), uid, 0);
 	}
 	
-	// Craete pid directory if it does not exist
+	// Create pid directory if it does not exist
 	pos = pidfile.find_last_of("/");
-	
 	if (pos != string::npos)
 	{
 		piddir = pidfile.substr(0, pidfile.find_last_of("/"));
