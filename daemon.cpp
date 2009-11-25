@@ -77,7 +77,7 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 	gid = get_gid_from_str("kmem");
 #endif
 	
-	// Craete cache directory if it does not exist
+	// Create cache directory if it does not exist
 	if (check_dir_exist(cachedir) == 0)
 	{
 		create_directory(cachedir, 0755);
@@ -112,17 +112,27 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		chown(pidfile.c_str(), uid, gid);
 	}
 	
-	// Switch group for daemon
-	if (setgid(gid) != 0)
-		cout << "Could not switch to group " << _group << ": " << strerror(errno) << endl;
-	
-	// Switch user for daemon
-	if (setuid(uid) != 0)
-		cout << "Could not switch to user " << _user << ": " << strerror(errno) << endl;
-	
-	// Check if we are running the daemon as root
-	if (get_current_uid() == 0)
-		cout << "You are now running the daemon as root, this is not recommended." << endl;
+	// Drop root privileges now, if we were run that way
+	if (geteuid() == 0)
+	{
+		if (uid || gid)
+		{
+			if (setgid(gid) != 0)
+				cout << "Could not switch to group " << _group << ": " <<
+						strerror(errno) << endl;
+			if (setuid(uid) != 0)
+				cout << "Could not switch to user " << _user << ": " <<
+						strerror(errno) << endl;
+		}
+		else
+		{
+			cout << "WARNING: istatd set to run as root in istat.conf!  "
+					"Not recommended." << endl;
+		}
+	}
+	else {
+		cout << "Ignoring server_{user,group} settings, wasn't run as root." << endl;
+	}
 	
 	if (_back)
 	{
