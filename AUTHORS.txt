@@ -7,5 +7,6 @@
   Mo McRoberts <mo@nevali.net>
   - Solaris port, autoconf hackery, libfslabel creator
 
-  tangentsoft
-  - FreeBSD 4.10 support
+  Warren Young <tangentsoft@gmail.com>
+  - FreeBSD 4.x back-port, made it run without requiring root access,
+    various small tweaks
