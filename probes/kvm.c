@@ -68,6 +68,7 @@ int get_mem_data(struct mem_data * _mem)
 	double kbpp;
 	struct vmmeter sum;
 	struct kvm_swap swap[1];
+	static int first_time = 1;
 
 	struct nlist nl[] = {
 		{ "_cnt" },
@@ -76,7 +77,8 @@ int get_mem_data(struct mem_data * _mem)
 
 	_mem->t = _mem->f = _mem->a = _mem->i = _mem->c = _mem->swi = _mem->swo = _mem->swt = 0;
 
-	if ((kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open()")) != NULL)
+	if ((kd = kvm_open(NULL, NULL, NULL, O_RDONLY, 
+			first_time ? "kvm_open()" : NULL)) != NULL)
 	{
 		/* get virtual memory data */
 		if (kvm_nlist(kd, nl) == -1)
@@ -115,9 +117,11 @@ int get_mem_data(struct mem_data * _mem)
 		}
 
 		_mem->swt = swap[0].ksw_total * kbpp;
+
+		kvm_close(kd);
 	}
 
-	kvm_close(kd);
+	first_time = 0;		/* don't warn on failures on subsequent calls */
 
 	return 0;
 }
