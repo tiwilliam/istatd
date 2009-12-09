@@ -194,7 +194,23 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 
 void Daemon::destroy()
 {
-	unlink(pidfile.c_str());
+        int ret;
+        ofstream out;
+
+	ret = unlink(pidfile.c_str());
+
+        if (ret == -1)
+        {
+            // Empty pid file if we can't remove it
+            out.open(pidfile.c_str());
+
+            if (out.good())
+            {
+                out << "";
+                out.close();
+            }
+        }
+
 	unlink(sockfile.c_str());
 	
 	exit(0);
