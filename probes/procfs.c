@@ -108,9 +108,11 @@ int get_mem_data(struct mem_data * _mem)
 		sscanf(buf, "MemFree: %llu kB", &_mem->f);
 		sscanf(buf, "Active: %llu kB", &_mem->a);
 		sscanf(buf, "Inactive: %llu kB", &_mem->i);
-		sscanf(buf, "Cached: %llu kB", &_mem->c);
 		sscanf(buf, "SwapTotal: %llu kB", &_mem->swt);
 	}
+
+	_mem->c = memtotal - _mem->f - _mem->a - _mem->i;
+
 	if (0 == _mem->a && 0 == _mem->i && 0 == _mem->c)
 	{
 		_mem->a = memtotal - _mem->f;
