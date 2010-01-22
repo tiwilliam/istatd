@@ -3,6 +3,7 @@
  -------------------------------------------------------------------------
   * Version: 0.5.5
   * New: FreeBSD 4.10 support, thanks to tagentsoft for the patch.
+  * Fix: Memory meterics incorrect in Linux (cached).
   * Fix: Do not create PID file if it's not specified in config.
   * Fix: Removed unneccesary linkage to libld.
   * Fix: Reverted load avg. probe for procfs.
