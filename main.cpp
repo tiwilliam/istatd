@@ -179,7 +179,7 @@ int main(int argc, char ** argv)
 	
 	for (i = 0; i < sensor_num; i++)
 	{
-		init_sensors(i, &sensor_data);
+		get_sensor_data(i, &sensor_data);
 		
 		stats.add_sensor(&sensor_data);
 	}

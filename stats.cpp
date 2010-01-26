@@ -144,12 +144,7 @@ void Stats::update_system_stats()
 		
 		if (last_update_diff >= 10)
 		{
-			if (get_sensor_data(sit->data.id, &sit->data) == -1)
-			{
-				cout << "Could not get sensor data for '" << sit->data.label << "'. Device not found." << endl;
-				sit->active = false;
-			}
-			
+			get_sensor_data(sit->data.id, &sit->data);
 			sit->last_update = uxt;
 		}
 	}

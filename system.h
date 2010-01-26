@@ -96,9 +96,8 @@ int get_net_data(const char *_dev, struct net_data *_data);
 int get_disk_data(const char *_dev, struct disk_data *_disk);
 int get_disk_info(char * _device, char * _uuid, char * _label, char * _name);
 
-int init_sensors(unsigned int _id, struct sensor_data *_data);
-int get_sensor_data(unsigned int _id, struct sensor_data *_data);
 unsigned int get_sensor_num(void);
+unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data);
 
 # ifdef __cplusplus
 };
