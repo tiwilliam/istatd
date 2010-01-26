@@ -40,10 +40,12 @@
 #include <sys/un.h>
 
 #include "main.h"
-#include "avahi.h"
-#include "config.h"
 #include "daemon.h"
 #include "utility.h"
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 using namespace std;
 

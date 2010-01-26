@@ -42,6 +42,11 @@ AC_LINK_IFELSE([int main(void) { return 0; }],[
 # 	])
 # ])
 
+AC_CHECK_LIB([sensors],[sensors_init],[
+	AC_DEFINE_UNQUOTED([HAVE_LIBSENSORS],1,[Define if libsensors is available])
+	LIBS="$LIBS -lsensors"
+])
+
 AC_CHECK_PROG([XML2_CONFIG],[xml2-config],[xml2-config])
 if test x"$XML2_CONFIG" = x"" ; then
 	AC_MSG_ERROR([cannot find xml2-config: depending on your operating system you may need to install a '-dev' package for libxml2])
@@ -139,7 +144,7 @@ if test x"$use_uptime" = x"none" ; then
 	esac
 fi
 
-dnl We only use swapctl if procfs isn't available
+dnl We only use swapctl if procfs isnt available
 AC_CHECK_FUNC([swapctl],[
 test x"$use_swap" = x"none" && use_swap=swapctl
 ])
@@ -152,13 +157,8 @@ use_disk=statvfs
 	])
 ])
 
-AC_CHECK_LIB([avahi-client],[avahi_client_new],[
-AC_DEFINE_UNQUOTED([HAVE_LIBAVAHI_CLIENT],1,[Define if libavahi-client is available])
-LIBS="$LIBS -lavahi-client"
-])
-
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h sys/param.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h sys/param.h sensors/sensors.h])
 
 # Mute warning in freebsd 6.0
 AC_CHECK_HEADERS([sys/mount.h], [], [], [#include <sys/param.h>])

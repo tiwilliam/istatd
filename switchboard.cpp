@@ -43,6 +43,10 @@
 #include "clientset.h"
 #include "switchboard.h"
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 using namespace std;
 
 void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _config, \
@@ -58,13 +62,14 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 	vector<sys_info> data_history;
 	vector<net_info> data_net_history;
 	vector<disk_info> data_disk_history;
+	vector<sensor_info> data_sensor;
 	
 	// Load properties from config file
-	string cf_server_code					= _config->get("server_code", "00000");
-	string cf_server_reject_delay			= _config->get("server_reject_delay", "3");
-	string cf_disk_mount_path_label		= _config->get("disk_mount_path_label", "0");
-	string cf_disk_filesystem_label		= _config->get("disk_filesystem_label", "1");
-	vector<string> cf_disk_rename_label	= _config->get_array("disk_rename_label");
+	string cf_server_code = _config->get("server_code", "00000");
+	string cf_server_reject_delay = _config->get("server_reject_delay", "3");
+	string cf_disk_mount_path_label = _config->get("disk_mount_path_label", "0");
+	string cf_disk_filesystem_label = _config->get("disk_filesystem_label", "1");
+	vector<string> cf_disk_rename_label = _config->get_array("disk_rename_label");
 	
 	socket = _active_socket->get_id();
 	
@@ -189,11 +194,17 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 										break;
 									
 									case TEMP:
-										// Not implemented yet.
+										#ifdef HAVE_LIBSENSORS
+										data_sensor = _stats->get_temp_sensors();
+										temp << isr_temp_data(&data_sensor, element_content_int);
+										#endif
 										break;
 									
 									case FAN:
-										// Not implemented yet.
+										#ifdef HAVE_LIBSENSORS
+										data_sensor = _stats->get_fan_sensors();
+										temp << isr_fan_data(&data_sensor, element_content_int);
+										#endif
 										break;
 									
 									case UPTIME:
@@ -203,10 +214,7 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 									
 									case DISK:
 										data_disk_history = _stats->get_disk_history();
-										
-										// sid_disk is a TEMPORARY hack for a bug in current verison of the client.
-										// Remove when new client is released.
-										temp << isr_disk_data(&data_disk_history, element_content_int, cf_disk_mount_path_label, cf_disk_filesystem_label, cf_disk_rename_label, _clients->get_client(socket)->sid_disk);
+										temp << isr_disk_data(&data_disk_history, element_content_int, cf_disk_mount_path_label, cf_disk_filesystem_label, cf_disk_rename_label);
 										break;
 								}
 							

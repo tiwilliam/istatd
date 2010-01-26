@@ -149,7 +149,7 @@ string isr_network_data(vector<net_info> * _history, int _init)
 	return temp.str();
 }
 
-string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk_mount_path_label, const string cf_disk_filesystem_label, vector<string> cf_disk_rename_label, int _temp_hack)
+string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk_mount_path_label, const string cf_disk_filesystem_label, vector<string> cf_disk_rename_label)
 {
 	stringstream temp;
 	vector<string> conf_label;
@@ -201,9 +201,7 @@ string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk
 		else
 			disk_uuid = (*cur).device;
 		
-		// TEMPORY hack for current iStat version.
-		// Remove when new client is released.
-		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "-" << _temp_hack << "\" f=\"" << (*cur).history.front().f / 1000 << "\" p=\"" << (*cur).history.front().p << "\"></d>";
+		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "\" f=\"" << (*cur).history.front().f / 1000 << "\" p=\"" << (*cur).history.front().p << "\"></d>";
 	}
 	
 	temp << "</DISKS>";
@@ -243,3 +241,47 @@ string isr_memory_data(vector<sys_info> * _history)
 	return temp.str();
 }
 
+string isr_fan_data(vector<sensor_info> * _data, int _init)
+{
+	stringstream temp;
+	
+	if(0 == _data->size()) return temp.str();
+	
+	temp << "<FANS>";
+	
+	for (vector<sensor_info>::iterator cur = _data->begin(); cur != _data->end(); ++cur)
+	{
+		if (cur->data.kind == SENSOR_FAN)
+			temp << "<f n=\"" << cur->data.label << "\" i=\"" << cur->data.id << "\" s=\"" << cur->data.data << "\"></f>";
+	}
+	
+	temp << "</FANS>";
+	
+	return temp.str();
+}
+
+string isr_temp_data(vector<sensor_info> * _data, int _init)
+{
+	stringstream temp;
+	
+	if(0 == _data->size()) return temp.str();
+	
+	temp << "<TEMPS>";
+	
+	for (vector<sensor_info>::iterator cur = _data->begin(); cur != _data->end(); ++cur)
+	{
+		if (cur->data.kind == SENSOR_TEMP)
+		{
+			temp << "<t ";
+			
+			if (_init)
+				temp << "n=\"" << cur->data.label << "\" ";
+			
+			temp << "i=\"" << cur->data.id << "\" t=\"" << cur->data.data << "\"></t>";
+		}
+	}
+	
+	temp << "</TEMPS>";
+	
+	return temp.str();
+}

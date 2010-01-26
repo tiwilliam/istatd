@@ -35,6 +35,10 @@
 #include "stats.h"
 #include "system.h"
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 using namespace std;
 
 void Stats::update_system_stats()
@@ -49,6 +53,7 @@ void Stats::update_system_stats()
 	disk_data disk_data;
 	vector<net_info>::iterator nit;
 	vector<disk_info>::iterator dit;
+	vector<sensor_info>::iterator sit;
 	
 	uxt = get_unixtime();
 	
@@ -130,6 +135,26 @@ void Stats::update_system_stats()
 		}
 	}
 	
+#ifdef HAVE_LIBSENSORS
+	for (sit = sensors.begin(); sit < sensors.end(); sit++)
+	{
+		if (sit->active == false) continue;
+		
+		last_update_diff = uxt - sit->last_update;
+		
+		if (last_update_diff >= 10)
+		{
+			if (get_sensor_data(sit->data.id, &sit->data) == -1)
+			{
+				cout << "Could not get sensor data for '" << sit->data.label << "'. Device not found." << endl;
+				sit->active = false;
+			}
+			
+			sit->last_update = uxt;
+		}
+	}
+#endif
+	
 	stats.uxt = uxt;
 	stats.upt = get_uptime();
 
@@ -182,6 +207,16 @@ void Stats::add_disk(const char * _disk)
 	disks.push_back(temp);
 }
 
+void Stats::add_sensor(struct sensor_data *_sensor)
+{
+	sensor_info temp;
+	
+	temp.data = (*_sensor);
+	temp.active = true;
+	
+	sensors.push_back(temp);
+}
+
 vector<sys_info> Stats::get_history(int _pos)
 {
 	vector<sys_info> temp;
@@ -230,4 +265,14 @@ vector<net_info> Stats::get_net_history(int _pos)
 vector<disk_info> Stats::get_disk_history()
 {
 	return disks;
+}
+
+vector<sensor_info> Stats::get_fan_sensors()
+{
+	return sensors;
+}
+
+vector<sensor_info> Stats::get_temp_sensors()
+{
+	return sensors;
 }

@@ -69,7 +69,7 @@ int get_uptime(void)
 }
 #endif
 
-int get_unixtime()
+int get_unixtime(void)
 {
 	time_t cur;
 	
@@ -141,7 +141,11 @@ int get_net_data(const char * _dev, struct net_data * _data)
 	static FILE * fp = NULL;
 	int found_device = 0;
 	
-	if (!(fp = fopen("/proc/net/dev", "r"))) return -1;
+	if (!(fp = fopen("/proc/net/dev", "r")))
+	{
+		perror("fopen: /proc/net/dev");
+		return -1;
+	}
 	
 	fscanf(fp, "%*[^\n] %*[^\n] ");
 	

@@ -31,7 +31,7 @@
 #ifndef _STATS_H
 #define _STATS_H
 
-#define NET_HISTORY			300
+#define NET_HISTORY		300
 #define DISK_HISTORY		300
 #define STAT_HISTORY		300
 
@@ -67,11 +67,22 @@ class disk_info
 		std::vector<disk_data> history;
 };
 
+class sensor_info
+{
+	public:
+		bool active;
+		unsigned int id;
+		unsigned int last_update;
+		
+		struct sensor_data data;
+};
+
 class Stats
 {
 	public:
-		void add_net(const char * _iface);
-		void add_disk(const char * _disk);
+		void add_net(const char *_iface);
+		void add_disk(const char *_disk);
+		void add_sensor(struct sensor_data *_sensor);
 		
 		void update_system_stats();
 		
@@ -80,10 +91,13 @@ class Stats
 		std::vector<disk_info> get_disk_history();
 		std::vector<sys_info> get_history(int _pos);
 		std::vector<net_info> get_net_history(int _pos);
+		std::vector<sensor_info> get_fan_sensors();
+		std::vector<sensor_info> get_temp_sensors();
 		
 	private:
 		std::vector<net_info> nets;
 		std::vector<disk_info> disks;
+		std::vector<sensor_info> sensors;
 		std::vector<sys_info> history;
 };
 

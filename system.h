@@ -34,6 +34,9 @@
 #include <time.h>
 #include <stdio.h>
 
+#define SENSOR_FAN 0
+#define SENSOR_TEMP 1
+
 struct cpu_data
 {
 	float one, two, three;
@@ -67,6 +70,17 @@ struct sys_info
 	struct cpu_data cpu;
 };
 
+struct sensor_data
+{
+	double data;
+	time_t uxt;
+	char *label;
+	unsigned int id;
+	unsigned int kind;
+	unsigned int chip;
+	unsigned int sensor;
+};
+
 # ifdef __cplusplus
 extern "C" {
 # endif
@@ -81,6 +95,10 @@ int get_swp_data(struct mem_data *_mem);
 int get_net_data(const char *_dev, struct net_data *_data);
 int get_disk_data(const char *_dev, struct disk_data *_disk);
 int get_disk_info(char * _device, char * _uuid, char * _label, char * _name);
+
+int init_sensors(unsigned int _id, struct sensor_data *_data);
+int get_sensor_data(unsigned int _id, struct sensor_data *_data);
+unsigned int get_sensor_num(void);
 
 # ifdef __cplusplus
 };
