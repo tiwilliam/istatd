@@ -2,11 +2,17 @@
   AUTHORS OF ISTAT
  -------------------------------------------------------------------------
   William Tisäter <william@defunct.cc>
-  - The bulk of the work, Linux monitoring, FreeBSD port
+  - The bulk of the work
+  - Linux monitorig
+  - FreeBSD monitoring
+  - Temperature and fan support (lm_sensors)
   
   Mo McRoberts <mo@nevali.net>
-  - Solaris port, autoconf hackery, libfslabel creator
+  - Solaris port
+  - Autoconf hackery
+  - Creator of libfslabel
 
   Warren Young <tangentsoft@gmail.com>
-  - FreeBSD 4.x back-port, made it run without requiring root access,
-    various small tweaks
+  - FreeBSD 4.x back-port
+  - Made it run without requiring root access
+  - Various small tweaks
