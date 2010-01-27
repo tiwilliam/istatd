@@ -1,7 +1,7 @@
  
   AUTHORS OF ISTAT
  -------------------------------------------------------------------------
-  William Tis‰ter <william@defunct.cc>
+  William Tis√§ter <william@defunct.cc>
   - The bulk of the work, Linux monitoring, FreeBSD port
   
   Mo McRoberts <mo@nevali.net>
