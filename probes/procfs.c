@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 William TisÃ¤ter. All rights reserved.
+ *  Copyright 2009 William Tisäter. All rights reserved.
  *  Copyright 2009 Mo McRoberts.
  * 
  *  Redistribution and use in source and binary forms, with or without
@@ -19,7 +19,7 @@
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  DISCLAIMED. IN NO EVENT SHALL WILLIAM TISÃ„TER BE LIABLE FOR ANY
+ *  DISCLAIMED. IN NO EVENT SHALL WILLIAM TISÄTER BE LIABLE FOR ANY
  *  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -109,9 +109,8 @@ int get_mem_data(struct mem_data * _mem)
 		sscanf(buf, "Active: %llu kB", &_mem->a);
 		sscanf(buf, "Inactive: %llu kB", &_mem->i);
 		sscanf(buf, "SwapTotal: %llu kB", &_mem->swt);
+		sscanf(buf, "Cached: %llu kB", &_mem->c);
 	}
-
-	_mem->c = memtotal - _mem->f - _mem->a - _mem->i;
 
 	if (0 == _mem->a && 0 == _mem->i && 0 == _mem->c)
 	{
