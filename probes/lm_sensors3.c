@@ -32,17 +32,19 @@
 # include "config.h"
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #ifdef HAVE_SENSORS_SENSORS_H
 # include <sensors/sensors.h>
 #endif
 
+#ifdef HAVE_LIBSENSORS
+#if SENSORS_API_VERSION < 0x0400 /* libsensor 3 and earlier */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "system.h"
 
-#ifdef HAVE_LIBSENSORS
 unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 {
 	int a, b, c, num;
@@ -50,6 +52,8 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 	const sensors_feature_data * features;
 
 	a = num = 0;
+
+	sensors_init(NULL);
 
 	while ((chip = sensors_get_detected_chips(&a)))
 	{
@@ -100,6 +104,8 @@ unsigned int get_sensor_num(void)
 
 	a = num = 0;
 
+	sensors_init(NULL);
+
 	while ((chip = sensors_get_detected_chips(&a)))
 	{
 		b = c = 0;
@@ -116,4 +122,6 @@ unsigned int get_sensor_num(void)
 
 	return num;
 }
+
+#endif
 #endif
