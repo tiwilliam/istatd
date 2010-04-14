@@ -175,7 +175,6 @@ int main(int argc, char ** argv)
 	unsigned int sensor_num;
 	struct sensor_data sensor_data;
 
-	sensors_init(NULL);
 	sensor_num = get_sensor_num();
 	
 	for (i = 0; i < sensor_num; i++)
