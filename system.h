@@ -45,7 +45,7 @@ struct cpu_data
 
 struct mem_data
 {
-	unsigned long long t, f, a, i, c, swt, swi, swo;
+	unsigned long long t, f, a, i, c, swu, swt, swi, swo;
 };
 
 struct net_data

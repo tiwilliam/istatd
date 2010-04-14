@@ -236,7 +236,7 @@ string isr_memory_data(vector<sys_info> * _history)
 	stringstream temp;
 	
 	if(0 == _history->size()) return temp.str();	
-	temp << "<MEM w=\"" << _history->back().mem.c / 1000 << "\" a=\"" << _history->back().mem.a / 1000 << "\" i=\"" << _history->back().mem.i / 1000 << "\" f=\"" << _history->back().mem.f / 1000 << "\" t=\"" << _history->back().mem.t / 1000 << "\" su=\"0\" st=\"" << _history->back().mem.swt / 1000 << "\" pi=\"" << _history->back().mem.swi << "\" po=\"" << _history->back().mem.swo << "\"></MEM>";
+	temp << "<MEM w=\"" << _history->back().mem.c / 1000 << "\" a=\"" << _history->back().mem.a / 1000 << "\" i=\"" << _history->back().mem.i / 1000 << "\" f=\"" << _history->back().mem.f / 1000 << "\" t=\"" << _history->back().mem.t / 1000 << "\" su=\"" << _history->back().mem.swu / 1000 << "\" st=\"" << _history->back().mem.swt / 1000 << "\" pi=\"" << _history->back().mem.swi << "\" po=\"" << _history->back().mem.swo << "\"></MEM>";
 	
 	return temp.str();
 }

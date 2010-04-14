@@ -16,3 +16,8 @@
   - FreeBSD 4.x back-port
   - Made it run without requiring root access
   - Various small tweaks
+
+  Guntram Blohm <nagios1@guntram.de>
+  - Fixed lm_sensors to work with earlier versions
+  - Added used swap probes
+  - Various small tweaks

@@ -193,10 +193,23 @@ int get_net_data(const char * _dev, struct net_data * _data)
 	kstat_t *ksp;
 	kstat_named_t *kn;
 	char name[32];
+	char module[32];
+	char *p;
 
-	strncpy(name, _dev, sizeof(name) - 1);
-	name[sizeof(name) - 1] = 0;
-	if(NULL == (ksp = kstat_lookup(ksh, "link", -1, name))) return -1;
+	strcpy(module, "link");
+	if((p = strchr(_dev, ':')) == NULL)
+	{
+		strncpy(name, _dev, sizeof(name) - 1);
+		name[sizeof(name) - 1] = 0;
+	}
+	else
+	{
+		strncpy(name, p + 1, sizeof(name) - 1);
+		name[sizeof(name) - 1]=0;
+		strncpy(module, _dev, sizeof(module) - 1);
+		module[p - _dev] = 0;
+	}
+	if(NULL == (ksp = kstat_lookup(ksh, module, -1, name))) return -1;
 	if(-1 == kstat_read(ksh, ksp, NULL)) return -1;
 	kn = (kstat_named_t *) ksp->ks_data;
 	if(NULL == (kn = (kstat_named_t *) kstat_data_lookup(ksp, "obytes64")))

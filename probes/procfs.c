@@ -99,6 +99,7 @@ int get_mem_data(struct mem_data * _mem)
 	char buf[320];
 	static FILE * fp = NULL;
 	unsigned long long memtotal = 0;
+	unsigned long long swapfree = 0;
 
 	if (!(fp = fopen("/proc/meminfo", "r"))) return -1;
 
@@ -109,13 +110,17 @@ int get_mem_data(struct mem_data * _mem)
 		sscanf(buf, "Active: %llu kB", &_mem->a);
 		sscanf(buf, "Inactive: %llu kB", &_mem->i);
 		sscanf(buf, "SwapTotal: %llu kB", &_mem->swt);
+		sscanf(buf, "SwapFree: %llu kB", &swapfree);
 		sscanf(buf, "Cached: %llu kB", &_mem->c);
 	}
+
+	_mem->swu = _mem->swt - swapfree;
 
 	if (0 == _mem->a && 0 == _mem->i && 0 == _mem->c)
 	{
 		_mem->a = memtotal - _mem->f;
 	}
+
 	fclose(fp);
 	
 	if (!(fp = fopen("/proc/vmstat", "r"))) return -1;
@@ -171,7 +176,7 @@ int get_avg_data(struct cpu_data *_cpu)
 {
 	static FILE * fp = NULL;
 
-	if (!(fp = fopen("/proc/loadavg", "r"))) return -1;                
+	if (!(fp = fopen("/proc/loadavg", "r"))) return -1;
 
 	fscanf(fp, "%f %f %f", &_cpu->one, &_cpu->two, &_cpu->three);
 	fclose(fp);

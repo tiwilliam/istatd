@@ -67,7 +67,7 @@ fslabel_identify(const char *path, fslabel_t *fslabel)
 {
 	int fd, cr, r;
 	
-	memset(fslabel, 0, sizeof(fslabel));
+	memset(fslabel, 0, sizeof(*fslabel));
 	do
 	{
 		fd = open(path, O_RDONLY|O_BINARY);

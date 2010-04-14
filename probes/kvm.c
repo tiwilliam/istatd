@@ -68,60 +68,60 @@ int get_mem_data(struct mem_data * _mem)
 	double kbpp;
 	struct vmmeter sum;
 	struct kvm_swap swap[1];
-	static int first_time = 1;
 
 	struct nlist nl[] = {
 		{ "_cnt" },
 		{ NULL }
 	};
 
-	_mem->t = _mem->f = _mem->a = _mem->i = _mem->c = _mem->swi = _mem->swo = _mem->swt = 0;
+	_mem->t = _mem->f = _mem->a = _mem->i = _mem->c = _mem->swi = _mem->swo = _mem->swt = _mem->swu = 0;
 
-	if ((kd = kvm_open(NULL, NULL, NULL, O_RDONLY, 
-			first_time ? "kvm_open()" : NULL)) != NULL)
+	if ((kd = kvm_open(NULL, NULL, NULL, O_RDONLY, NULL)) == NULL)
 	{
-		/* get virtual memory data */
-		if (kvm_nlist(kd, nl) == -1)
-		{
-			fprintf(stderr, "kvm_nlist(): %s\n", strerror(errno));
-			kvm_close(kd);
-			return -1;
-		}
-
-		len = sizeof(sum);
-
-		if (kvm_read(kd, nl[0].n_value, &sum, len) == -1)
-		{
-			fprintf(stderr, "kvm_read(): %s\n", strerror(errno));
-			kvm_close(kd);
-			return -1;
-		}
-
-		/* kilo bytes per page */
-		kbpp = sum.v_page_size / 1024;
-
-		_mem->t = sum.v_page_count * kbpp;
-		_mem->f = sum.v_free_count * kbpp;
-		_mem->a = sum.v_active_count * kbpp;
-		_mem->i = sum.v_inactive_count * kbpp;
-		_mem->c = sum.v_cache_count * kbpp;
-
-		_mem->swi = sum.v_swappgsin;
-		_mem->swo = sum.v_swappgsout;
-
-		if (kvm_getswapinfo(kd, swap, 1, 0) == -1)
-		{
-			fprintf(stderr, "kvm_getswapinfo(): %s\n", strerror(errno));
-			kvm_close(kd);
-			return -1;
-		}
-
-		_mem->swt = swap[0].ksw_total * kbpp;
-
-		kvm_close(kd);
+		fprintf(stderr, "kvm_open(): %s\n", strerror(errno));
+		return -1;
 	}
 
-	first_time = 0;		/* don't warn on failures on subsequent calls */
+	/* get virtual memory data */
+	if (kvm_nlist(kd, nl) == -1)
+	{
+		fprintf(stderr, "kvm_nlist(): %s\n", strerror(errno));
+		kvm_close(kd);
+		return -1;
+	}
+
+	len = sizeof(sum);
+
+	if (kvm_read(kd, nl[0].n_value, &sum, len) == -1)
+	{
+		fprintf(stderr, "kvm_read(): %s\n", strerror(errno));
+		kvm_close(kd);
+		return -1;
+	}
+
+	/* kilo bytes per page */
+	kbpp = sum.v_page_size / 1024;
+
+	_mem->t = sum.v_page_count * kbpp;
+	_mem->f = sum.v_free_count * kbpp;
+	_mem->a = sum.v_active_count * kbpp;
+	_mem->i = sum.v_inactive_count * kbpp;
+	_mem->c = sum.v_cache_count * kbpp;
+
+	_mem->swi = sum.v_swappgsin;
+	_mem->swo = sum.v_swappgsout;
+
+	if (kvm_getswapinfo(kd, swap, 1, 0) == -1)
+	{
+		fprintf(stderr, "kvm_getswapinfo(): %s\n", strerror(errno));
+		kvm_close(kd);
+		return -1;
+	}
+
+	_mem->swt = swap[0].ksw_total * kbpp;
+	_mem->swu = swap[0].ksw_used * kbpp;
+
+	kvm_close(kd);
 
 	return 0;
 }

@@ -162,7 +162,7 @@ int get_disk_info(char * _device, char * _uuid, char * _label, char * _name)
 					strncpy(_label, label.label, sizeof(label.label) - 1);
 					_label[sizeof(label.label) - 1] = 0;
 				}
-				else if (0 == r)
+				else
 				{
 					_uuid[0] = 0;
 					_label[0] = 0;

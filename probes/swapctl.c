@@ -50,6 +50,7 @@ int get_swp_data(struct mem_data * _mem)
 	struct swapent *ent;
 	char *pbuf, *obuf;
 	int bpp, num, c;
+    long long swapfree = 0;
 
 	if (0 == _mem->swt && -1 != (num = swapctl(SC_GETNSWP, NULL)))
 	{
@@ -57,25 +58,32 @@ int get_swp_data(struct mem_data * _mem)
 		st = (struct swaptable *) malloc(num = sizeof(swapent_t) + sizeof(int));
 		pbuf = obuf = (char *) malloc(num * MAXPATHLEN);
 		ent = st->swt_ent;
+
 		/* Provide buffers for the swap device names */
 		for (c = 0; c < num; c++, ent++)
 		{
 			ent->ste_path = pbuf;
 			pbuf += MAXPATHLEN;
 		}
+
 		/* Retrieve the devices */
 		if(-1 != (num = swapctl(SC_LIST, st)))
 		{
 			ent = st->swt_ent;
+
 			for (c = 0; c < num; c++, ent++)
 			{
 				_mem->swt += ent->ste_pages * bpp * DEV_BSIZE / 1024;
+                swapfree += ent->ste_free * bpp * DEV_BSIZE / 1024;
 			}
+
+            _mem->swu = _mem->swt - swapfree;
 		}
+
 		free(obuf);
 		free(st);
 	}
 	
 	return 0;
 }
-#endif /*USE_SWAP_SWAPCTL*/
+#endif /* USE_SWAP_SWAPCTL */

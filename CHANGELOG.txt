@@ -1,5 +1,14 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
+  * Version: 0.5.7
+  * New: Probes for used swap space even if it's not used by client.
+  * New: Default config will set disk_mount_path_label to 1.
+  * Fix: Support older versions of lm_sensors (API < 0x0400).
+  * Fix: libfslabel could in some cases return uninitialized variables.
+  * Fix: kvm_open caused an error on first probe.
+  * Fix: sysctl will now warn if the network device can't be found.
+  * Fix: monitor_net can now include a colon (eg. ce:ce0).
+ -------------------------------------------------------------------------
   * Version: 0.5.6
   * New: Temperature and fan support with lm_sensors.
   * Fix: Reverted old cache memory calculation.

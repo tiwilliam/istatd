@@ -32,6 +32,8 @@
 # include "config.h"
 #endif
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 #ifdef HAVE_SENSORS_SENSORS_H
@@ -45,86 +47,73 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 {
 	int a, b, c, num;
 	const sensors_chip_name * chip;
-	const sensors_feature * features;
-	const sensors_subfeature * subfeatures;
-	
+	const sensors_feature_data * features;
+
 	a = num = 0;
-	
-	while ((chip = sensors_get_detected_chips(NULL, &a)))
+
+	while ((chip = sensors_get_detected_chips(&a)))
 	{
-		b = 0;
-		while ((features = sensors_get_features(chip, &b)))
+		b = c = 0;
+
+		while ((features = sensors_get_all_features(*chip, &b, &c)))
 		{
-			c = 0;
-			while ((subfeatures = sensors_get_all_subfeatures(chip, features, &c)))
+			if (!memcmp(features->name, "fan", 3) && features->name[4]=='\0')
 			{
-				if (subfeatures->type == SENSORS_SUBFEATURE_FAN_INPUT)
+				if (_id == num)
 				{
-					if (_id == num)
-					{
-						_data->id = _id;
-						_data->chip = chip->addr;
-						_data->sensor = features->number;
-						_data->label = sensors_get_label(chip, features);
-						_data->kind = SENSOR_FAN;
-  						sensors_get_value(chip, subfeatures->number, &_data->data);
-					}
-					num++;
+					_data->id = _id;
+					_data->chip = chip->addr;
+					_data->sensor = features->number;
+					_data->kind = SENSOR_FAN;
+					sensors_get_label(*chip, _data->sensor, &_data->label);
+					sensors_get_feature(*chip, _data->sensor, &_data->data);
 				}
-					
-				if (subfeatures->type == SENSORS_SUBFEATURE_TEMP_INPUT)
+
+				num++;
+			}
+
+			if (!memcmp(features->name, "temp", 3) && features->name[5]=='\0')
+			{
+				if (_id == num)
 				{
-					if (_id == num)
-					{
-						_data->id = _id;
-						_data->chip = chip->addr;
-						_data->sensor = features->number;
-						_data->label = sensors_get_label(chip, features);
-						_data->kind = SENSOR_TEMP;
-  						sensors_get_value(chip, subfeatures->number, &_data->data);
-					}
-					num++;
+					_data->id = _id;
+					_data->chip = chip->addr;
+					_data->sensor = features->number;
+					_data->kind = SENSOR_TEMP;
+					sensors_get_label(*chip, _data->sensor, &_data->label);
+					sensors_get_feature(*chip, _data->sensor, &_data->data);
 				}
+
+				num++;
 			}
 		}
 	}
-	
+
 	return 0;
 }
 
 unsigned int get_sensor_num(void)
 {
 	int a, b, c, num;
-	const sensors_chip_name * chip;
-	const sensors_feature * features;
-	const sensors_subfeature * subfeatures;
-	
-	sensors_init(NULL);
-	
+	const sensors_chip_name *chip;
+	const sensors_feature_data *features;
+
 	a = num = 0;
-	while ((chip = sensors_get_detected_chips(NULL, &a)))
+
+	while ((chip = sensors_get_detected_chips(&a)))
 	{
-		b = 0;
-		while ((features = sensors_get_features(chip, &b)))
+		b = c = 0;
+
+		while ((features = sensors_get_all_features(*chip, &b, &c)))
 		{
-			c = 0;
-			while ((subfeatures = sensors_get_all_subfeatures(chip, features, &c)))
-			{
-				if (subfeatures->type == SENSORS_SUBFEATURE_FAN_INPUT)
-				{
-					// chip = chip->addr
-					// sensor = features->number
-					num++; break;
-				}
-					
-				if (subfeatures->type != SENSORS_SUBFEATURE_TEMP_INPUT)
-				{
-					num++; break;
-				}
-			}
+			if (!memcmp(features->name, "fan", 3) && features->name[4]=='\0')
+				num++;
+
+			if (!memcmp(features->name, "temp", 3) && features->name[5]=='\0')
+				num++;
 		}
 	}
-	
+
 	return num;
 }
 #endif

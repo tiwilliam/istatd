@@ -65,7 +65,7 @@ void Stats::update_system_stats()
 	{
 		last_update_diff = uxt - (*nit).last_update;
 		
-		// Skip this device if last try is less than one minute away.
+		// Try to probe failed devices every ten seconds
 		if ((*nit).active == false && last_update_diff < 10) continue;
 		
 		// Save last probe time. Good for fail check interval.

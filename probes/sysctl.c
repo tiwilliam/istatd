@@ -117,6 +117,7 @@ int get_net_data(const char * _dev, struct net_data * _data)
 	size_t len;
 	struct ifmibdata ifmd;
 	int ifcount = get_ifcount();
+	int found_device = 0;
 
 	len = sizeof(ifmd);
 
@@ -136,11 +137,16 @@ int get_net_data(const char * _dev, struct net_data * _data)
 		{
 			_data->s = ifmd.ifmd_data.ifi_obytes;
 			_data->r = ifmd.ifmd_data.ifi_ibytes;
+
+			found_device = 1;
+
 			break;
 		}
 	}
 
-        return 0;
+	if (!found_device || ifcount == 0) return -1;
+
+	return 0;
 }
 # endif /*NET_USE_SYSCTL*/
 
