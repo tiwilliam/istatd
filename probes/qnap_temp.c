@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 William Tisäter. All rights reserved.
+ *  Copyright 2010 Guntram Blohm. All rights reserved.
  * 
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
@@ -18,7 +18,7 @@
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ``AS IS'' AND ANY
  *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  DISCLAIMED. IN NO EVENT SHALL WILLIAM TISÄTER BE LIABLE FOR ANY
+ *  DISCLAIMED. IN NO EVENT SHALL GUNTRAM BLOHM BE LIABLE FOR ANY
  *  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -38,10 +38,10 @@
 #include <string.h>
 #include <sys/errno.h>
 
+#ifdef HAVE_QNAPTEMP
 char *systempfile="/proc/tsinfo/systemp";
 static FILE *systempfp;
 
-#ifdef	HAVE_QNAPTEMP
 unsigned int get_qnaptemp(unsigned int _id, struct sensor_data *_data)
 {
 	int systemp;

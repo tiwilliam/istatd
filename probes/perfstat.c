@@ -1,6 +1,6 @@
 /*
- *  Copyright 2009 William Tisäter. All rights reserved.
- *  Copyright 2009 Guntram Blohm
+ *  Copyright 2010 William Tisäter. All rights reserved.
+ *  Copyright 2010 Guntram Blohm.
  * 
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
