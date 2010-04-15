@@ -4,7 +4,7 @@ istatd is a daemon serving statistics to your iStat iPhone application from Linu
 
 What is iStat for iPhone?
 
-iStat is a iPhone application developed by Bjango <http://www.bjango.com/>. With iStat you can remotely monitor CPU, memory, disks, uptime and load averages from any Mac, Linux or Solaris computer from your iPhone. You can download iStat in iTunes App Store.
+iStat is a iPhone application developed by Bjango (http://www.bjango.com/). With iStat you can remotely monitor CPU, memory, disks, uptime and load averages from any Mac, Linux or Solaris computer from your iPhone. You can download iStat in iTunes App Store.
 
 How to install
 
