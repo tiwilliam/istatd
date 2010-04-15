@@ -55,4 +55,4 @@ These steps assume you are logged in as root and have GNU build tools installed 
 
 7) Fire it up
 
-   # /usr/bin/istatd &
+   # /usr/bin/istatd -d
