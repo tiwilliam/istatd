@@ -62,14 +62,14 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 	setsid();
 	
 	// Translate user from configuration to uid
-	if ((uid = get_uid_from_str(_user)) < 0)
+	if ((uid = get_uid_from_str(_user)) == (uid_t) -1)
 	{
 		cout << "Warning! Cannot get uid for username " << _user << ", will run as current user." << endl;
 		uid = get_current_uid();
 	}
 	
 	// Translate group from configuration to gid
-	if ((gid = get_gid_from_str(_group)) < 0)
+	if ((gid = get_gid_from_str(_group)) == (gid_t) -1)
 	{
 		cout << "Warning! Cannot get gid for group " << _group << ", will run as current group." << endl;
 		gid = get_current_gid();
@@ -154,7 +154,7 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 	// Only write pid if we have the file specified in conf or as argument
 	if (pidfile.length())
 	{
-		out << getpid();
+		out << getpid() << '\n'; 
 		out.close();
 	}
 	

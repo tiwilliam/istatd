@@ -99,6 +99,9 @@ int get_disk_info(char * _device, char * _uuid, char * _label, char * _name);
 unsigned int get_sensor_num(void);
 unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data);
 
+unsigned int get_qnaptemp(unsigned int _id, struct sensor_data *_data);
+unsigned int have_qnaptemp(void);
+
 # ifdef __cplusplus
 };
 #endif

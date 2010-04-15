@@ -14,6 +14,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_CHECK_TOOL(AR, ar, false)
 
 AC_MSG_CHECKING([if the compiler supports -Wall])
 oldcppflags="$CPPFLAGS"
@@ -42,10 +43,18 @@ AC_LINK_IFELSE([int main(void) { return 0; }],[
 # 	])
 # ])
 
-AC_CHECK_LIB([sensors],[sensors_init],[
+qnaptemp=yes
+AC_ARG_WITH(qnaptemp,
+  [  --with-qnaptemp   read temperature from procfs on qnap NAS products [0]],
+  AC_DEFINE_UNQUOTED([HAVE_QNAPTEMP],1,[Define if compiling for a qnap NAS]),
+  qnaptemp=no)
+
+if test $qnaptemp = no; then
+  AC_CHECK_LIB([sensors],[sensors_init],[
 	AC_DEFINE_UNQUOTED([HAVE_LIBSENSORS],1,[Define if libsensors is available])
 	LIBS="$LIBS -lsensors"
 ])
+fi
 
 AC_CHECK_PROG([XML2_CONFIG],[xml2-config],[xml2-config])
 if test x"$XML2_CONFIG" = x"" ; then
@@ -101,6 +110,19 @@ if test x"$have_kstat" = x"no" ; then
 	use_swap=kvm
 	])
 fi
+
+AC_CHECK_LIB([perfstat],[perfstat_cpu_total],[
+AC_DEFINE_UNQUOTED([HAVE_LIBPERFSTAT],1,[Define if libperfstat is available])
+have_perfstat=yes
+LIBS="$LIBS -lperfstat"
+use_cpu=perfstat
+use_net=perfstat
+use_uptime=perfstat
+use_mem=perfstat
+use_load=perfstat
+use_swap=perfstat
+],[have_perfstat=no])
+
 AC_CHECK_FUNC([getloadavg],[
 use_load=getloadavg
 ])
@@ -158,7 +180,7 @@ use_disk=statvfs
 ])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h sys/param.h sensors/sensors.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h mntent.h netdb.h stdlib.h string.h paths.h sys/socket.h sys/statfs.h sys/statvfs.h sys/mnttab.h sys/loadavg.h kstat.h errno.h sys/sysinfo.h sys/processor.h sys/swap.h kvm.h alloca.h sys/resource.h netinet/in.h sys/sysctl.h sys/vmmeter.h sys/param.h sensors/sensors.h libperfstat.h])
 
 # Mute warning in freebsd 6.0
 AC_CHECK_HEADERS([sys/mount.h], [], [], [#include <sys/param.h>])
@@ -211,6 +233,9 @@ case $use_cpu in
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_CPU_KSTAT],1,[Use kstat(3) to probe CPU usage])
 		;;
+	perfstat)
+		AC_DEFINE_UNQUOTED([USE_CPU_PERFSTAT],1,[Use AIX perfstat to probe CPU usage])
+		;;
 	sysctl)
 		AC_DEFINE_UNQUOTED([USE_CPU_SYSCTL],1,[Use sysctl to probe CPU usage])
 		;;
@@ -228,6 +253,9 @@ case $use_load in
 	getloadavg)
 		AC_DEFINE_UNQUOTED([USE_LOAD_GETLOADAVG],1,[Use getloadavg(3) to probe load average])
 		;;
+	perfstat)
+		AC_DEFINE_UNQUOTED([USE_LOAD_PERFSTAT],1,[Use perfstat (AIX) to probe load average])
+		;;
 	*)
 		AC_MSG_ERROR([cannot determine load average probe type for ${host_os}])
 		;;
@@ -241,6 +269,9 @@ case $use_mem in
 		;;
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_MEM_KSTAT],1,[Use kstat(3) to probe memory usage])
+		;;
+	perfstat)
+		AC_DEFINE_UNQUOTED([USE_MEM_PERFSTAT],1,[Use perfstat (AIX) to probe memory usage])
 		;;
 	kvm)
 		AC_DEFINE_UNQUOTED([USE_MEM_KVM],1,[Use kvm(3) to probe memory usage])
@@ -259,6 +290,9 @@ case $use_swap in
 	swapctl)
 		AC_DEFINE_UNQUOTED([USE_SWAP_SWAPCTL],1,[Use swapctl(3) to probe swap])
 		;;
+	perfstat)
+		AC_DEFINE_UNQUOTED([USE_SWAP_PERFSTAT],1,[Use perfstat (AIX) to probe swap])
+		;;
 	kvm)
 		AC_DEFINE_UNQUOTED([USE_SWAP_KVM],1,[Use kvm(3) to probe swap])
 		;;
@@ -275,6 +309,9 @@ case $use_uptime in
 		;;
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_UPTIME_KSTAT],1,[Use kstat(3) to probe uptime])
+		;;
+	perfstat)
+		AC_DEFINE_UNQUOTED([USE_UPTIME_PERFSTAT],1,[Use perfstat(3) to probe uptime])
 		;;
 	gettime)
 		AC_DEFINE_UNQUOTED([USE_UPTIME_GETTIME],1,[Use clock_gettime(2) to probe load uptime])
@@ -295,6 +332,9 @@ case $use_net in
 		;;
 	kstat)
 		AC_DEFINE_UNQUOTED([USE_NET_KSTAT],1,[Use kstat(3) to probe network activity])
+		;;
+	perfstat)
+		AC_DEFINE_UNQUOTED([USE_NET_PERFSTAT],1,[Use perfstat(3) to probe network activity])
 		;;
 	sysctl)
 		AC_DEFINE_UNQUOTED([USE_NET_SYSCTL],1,[Use sysctl to probe network activity])

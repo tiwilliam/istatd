@@ -184,7 +184,15 @@ int main(int argc, char ** argv)
 		stats.add_sensor(&sensor_data);
 	}
 #endif
-	
+
+#ifdef  HAVE_QNAPTEMP
+	struct sensor_data sensor_data;
+	if (have_qnaptemp()) {
+		get_qnaptemp(0, &sensor_data);
+		stats.add_sensor(&sensor_data);
+	}
+#endif
+
 	while (1)
 	{
 		stats.update_system_stats();

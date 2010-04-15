@@ -194,7 +194,7 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 										break;
 									
 									case TEMP:
-										#ifdef HAVE_LIBSENSORS
+										#if defined(HAVE_LIBSENSORS) || defined(HAVE_QNAPTEMP)
 										data_sensor = _stats->get_temp_sensors();
 										temp << isr_temp_data(&data_sensor, element_content_int);
 										#endif

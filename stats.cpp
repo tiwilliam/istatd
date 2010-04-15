@@ -149,6 +149,19 @@ void Stats::update_system_stats()
 		}
 	}
 #endif
+
+#ifdef HAVE_QNAPTEMP
+	sit = sensors.begin();
+	if (sit < sensors.end())
+	{
+		last_update_diff = uxt - sit->last_update;
+		if (last_update_diff >= 10)
+		{
+			get_qnaptemp(0, &sit->data);
+			sit->last_update = uxt;
+		}
+	}
+#endif
 	
 	stats.uxt = uxt;
 	stats.upt = get_uptime();

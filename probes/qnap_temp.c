@@ -1,6 +1,5 @@
 /*
- *  Copyright 2009 William Tisäter. All rights reserved.
- *  Copyright 2009 Mo McRoberts.
+ *  Copyright 2010 William Tisäter. All rights reserved.
  * 
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
@@ -33,57 +32,51 @@
 # include "config.h"
 #endif
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-
-#ifdef HAVE_SYS_SWAP_H
-# include <sys/swap.h>
-#endif
-
 #include "system.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/errno.h>
 
-#ifdef USE_SWAP_SWAPCTL
-int get_swp_data(struct mem_data * _mem)
+char *systempfile="/proc/tsinfo/systemp";
+static FILE *systempfp;
+
+#ifdef	HAVE_QNAPTEMP
+unsigned int get_qnaptemp(unsigned int _id, struct sensor_data *_data)
 {
-	struct swaptable *st;
-	struct swapent *ent;
-	char *pbuf, *obuf;
-	int bpp, num, c;
-    long long swapfree = 0;
+	int systemp;
 
-	if (0 == _mem->swt && -1 != (num = swapctl(SC_GETNSWP, NULL)))
-	{
-		bpp = getpagesize() >> DEV_BSHIFT;
-		st = (struct swaptable *) malloc(num = sizeof(swapent_t) + sizeof(int));
-		pbuf = obuf = (char *) malloc(num * MAXPATHLEN);
-		ent = st->swt_ent;
-
-		/* Provide buffers for the swap device names */
-		for (c = 0; c < num; c++, ent++)
-		{
-			ent->ste_path = pbuf;
-			pbuf += MAXPATHLEN;
-		}
-
-		/* Retrieve the devices */
-		if(-1 != (num = swapctl(SC_LIST, st)))
-		{
-			ent = st->swt_ent;
-
-			for (c = 0; c < num; c++, ent++)
-			{
-				_mem->swt += (unsigned long long) ent->ste_pages * bpp * DEV_BSIZE / 1024;
-				swapfree += (unsigned long long) ent->ste_free * bpp * DEV_BSIZE / 1024;
-			}
-
-            _mem->swu = _mem->swt - swapfree;
-		}
-
-		free(obuf);
-		free(st);
+	_data->id = _id;
+	_data->chip = 0;
+	_data->sensor = 0;
+	_data->label = strdup("SysTemp");
+	_data->kind = SENSOR_TEMP;
+	if (_id != 0 || systempfp == NULL)
+		systemp=-1;
+	else  {
+		fseek(systempfp, 0l, 0);
+		if (fscanf(systempfp, "%d", &systemp)!=1)
+			systemp=-1;
 	}
-	
+	_data->data=systemp;
+	fprintf(stderr, "read system temp %d\n", systemp);
 	return 0;
 }
-#endif /* USE_SWAP_SWAPCTL */
+
+unsigned int have_qnaptemp(void)
+{
+	int  temp;
+
+	if ((systempfp=fopen(systempfile, "r"))==NULL) {
+		fprintf(stderr, "%s: Error %d\n", systempfile, errno);
+		return 0;
+	}
+	if (fscanf(systempfp, "%d", &temp)!=1) {
+		fprintf(stderr, "can't read an integer from %s\n", systempfile);
+		fclose(systempfp);
+		systempfp=NULL;
+		return 0;
+	}
+	return 1;
+}
+#endif
