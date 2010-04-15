@@ -53,8 +53,6 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 
 	a = num = 0;
 
-	sensors_init(NULL);
-
 	while ((chip = sensors_get_detected_chips(&a)))
 	{
 		b = c = 0;
@@ -101,10 +99,16 @@ unsigned int get_sensor_num(void)
 	int a, b, c, num;
 	const sensors_chip_name *chip;
 	const sensors_feature_data *features;
+	FILE *fp;
+
+	if ((fp = fopen("/etc/sensors.conf", "r")) == NULL)
+		return 0;
+	if (sensors_init(fp) != 0) {
+		fclose(fp);
+		return 0;
+	}
 
 	a = num = 0;
-
-	sensors_init(NULL);
 
 	while ((chip = sensors_get_detected_chips(&a)))
 	{
