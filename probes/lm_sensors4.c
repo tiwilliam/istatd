@@ -52,8 +52,6 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 	
 	a = num = 0;
 
-	sensors_init(NULL);
-	
 	while ((chip = sensors_get_detected_chips(NULL, &a)))
 	{
 		b = 0;
