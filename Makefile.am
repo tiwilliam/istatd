@@ -1,6 +1,6 @@
 SUBDIRS = probes libfslabel . resource
 
-EXTRA_DIST = CHANGELOG.txt DEVELOPERS.txt AUTHORS.txt
+EXTRA_DIST = CHANGELOG.txt DEVELOPERS.txt AUTHORS.txt README.txt
 
 bin_PROGRAMS = istatd
 
