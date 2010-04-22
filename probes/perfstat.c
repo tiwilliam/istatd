@@ -56,8 +56,12 @@
 # ifdef USE_UPTIME_PERFSTAT
 int get_uptime()
 {
-	// TODO - perfstat_cpu_total(), calc (user+sys+idle+wait)*ncpus*HZ ??
-	return 0;
+	perfstat_cpu_total_t cpustats;
+	if (perfstat_cpu_total(NULL, &cpustats, sizeof cpustats, 1)!=1)
+		return 0;
+	/* This is still untested on multi-processor machines. */
+	return (cpustats.user+cpustats.sys+cpustats.idle+cpustats.wait)
+		/cpustats.ncpus/HZ;
 
 }
 # endif /*USE_UPTIME_PERFSTAT*/
