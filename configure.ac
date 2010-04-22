@@ -45,7 +45,7 @@ AC_LINK_IFELSE([int main(void) { return 0; }],[
 
 qnaptemp=yes
 AC_ARG_WITH(qnaptemp,
-  [  --with-qnaptemp   read temperature from procfs on qnap NAS products [0]],
+  [  --with-qnaptemp   read temperature from procfs on qnap NAS products],
   AC_DEFINE_UNQUOTED([HAVE_QNAPTEMP],1,[Define if compiling for a qnap NAS]),
   qnaptemp=no)
 
