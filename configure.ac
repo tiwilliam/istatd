@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT([istatd], [0.5.7], [http://github.com/tiwilliam/istatd/issues])
+AC_INIT([istatd], [0.5.8], [http://github.com/tiwilliam/istatd/issues])
 AM_INIT_AUTOMAKE([foreign])
 AM_MAINTAINER_MODE
 AC_CANONICAL_HOST

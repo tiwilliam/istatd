@@ -1,5 +1,7 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
+  * Version: 0.5.8
+ -------------------------------------------------------------------------
   * Version: 0.5.7
   * New: Probes for used swap space even if it's not used by client.
   * New: Default config will set disk_mount_path_label to 1.
