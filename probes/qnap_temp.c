@@ -38,7 +38,7 @@
 #include <string.h>
 #include <sys/errno.h>
 
-#ifdef HAVE_QNAPTEMP
+#ifdef	HAVE_QNAPTEMP
 char *systempfile="/proc/tsinfo/systemp";
 static FILE *systempfp;
 
@@ -51,15 +51,15 @@ unsigned int get_qnaptemp(unsigned int _id, struct sensor_data *_data)
 	_data->sensor = 0;
 	_data->label = strdup("SysTemp");
 	_data->kind = SENSOR_TEMP;
-	if (_id != 0 || systempfp == NULL)
+	if (_id != 0 || ((systempfp=fopen(systempfile, "r")) == NULL))
 		systemp=-1;
 	else  {
 		fseek(systempfp, 0l, 0);
 		if (fscanf(systempfp, "%d", &systemp)!=1)
 			systemp=-1;
+		fclose(systempfp);
 	}
 	_data->data=systemp;
-	fprintf(stderr, "read system temp %d\n", systemp);
 	return 0;
 }
 
@@ -74,9 +74,9 @@ unsigned int have_qnaptemp(void)
 	if (fscanf(systempfp, "%d", &temp)!=1) {
 		fprintf(stderr, "can't read an integer from %s\n", systempfile);
 		fclose(systempfp);
-		systempfp=NULL;
 		return 0;
 	}
+	fclose(systempfp);
 	return 1;
 }
 #endif
