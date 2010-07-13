@@ -43,6 +43,9 @@ AC_LINK_IFELSE([int main(void) { return 0; }],[
 # 	])
 # ])
 
+AC_CHECK_LIB([nsl],[inet_ntoa])
+AC_CHECK_LIB([socket],[socket])
+
 qnaptemp=yes
 AC_ARG_WITH(qnaptemp,
   [  --with-qnaptemp   read temperature from procfs on qnap NAS products],
