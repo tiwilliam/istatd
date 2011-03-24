@@ -176,18 +176,19 @@ int main(int argc, char ** argv)
 	struct sensor_data sensor_data;
 
 	sensor_num = get_sensor_num();
-	
 	for (i = 0; i < sensor_num; i++)
 	{
 		get_sensor_data(i, &sensor_data);
-		
-		stats.add_sensor(&sensor_data);
+		cout << sensor_data.kind << endl;
+		if (sensor_data.kind >= 0)
+			stats.add_sensor(&sensor_data);
 	}
 #endif
 
 #ifdef  HAVE_QNAPTEMP
 	struct sensor_data sensor_data;
-	if (have_qnaptemp()) {
+	if (have_qnaptemp())
+	{
 		get_qnaptemp(0, &sensor_data);
 		stats.add_sensor(&sensor_data);
 	}

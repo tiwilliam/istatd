@@ -53,6 +53,7 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 	const sensors_feature_data * features;
 
 	a = num = 0;
+	_data->kind = -1;
 
 	while ((chip = sensors_get_detected_chips(&a)))
 	{

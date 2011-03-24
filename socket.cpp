@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <string.h>
 #include <iostream>
 
@@ -152,7 +153,6 @@ int Socket::receive(string & _data, int _max)
 	if ((result = recv(socket, buffer, _max, 0)) == -1)
 	{
 		cout << "Could not recv data: " << strerror(errno) << endl;
-		
 		return 0;
 	}
 	
@@ -162,7 +162,7 @@ int Socket::receive(string & _data, int _max)
 	if (_data.length() > 0)
 		cout << "(" << address << ":" << port << ") Data recv: " << _data << endl;
 	*/
-	
+
 	return result;
 }
 

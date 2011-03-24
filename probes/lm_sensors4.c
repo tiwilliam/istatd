@@ -39,7 +39,9 @@
 #ifdef HAVE_LIBSENSORS
 #if SENSORS_API_VERSION >= 0x0400 /* libsensor 4 */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "system.h"
 
@@ -49,8 +51,9 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 	const sensors_chip_name * chip;
 	const sensors_feature * features;
 	const sensors_subfeature * subfeatures;
-	
+
 	a = num = 0;
+	_data->kind = -1;
 
 	while ((chip = sensors_get_detected_chips(NULL, &a)))
 	{
@@ -67,9 +70,12 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 						_data->id = _id;
 						_data->chip = chip->addr;
 						_data->sensor = features->number;
-						_data->label = sensors_get_label(chip, features);
+						char *label = sensors_get_label(chip, features);
+						memcpy(_data->label, label, strlen(label)+1);
+						free(label);
 						_data->kind = SENSOR_FAN;
   						sensors_get_value(chip, subfeatures->number, &_data->data);
+						return 1;
 					}
 					num++;
 				}
@@ -81,9 +87,12 @@ unsigned int get_sensor_data(unsigned int _id, struct sensor_data *_data)
 						_data->id = _id;
 						_data->chip = chip->addr;
 						_data->sensor = features->number;
-						_data->label = sensors_get_label(chip, features);
+						char *label = sensors_get_label(chip, features);
+						memcpy(_data->label, label, strlen(label)+1);
+						free(label);
 						_data->kind = SENSOR_TEMP;
   						sensors_get_value(chip, subfeatures->number, &_data->data);
+						return 1;
 					}
 					num++;
 				}

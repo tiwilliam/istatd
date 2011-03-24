@@ -136,13 +136,21 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 							_active_socket->send(isr_accept_connection(1, 6, _stats->get_stats().upt + 1, _stats->get_stats().upt));
 						}
 						
+						xmlFree(name);
+						xmlFree(duuid);
+						xmlFreeDoc(doc);
+						xmlFreeParserCtxt(ctxt);
 						return;
 					}
 					
 					// Everything below requires a authenticated user
 					// Check if we have any - if so - get the client data
 					
-					if (_clients->length() < 1) return;
+					if (_clients->length() < 1) {
+						xmlFreeDoc(doc);
+						xmlFreeParserCtxt(ctxt);
+						return;
+					}
 					
 					// Some connection is requesting data.
 					// Check if the user is authenticated and then respond to the question.
@@ -151,7 +159,9 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 					{
 						if (_clients->is_authenticated(_clients->get_client(_active_socket->get_id())->duuid))
 						{
-							rid = to_int((const char *) xmlNodeListGetString(doc, cur->xmlChildrenNode, 1));
+							char *child_node = (char *) xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+							rid = to_int(child_node);
+							free(child_node);
 							
 							temp << isr_create_header();
 							temp << isr_create_session(rid, _clients->get_client(socket)->sid_disk, _clients->get_client(socket)->sid_temp, _clients->get_client(socket)->sid_fans);
@@ -171,6 +181,8 @@ void Switchboard::parse(SocketSet * _sockets, ClientSet * _clients, Config * _co
 								
 								if (element_content) element_content_int = to_int(string((const char *) element_content));
 								
+								xmlFree(element_content);
+
 								switch (element_code)
 								{
 									case CPU:

@@ -72,11 +72,11 @@ struct sys_info
 
 struct sensor_data
 {
+	int kind;
 	double data;
 	time_t uxt;
-	char *label;
+	char label[50];
 	unsigned int id;
-	unsigned int kind;
 	unsigned int chip;
 	unsigned int sensor;
 };

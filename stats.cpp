@@ -220,7 +220,7 @@ void Stats::add_sensor(struct sensor_data *_sensor)
 	sensor_info temp;
 	
 	temp.data = (*_sensor);
-	temp.active = true;
+	temp.active = false;
 	
 	sensors.push_back(temp);
 }
