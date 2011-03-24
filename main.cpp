@@ -179,7 +179,6 @@ int main(int argc, char ** argv)
 	for (i = 0; i < sensor_num; i++)
 	{
 		get_sensor_data(i, &sensor_data);
-		cout << sensor_data.kind << endl;
 		if (sensor_data.kind >= 0)
 			stats.add_sensor(&sensor_data);
 	}
