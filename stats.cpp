@@ -222,7 +222,8 @@ void Stats::add_sensor(struct sensor_data *_sensor)
 	temp.data = (*_sensor);
 	temp.active = true;
 	
-	sensors.push_back(temp);
+	if (temp.data.kind >= 0)
+		sensors.push_back(temp);
 }
 
 vector<sys_info> Stats::get_history(int _pos)

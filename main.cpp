@@ -179,8 +179,7 @@ int main(int argc, char ** argv)
 	for (i = 0; i < sensor_num; i++)
 	{
 		get_sensor_data(i, &sensor_data);
-		if (sensor_data.kind >= 0)
-			stats.add_sensor(&sensor_data);
+		stats.add_sensor(&sensor_data);
 	}
 #endif
 
@@ -196,27 +195,22 @@ int main(int argc, char ** argv)
 	while (1)
 	{
 		stats.update_system_stats();
-		
+
 		if (sockets.get_status(1))
 		{
 			if (sockets == listener)
 			{
 				Socket new_socket(listener.accept());
-				
 				sockets += new_socket;
 			}
 			else
 			{
 				Socket active_socket(sockets.get_ready());
-		
+	
 				if (active_socket.receive(data, 1024))
-				{
 					switchboard.parse(&sockets, &clients, &config, &active_socket, &stats, &arguments, data);
-				}
 				else
-				{
 					sockets -= active_socket;
-				}
 			}
 		}
 	}
