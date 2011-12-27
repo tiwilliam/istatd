@@ -1,6 +1,11 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
   * Version: 0.5.8
+  * Fix: Checking the temperature on QNAP needs reopen of /proc
+  * Fix: Build issue on Solaris 10
+  * Fix: Tests for network libraries
+  * Fix: Killed some memory leaks
+  * Fix: istatd failed to build on new pedantic gcc
  -------------------------------------------------------------------------
   * Version: 0.5.7
   * New: Probes for used swap space even if it's not used by client.
