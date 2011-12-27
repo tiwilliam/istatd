@@ -1,5 +1,7 @@
   CHANGELOG FOR ISTAT
  -------------------------------------------------------------------------
+  * Version: 0.5.9
+ -------------------------------------------------------------------------
   * Version: 0.5.8
   * Fix: Checking the temperature on QNAP needs reopen of /proc
   * Fix: Build issue on Solaris 10
