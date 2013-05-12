@@ -42,6 +42,7 @@
 #include "socketset.h"
 #include "clientset.h"
 #include "switchboard.h"
+#include "avahi.h"
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -140,7 +141,11 @@ int main(int argc, char ** argv)
 	if (!listener.listen()) return 1;
 	
 	sockets += listener;
-	
+
+#ifdef HAVE_LIBAVAHI_CLIENT
+	avahi_publish_service(to_int(cf_network_port));
+#endif
+
 	// Add disks for monitoring
 	if (config.get("monitor_disk") != "")
 	{

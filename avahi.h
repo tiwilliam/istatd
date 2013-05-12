@@ -28,12 +28,8 @@
  *
  */
 
-#ifdef HAVE_LIBAVAHI_CLIENT
-# ifndef _AVAHI_H
-# define _AVAHI_H
-
-int avahi_publish_service();
-
-# endif
+#ifndef _AVAHI_H
+#define _AVAHI_H
+void avahi_publish_service(int port);
+void avahi_stop();
 #endif
-
