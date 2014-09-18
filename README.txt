@@ -50,7 +50,7 @@ These steps assume you are logged in as root and have GNU build tools installed 
 
 6) Configure your config to match your needs and system
 
-   # cp resources/istat.conf /etc/
+   # cp resource/istat.conf /etc/
    # vim /etc/istat.conf
 
    Note: Don't forget to change your server_code.
