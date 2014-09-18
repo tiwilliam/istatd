@@ -32,6 +32,7 @@ These steps assume you are logged in as root and have GNU build tools installed 
 4) Build istatd
 
    # cd istatd-x.x.x
+   # ./autogen
 
    Here you can configure where you want your binary and config to end up (default /usr/local).
    # ./configure
