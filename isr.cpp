@@ -154,6 +154,7 @@ string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk
 	stringstream temp;
 	vector<string> conf_label;
 	string disk_label, disk_label_custom, disk_uuid;
+	int disk_size, disk_percent, disk_usage;
 	
 	if(0 == _disks->size()) return temp.str();
 	
@@ -200,8 +201,12 @@ string isr_disk_data(vector<disk_info> * _disks, int _init, const string cf_disk
 			disk_uuid = (*cur).uuid;
 		else
 			disk_uuid = (*cur).device;
+
+		disk_size = (*cur).history.front().f / 1000;
+		disk_percent = (*cur).history.front().p;
+		disk_usage = disk_size * disk_percent / 100;
 		
-		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "\" f=\"" << (*cur).history.front().f / 1000 << "\" p=\"" << (*cur).history.front().p << "\"></d>";
+		temp << "<d n=\"" << disk_label << "\" uuid=\"" << disk_uuid << "\" f=\"" << disk_size << "\" p=\"" << disk_percent << "\" u=\"" << disk_usage << "\"></d>";
 	}
 	
 	temp << "</DISKS>";
