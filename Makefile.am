@@ -13,6 +13,7 @@ istatd_SOURCES = \
 	socketset.h socketset.cpp \
 	clientset.h clientset.cpp \
 	isr.h isr.cpp \
+	avahi.h avahi.cpp \
 	daemon.h daemon.cpp \
 	stats.h stats.cpp \
 	token.h token.cpp \

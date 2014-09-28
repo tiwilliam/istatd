@@ -44,6 +44,8 @@
 #include "daemon.h"
 #include "utility.h"
 
+#include "avahi.h"
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -189,10 +191,6 @@ void Daemon::create(bool _back, const string &_user, const string &_group)
 		exit(1);
 	}
 	
-#ifdef HAVE_LIBAVAHI_CLIENT
-	// Announce to Avahi we have a daemon running
-	// avahi_publish_service();
-#endif
 }
 
 void Daemon::destroy()
@@ -215,7 +213,9 @@ void Daemon::destroy()
         }
 
 	unlink(sockfile.c_str());
-	
+		
+	avahi_stop();
+
 	exit(0);
 }
 

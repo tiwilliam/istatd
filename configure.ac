@@ -59,6 +59,9 @@ if test $qnaptemp = no; then
 ])
 fi
 
+AC_CHECK_LIB([uuid],[uuid_generate])
+AC_CHECK_LIB([avahi-client],[avahi_client_new])
+
 AC_CHECK_PROG([XML2_CONFIG],[xml2-config],[xml2-config])
 if test x"$XML2_CONFIG" = x"" ; then
 	AC_MSG_ERROR([cannot find xml2-config: depending on your operating system you may need to install a '-dev' package for libxml2])
